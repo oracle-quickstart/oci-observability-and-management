@@ -1,4 +1,4 @@
-# Oracle Cloud Infrastructure (OCI) Observability and Management Quick Start
+# Oracle Cloud Infrastructure (OCI) Observability and Management
 
 ## Introduction
 
