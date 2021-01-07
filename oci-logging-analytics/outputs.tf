@@ -4,7 +4,7 @@
 
 output "logging_analytics_config" {
   description = "logging analytics config details"
-  value       = module.logging_analytics.iam_config
+  value       = module.logging_analytics_quickstart.iam_config
 }
 
 output "logging_analytics_namespace" {

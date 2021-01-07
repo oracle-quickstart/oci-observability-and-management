@@ -21,4 +21,4 @@ provider "oci" {
 
 data "oci_identity_region_subscriptions" "this" {
   tenancy_id = var.tenancy_id
-}
+}  

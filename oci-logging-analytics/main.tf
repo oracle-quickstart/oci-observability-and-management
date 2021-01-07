@@ -5,17 +5,56 @@ locals {
   tenancy_id = var.tenancy_id # Tenancy OCID
 }
 
-module "logging_analytics" {
-  source = "github.com/oracle-terraform-modules/terraform-oci-tdf-iam"
-
-  providers = {
-    oci.oci_home = oci.home
-  }
+module "logging_analytics_compartment" {
+  /* This is a optional step, If you already have a compartment for logging analytics then use that instead */
+  source = "../"
 
   iam_config = {
+
     default_compartment_id = local.tenancy_id # Tenancy OCID
     default_defined_tags   = {}
     default_freeform_tags  = {}
+    groups                 = null
+    users                  = null
+    policies               = null
+    dynamic_groups         = null
+
+    /* If you already have a compartment then set the compartments to null as shown below:
+  compartments = null
+  */
+    compartments = {
+      Logging-Analytics-Compartment = {
+        description    = "Logging Analytics Compartment"
+        compartment_id = null # The OCID of the parent compartment containing the compartment.
+        defined_tags   = null
+        freeform_tags  = null
+      }
+      /* Optionally you can also create a Agent compartment for Agents and agent keys. 
+    Refer: https://docs.oracle.com/en/cloud/paas/logging-analytics/logqs/
+    
+    Logging-Analytics-Agent-Compartment = {
+      description    = "Logging Analytics Agent Compartment"
+      compartment_id = null # The OCID of the parent compartment containing the compartment.
+      defined_tags   = null
+      freeform_tags  = null
+    }
+    */
+    }
+  }
+}
+
+module "logging_analytics_quickstart" {
+
+  source = "../"
+  //depends_on = [oci_identity_dynamic_group.dynamic_groups]
+  depends_on = [module.logging_analytics_compartment]
+
+  iam_config = {
+
+    default_compartment_id = local.tenancy_id # Tenancy OCID
+    default_defined_tags   = {}
+    default_freeform_tags  = {}
+    compartments           = null
 
     groups = {
       Logging-Analytics-SuperAdmins = {
@@ -32,39 +71,18 @@ module "logging_analytics" {
         defined_tags   = null
         freeform_tags  = null
         description    = "Logging Analytics User"
-        email          = "Logging-Analytics-User-01@yahoo.com"
-        groups         = ["Logging-Analytics-SuperAdmins"]
+        email          = "<Your-Logging-Analytics-User@oracle.com>" 
+        groups = ["Logging-Analytics-SuperAdmins"]
       }
-    }
-
-    /* If you already have a compartment then set the compartments to null as shown below:
-  compartments = null
-  */
-    compartments = {
-      Logging-Analytics-Compartment = {
-        description    = "Logging Analytics Compartment"
-        compartment_id = null # The OCID of the parent compartment containing the compartment.
-        defined_tags   = null
-        freeform_tags  = null
-      }
-      /* Optionally you can also create a Agent compartment for Agents and agent keys. 
-       Refer: https://docs.oracle.com/en/cloud/paas/logging-analytics/logqs/
-    Logging-Analytics-Agent-Compartment = {
-      description    = "Logging Analytics Agent Compartment"
-      compartment_id = null # The OCID of the parent compartment containing the compartment.
-      defined_tags   = null
-      freeform_tags  = null
-    }
-    */
     }
 
     dynamic_groups = {
       ManagementAgentAdmins = {
-        compartment_id = null # Tenancy OCID
-        description    = "Logging Analytics Management Agent Dynamic group"
-        instance_ids   = ["<Your_instance_ocid1.instance.oc1.phx.xx>"] 
+        compartment_id = null #Tenancy OCID
         defined_tags   = null
         freeform_tags  = null
+        description    = "Logging Analytics Management Agent Dynamic group"
+        matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${module.logging_analytics_compartment.iam_config.compartments["Logging-Analytics-Compartment"].id}}"]
       }
     }
 
@@ -90,7 +108,6 @@ module "logging_analytics" {
         freeform_tags  = null
       }
     }
-
   }
 }
 
@@ -98,7 +115,8 @@ resource "oci_log_analytics_namespace" "log_analytics_namespace" {
   #Required
   compartment_id = local.tenancy_id
   is_onboarded   = true
-  namespace      = "<Your_Tenancy_Name>"
+  namespace      = "<Your-Tenancy-Name>"
+  depends_on     = [module.logging_analytics_quickstart]
 }
 
 data "oci_log_analytics_namespace" "log_analytics_namespace" {

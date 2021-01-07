@@ -5,7 +5,7 @@
 The quickstart steps for logging analytics are defined here:
 https://docs.oracle.com/en/cloud/paas/logging-analytics/logqs/
 
-In this example we will try to automate the following
+In this example we will automate the following:
 
 * Create Logging Analytics Compartment (Optional). Skip if the compartment exists.
 * Create Logging Analytics User Group (Optional)
@@ -14,9 +14,9 @@ In this example we will try to automate the following
 * Create Logging Analytics Policies. This is pre-defined.
 * Onboard Logging Analytics.
 
-1. Using this example
+## Using this example
 
-* Prepare one variable file named `terraform.tfvars` with the required IAM information. The contents of `terraform.tfvars` should look something like the following (or copy and re-use the contents of `terraform.tfvars.template`:
+1. Prepare one variable file named `terraform.tfvars` with the required IAM information. The contents of `terraform.tfvars` should look something like the following (or copy and re-use the contents of `terraform.tfvars.template`:
 
 ```
 ### TENANCY DETAILS
@@ -49,3 +49,11 @@ Note: To further install a management agent or ingest the data refer the quick s
 https://docs.oracle.com/en/cloud/paas/logging-analytics/logqs
 
 For on demand upload via OCI CLI, refer: https://docs.oracle.com/en-us/iaas/logging-analytics/doc/demand-upload-using-cli.html
+
+## Testing
+
+This example was tested on (Use v0.14.3 and above):
+```
+$ terraform version
+Terraform v0.14.3
+```
