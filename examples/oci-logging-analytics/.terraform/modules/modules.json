@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"logging_analytics_quickstart","Source":"../../oci-core-modules/oci_iam","Dir":"../../oci-core-modules/oci_iam"},{"Key":"","Source":"","Dir":"."},{"Key":"logging_analytics_compartment","Source":"../../oci-core-modules/oci_iam","Dir":"../../oci-core-modules/oci_iam"}]}
