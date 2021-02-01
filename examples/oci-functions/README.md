@@ -24,9 +24,6 @@ Before you deploy this sample function, make sure you have run step C of the [Or
 
 Note: Alternatively, You can also use your local machine or OCI Compute as your dev environments. refer the quick start guide.
 
-## Architecture
-
-![Helloworld Function](./images/helloworld.png)
 
 ## Create Docker image using cloudshell ![user input icon](./images/userinput.png)
 
@@ -120,7 +117,9 @@ region = "ap-sydney-1"
 compartment_id = "ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-## Review the files main.tf, functions.tf, network.tf. Edit the main.tf with the required values. Look for "< >" brackets and add the details accordingly.
+## Review 
+
+Review the files `main.tf, functions.tf, network.tf` Edit the `main.tf` with the required values. Look for "< >" brackets and add the details accordingly.
 
 Then apply the example using the following commands:
 
