@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 locals {
-  tenancy_id = var.tenancy_id # Tenancy OCID
+  tenancy_id = var.tenancy_ocid # Tenancy OCID
 }
 
 module "logging_analytics_compartment" {
@@ -20,18 +20,18 @@ module "logging_analytics_compartment" {
     users                  = null
     policies               = null
     dynamic_groups         = null
+    compartments           = null
 
-    /* If you already have a compartment then set the compartments to null as shown below:
-  compartments = null
-  */
+    /* If you need to create a compartment then follow the below sample:
     compartments = {
       Logging-Analytics-Compartment = {
         description    = "Logging Analytics Compartment"
         compartment_id = null # The OCID of the parent compartment containing the compartment.
         defined_tags   = null
         freeform_tags  = null
-      }
-      /* Optionally you can also create a Agent compartment for Agents and agent keys. 
+      }*/
+    
+    /* Optionally you can also create a Agent compartment for Agents and agent keys. 
     Refer: https://docs.oracle.com/en/cloud/paas/logging-analytics/logqs/
     
     Logging-Analytics-Agent-Compartment = {
@@ -40,8 +40,8 @@ module "logging_analytics_compartment" {
       defined_tags   = null
       freeform_tags  = null
     }
-    */
-    }
+    
+    }*/
   }
 }
 
@@ -81,12 +81,13 @@ module "logging_analytics_quickstart" {
     }
 
     dynamic_groups = {
-      ManagementAgentAdmins = {
+      ManagementAgentAdminss = {
         compartment_id = null #Tenancy OCID
         defined_tags   = null
         freeform_tags  = null
         description    = "Logging Analytics Management Agent Dynamic group"
-        matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${module.logging_analytics_compartment.iam_config.compartments["Logging-Analytics-Compartment"].id}}"]
+        #matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${module.logging_analytics_compartment.iam_config.compartments["Logging-Analytics-Compartment"].id}}"]
+        matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${var.compartment_ocid}}"]
       }
     }
 
@@ -103,10 +104,10 @@ module "logging_analytics_quickstart" {
           "allow group Logging-Analytics-SuperAdmins TO MANAGE management-agents IN tenancy",
           "allow group Logging-Analytics-SuperAdmins to MANAGE management-agent-install-keys IN tenancy",
           "allow group Logging-Analytics-SuperAdmins to READ users IN tenancy",*/
-          "allow dynamic-group ManagementAgentAdmins to MANAGE management-agents IN tenancy",
-          "allow dynamic-group ManagementAgentAdmins to USE METRICS IN tenancy",
-          "allow dynamic-group ManagementAgentAdmins to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} in tenancy",
-        "allow dynamic-group ManagementAgentAdmins to USE loganalytics-collection-warning in tenancy"
+          "allow dynamic-group ManagementAgentAdminss to MANAGE management-agents IN tenancy",
+          "allow dynamic-group ManagementAgentAdminss to USE METRICS IN tenancy",
+          "allow dynamic-group ManagementAgentAdminss to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} in tenancy",
+        "allow dynamic-group ManagementAgentAdminss to USE loganalytics-collection-warning in tenancy"
         ]
         version_date   = null
         compartment_id = null # Tenancy OCID

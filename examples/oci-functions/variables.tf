@@ -3,11 +3,8 @@
 
 
 # tenancy details
-variable "tenancy_id" {}
-variable "compartment_id" {}
-variable "user_id" {}
-variable "fingerprint" {}
-variable "private_key_path" {}
+variable "tenancy_ocid" {}
+variable "compartment_ocid" {}
 variable "region" {}
 variable "function_image" {}
 

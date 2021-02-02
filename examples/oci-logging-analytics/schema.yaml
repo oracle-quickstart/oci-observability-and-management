@@ -1,0 +1,42 @@
+# Copyright (c) 2021 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+title: "Oracle Logging Analytics Quick Start"
+stackDescription: "This is a OCI (Oracle Cloud Infrastructure) Logging Analytics Quick Start automation. 
+It creates all the necessary OCI resources 
+* Create Logging Analytics User Group 
+* Create Logging Analytics Users 
+* Create Dynamic Groups
+* Create Logging Analytics Policies
+* Onboard Logging Analytics
+All this is done using terraform."
+
+schemaVersion: 1.1.0
+version: "20190304"
+
+logoUrl: "https://cloudmarketplace.oracle.com/marketplace/content?contentId=58352039"
+
+source:
+  type: marketplace
+  reference: 47726045
+
+locale: "en"
+
+variableGroups:
+  - title: General Configuration
+    visible: false
+    variables:
+      - tenancy_ocid
+      - compartment_ocid
+      - region
+    
+variables:
+  log_analytics_namespace:
+    title: Logging Analytics Namespace for onboarding a tenancy (Tenancy Name)
+    required: true
+
+ 
+outputGroups:
+  - title: Logging Analytics Configuration
+    outputs:
+      - ${logging_analytics_config}

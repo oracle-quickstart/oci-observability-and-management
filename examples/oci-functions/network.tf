@@ -13,7 +13,7 @@ locals {
 
 module "oci_network" {
   source                 = "../../oci-core-modules/oci_network"
-  default_compartment_id = var.compartment_id
+  default_compartment_id = var.compartment_ocid
 
   vcn_options = {
     display_name   = "simpletest"
@@ -61,7 +61,7 @@ module "oci_network" {
 module "oci_subnets" {
   source = "../../oci-core-modules/oci_subnets"
 
-  default_compartment_id = var.compartment_id
+  default_compartment_id = var.compartment_ocid
   vcn_id   = module.oci_network.vcn.id
   vcn_cidr = module.oci_network.vcn.cidr_block
 

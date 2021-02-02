@@ -15,7 +15,7 @@ locals {
 
 resource "oci_functions_application" "this" {
   #Required
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   display_name   = local.application_display_name
   subnet_ids     = [module.oci_subnets.subnets.public.id]
 
@@ -35,7 +35,14 @@ resource "oci_functions_function" "this" {
   timeout_in_seconds = local.function_timeout_in_seconds
 }
 
+resource "time_sleep" "wait_60_seconds" {
+  depends_on = [oci_functions_function.this]
+  create_duration = "60s"
+}
+
 resource "oci_functions_invoke_function" "this" {
+
+  depends_on = [time_sleep.wait_60_seconds]
   #Required
   function_id = oci_functions_function.this.id
 

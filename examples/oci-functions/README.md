@@ -111,10 +111,10 @@ The contents of `terraform.tfvars` should look something like the following:
 
 ![user input icon](./images/userinput.png)
 ```
-tenancy_id = "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-user_id = "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+tenancy_ocid = "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+user_ocid = "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 region = "ap-sydney-1"
-compartment_id = "ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+compartment_ocid = "ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 ## Review 
@@ -157,4 +157,12 @@ Error: Service error:NotAuthenticated. Not authenticated. http status code: 401.
 
   on functions.tf line 41, in resource "oci_functions_invoke_function" "this":
   41: resource "oci_functions_invoke_function" "this" {
+```
+
+## Testing
+
+This example was tested on (Use v0.14.3 and above):
+```
+$ terraform version
+Terraform v0.14.3
 ```

@@ -16,15 +16,15 @@ In this example we will automate the following:
 
 ## Using this example
 
-1. Prepare one variable file named `terraform.tfvars` with the required IAM information. The contents of `terraform.tfvars` should look something like the following (or copy and re-use the contents of `terraform.tfvars.template`:
+1. Prepare one variable file named `terraform.tfvars` with the required IAM information. The contents of `terraform.tfvars` should look something like the following:
 
 ```
 ### TENANCY DETAILS
 
 # Get this from the bottom of the OCI screen (after logging in, after Tenancy ID: heading)
-tenancy_id="<tenancy OCID"
+tenancy_ocid="<tenancy OCID"
 # Get this from OCI > Identity > Users (for your user account)
-user_id="<user OCID>"
+user_ocid="<user OCID>"
 
 # the fingerprint can be gathered from your user account (OCI > Identity > Users > click your username > API Keys fingerprint (select it, copy it and paste it below))
 fingerprint="<PEM key fingerprint>"

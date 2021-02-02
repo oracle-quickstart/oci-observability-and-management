@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 locals {
-  tenancy_id = var.tenancy_id # Tenancy OCID
+  tenancy_id = var.tenancy_ocid # Tenancy OCID
 }
 
 module "functions_compartment" {
