@@ -35,14 +35,14 @@ resource "oci_functions_function" "this" {
   timeout_in_seconds = local.function_timeout_in_seconds
 }
 
-resource "time_sleep" "wait_60_seconds" {
+/*resource "time_sleep" "wait_60_seconds" {
   depends_on = [oci_functions_function.this]
   create_duration = "60s"
-}
+} We need to uncomment it in terraform version 0.14.x*/
 
 resource "oci_functions_invoke_function" "this" {
 
-  depends_on = [time_sleep.wait_60_seconds]
+  #depends_on = [time_sleep.wait_60_seconds]
   #Required
   function_id = oci_functions_function.this.id
 

@@ -161,8 +161,4 @@ Error: Service error:NotAuthenticated. Not authenticated. http status code: 401.
 
 ## Testing
 
-This example was tested on (Use v0.14.3 and above):
-```
-$ terraform version
-Terraform v0.14.3
-```
+This example was tested on (Use v0.13.x and above):
