@@ -8,7 +8,7 @@ This repository would include automation for various observability and managemen
 
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/oci-observability-and-management/releases/download/ocilogginganalyticsv1.0/oci-logging-analytics.zip) 
 
-* OCI Functions              
+* OCI Functions Note: There is a pre-requirement to create a docker image refer ![README](https://github.com/oracle-quickstart/oci-observability-and-management/blob/master/examples/oci-functions/README.md)            
 
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/oci-observability-and-management/releases/download/functionsv1.0/oci-functions.zip) 
 
