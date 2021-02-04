@@ -146,19 +146,6 @@ function_result = {
 }
 ```
 
-## Known Issues
-
-Occasionally you might encounter this error while function invoke, if it happens wait for few seconds and 
-re-run $ terraform apply.
-```
-oci_functions_invoke_function.this: Creating...
-
-Error: Service error:NotAuthenticated. Not authenticated. http status code: 401. Opc request id: cd21e84b557068d812ad3660fd66022e/01ECGMWPC01BT0M70ZJ000Y9ZP/01ECGMWPC01BT0M70ZJ000Y9ZQ
-
-  on functions.tf line 41, in resource "oci_functions_invoke_function" "this":
-  41: resource "oci_functions_invoke_function" "this" {
-```
-
 ## Testing
 
 This example was tested on (Use v0.13.x and above):
