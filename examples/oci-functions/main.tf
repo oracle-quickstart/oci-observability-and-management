@@ -68,7 +68,7 @@ module "functions_quickstart" {
         defined_tags   = null
         freeform_tags  = null
         description    = "Functions User"
-        email          = "<Your-Functions-User@oracle.com>" 
+        email          = var.functions_user_email != "" ? var.functions_user_email : "<Your_Functions_User_Email>"
         groups = ["Functions-Group"]
       }
     }

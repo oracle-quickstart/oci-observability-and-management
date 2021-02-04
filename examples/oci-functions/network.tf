@@ -16,7 +16,7 @@ module "oci_network" {
   default_compartment_id = var.compartment_ocid
 
   vcn_options = {
-    display_name   = "simpletest"
+    display_name   = "SimpleFnTest"
     cidr           = local.vcn_cidr
     enable_dns     = true
     dns_label      = "simpletest"

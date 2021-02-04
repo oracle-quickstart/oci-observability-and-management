@@ -7,5 +7,6 @@ variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
 variable "function_image" {}
+variable "functions_user_email" {}
 
 

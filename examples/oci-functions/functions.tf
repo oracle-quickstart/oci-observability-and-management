@@ -25,6 +25,7 @@ resource "oci_functions_application" "this" {
 
 resource "oci_functions_function" "this" {
   #Required
+  depends_on = [module.functions_quickstart]
   application_id = oci_functions_application.this.id
   display_name   = local.function_display_name
   image          = var.function_image
@@ -40,9 +41,17 @@ resource "oci_functions_function" "this" {
   create_duration = "60s"
 } We need to uncomment it in terraform version 0.14.x*/
 
+resource "null_resource" "wait_60_seconds" {
+  depends_on = [oci_functions_function.this]
+  provisioner "local-exec" {
+    command = "sleep 60s"
+    interpreter = ["/bin/bash", "-c"]
+  }
+}
 resource "oci_functions_invoke_function" "this" {
 
   #depends_on = [time_sleep.wait_60_seconds]
+  depends_on = [null_resource.wait_60_seconds]
   #Required
   function_id = oci_functions_function.this.id
 

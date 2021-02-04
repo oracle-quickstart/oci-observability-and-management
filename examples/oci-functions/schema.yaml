@@ -3,14 +3,17 @@
 
 title: "Oracle Functions Quick Start"
 stackDescription: "This is a OCI (Oracle Cloud Infrastructure) Functions quickstart automation. 
+
 It creates all the necessary OCI resources 
-* Create Functions User Group (Optional)
-* Create Functions Users (Optional). Skip if the user already exists.
-* Create Functions Policies. 
-* 1 x Virtual Cloud Network
-* 1 x Subnet (Public)
-* 1 x Internet Gateway for Public Subnet
-* 1 x OCI function and invokes it. 
+
+- Create Functions User Group
+- Create Functions Users 
+- Create Functions Policies.
+- 1 x Virtual Cloud Network
+- 1 x Subnet (Public)
+- 1 x Internet Gateway for Public Subnet
+- 1 x OCI function and invokes it. 
+
 All this is done using terraform."
 
 schemaVersion: 1.1.0
@@ -36,15 +39,24 @@ variableGroups:
     visible: true  
     variables:
       - function_image
+  
+  - title: Optional Configuration
+    visible: true  
+    variables:
+      - functions_user_email
 
 variables:
-
   function_image:
     title: Function Image
+    description: Refer the README for this example on how to create this helloworld image.
     required: true
+  functions_user_email:
+      title: Functions New User Email
+      description: This will create a new user and sends the activation email. If not provided, it creates a user with dummy email.
+      required: false
+      default: ""
 
- 
 outputGroups:
   - title: Function Result
     outputs:
-      - ${function_result}
+      - ${function_invoke_result}
