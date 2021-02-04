@@ -75,7 +75,7 @@ module "logging_analytics_quickstart" {
         defined_tags   = null
         freeform_tags  = null
         description    = "Logging Analytics User"
-        email          = "<Your-Logging-Analytics-User@oracle.com>" 
+        email          = var.logging_analytics_user_email != "" ? var.logging_analytics_user_email : "<Your_Logging_Analytics_User_Email>"
         groups = ["Logging-Analytics-SuperAdmins"]
       }
     }
@@ -120,6 +120,7 @@ module "logging_analytics_quickstart" {
 
 resource "oci_log_analytics_namespace" "log_analytics_namespace" {
   #Required
+  count          = var.log_analytics_namespace != "" ? 1 : 0
   compartment_id = local.tenancy_id
   is_onboarded   = true
   namespace      = var.log_analytics_namespace
@@ -128,5 +129,6 @@ resource "oci_log_analytics_namespace" "log_analytics_namespace" {
 
 data "oci_log_analytics_namespace" "log_analytics_namespace" {
   #Required
-  namespace = oci_log_analytics_namespace.log_analytics_namespace.namespace
+  count = 0
+  namespace = oci_log_analytics_namespace.log_analytics_namespace[count.index].namespace
 }

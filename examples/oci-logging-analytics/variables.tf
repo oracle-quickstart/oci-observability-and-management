@@ -7,5 +7,6 @@ variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
 variable "log_analytics_namespace" {}
+variable "logging_analytics_user_email" {}
 
 

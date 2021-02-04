@@ -29,11 +29,23 @@ variableGroups:
       - tenancy_ocid
       - compartment_ocid
       - region
+
+  - title: Optional Configuration
+    visible: true  
+    variables:
+      - log_analytics_namespace
+      - logging_analytics_user_email
     
 variables:
   log_analytics_namespace:
     title: Logging Analytics Namespace for onboarding a tenancy (Tenancy Name)
-    required: true
+    required: false
+    default: ""
+  logging_analytics_user_email:
+      title: logging analytics New User Email
+      description: This will create a new user and sends the activation email. If not provided, it creates a user with dummy email.
+      required: false
+      default: ""
 
  
 outputGroups:
