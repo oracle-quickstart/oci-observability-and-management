@@ -9,45 +9,105 @@ It creates all the necessary OCI resources
 * Create Dynamic Groups
 * Create Logging Analytics Policies
 * Onboard Logging Analytics
+
 All this is done using terraform."
 
 schemaVersion: 1.1.0
 version: "20190304"
-
 logoUrl: "https://cloudmarketplace.oracle.com/marketplace/content?contentId=58352039"
-
 source:
   type: marketplace
   reference: 47726045
 
 locale: "en"
-
 variableGroups:
   - title: General Configuration
     visible: false
     variables:
       - tenancy_ocid
       - compartment_ocid
+      - compartment_id
       - region
 
-  - title: Optional Configuration
-    visible: true  
+  - title: Logging Analytics Configuration
     variables:
-      - log_analytics_namespace
+      - create_compartment
+      - compartment_ocid
+      - logging_analytics_compartment_name
       - logging_analytics_user_email
+      - onboard_logging_analytics
+      - log_analytics_namespace
+      - logging_analytics_group_name
+      - logging_analytics_user_name
+      - loganalytics_dynamic_group_name
+      - logging_analytics_policy_name
     
 variables:
-  log_analytics_namespace:
-    title: Logging Analytics Namespace for onboarding a tenancy (Tenancy Name)
-    required: false
-    default: ""
+  create_compartment:
+    type: enum
+    title: Create New Logging Analytics Compartment ?
+    enum:
+      - "yes"
+      - "no"
+    default: "yes"
+    required: true
+  
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    title: Logging Analytics Compartment
+    description: Select the existing compartment
+    default: compartment_ocid
+    required: true
+    visible:
+      eq:
+        - create_compartment
+        - "no"
+  
+  logging_analytics_compartment_name:
+    type: string
+    title: New Logging Analytics Compartment Name
+    default: "Logging-Analytics-Compartment"
+    required: true
+    visible:
+      eq:
+        - create_compartment
+        - "yes"
+
   logging_analytics_user_email:
       title: logging analytics New User Email
       description: This will create a new user and sends the activation email. If not provided, it creates a user with dummy email.
-      required: false
-      default: ""
+      required: true
+      default: "Dummy_Logging_Analytics_User_Email@oracle.com"
+  
+  onboard_logging_analytics:
+    type: enum
+    title: Onboard Logging Analytics Namespace ?
+    enum:
+      - "yes"
+      - "no"
+    default: "yes"
+    required: true
+  
+  logging_analytics_group_name:
+    title: Logging Analytics Admin group name
+    default: "Logging-Analytics-SuperAdmins"
+    required: true
 
- 
+  logging_analytics_user_name:
+    title: Logging Analytics User name
+    default: "Logging-Analytics-User-01"
+    required: true
+  
+  loganalytics_dynamic_group_name:
+    title: Logging Analytics dynamic group name
+    default: "ManagementAgentAdmins"
+    required: true
+  
+  logging_analytics_policy_name:
+    title: Logging Analytics Policy name
+    default: "Logging-Analytics-Policy"
+    required: true
+  
 outputGroups:
   - title: Logging Analytics Configuration
     outputs:

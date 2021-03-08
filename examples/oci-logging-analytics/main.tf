@@ -3,6 +3,17 @@
 
 locals {
   tenancy_id = var.tenancy_ocid # Tenancy OCID
+
+  compartments = {
+    "${var.logging_analytics_compartment_name}" = {
+      description    = "Logging Analytics Compartment"
+      compartment_id = null # The OCID of the parent compartment containing the compartment.
+      defined_tags   = null
+      freeform_tags  = null
+    }
+  }
+
+  find_compartment_id = var.create_compartment == "yes" ? module.logging_analytics_compartment.iam_config.compartments[var.logging_analytics_compartment_name].id : var.compartment_ocid
 }
 
 module "logging_analytics_compartment" {
@@ -20,28 +31,7 @@ module "logging_analytics_compartment" {
     users                  = null
     policies               = null
     dynamic_groups         = null
-    compartments           = null
-
-    /* If you need to create a compartment then follow the below sample:
-    compartments = {
-      Logging-Analytics-Compartment = {
-        description    = "Logging Analytics Compartment"
-        compartment_id = null # The OCID of the parent compartment containing the compartment.
-        defined_tags   = null
-        freeform_tags  = null
-      }*/
-    
-    /* Optionally you can also create a Agent compartment for Agents and agent keys. 
-    Refer: https://docs.oracle.com/en/cloud/paas/logging-analytics/logqs/
-    
-    Logging-Analytics-Agent-Compartment = {
-      description    = "Logging Analytics Agent Compartment"
-      compartment_id = null # The OCID of the parent compartment containing the compartment.
-      defined_tags   = null
-      freeform_tags  = null
-    }
-    
-    }*/
+    compartments           = var.create_compartment == "yes" ? local.compartments : null
   }
 }
 
@@ -61,7 +51,7 @@ module "logging_analytics_quickstart" {
     compartments           = null
 
     groups = {
-      Logging-Analytics-SuperAdmins = {
+      "${var.logging_analytics_group_name}" = {
         compartment_id = null #Tenancy OCID
         defined_tags   = null
         freeform_tags  = null
@@ -70,44 +60,43 @@ module "logging_analytics_quickstart" {
     }
 
     users = {
-      Logging-Analytics-User-01 = {
+      "${var.logging_analytics_user_name}" = {
         compartment_id = null #Tenancy OCID
         defined_tags   = null
         freeform_tags  = null
         description    = "Logging Analytics User"
-        email          = var.logging_analytics_user_email != "" ? var.logging_analytics_user_email : "<Your_Logging_Analytics_User_Email>"
-        groups = ["Logging-Analytics-SuperAdmins"]
+        email          = var.logging_analytics_user_email
+        groups         = ["${var.logging_analytics_group_name}"]
       }
     }
 
     dynamic_groups = {
-      ManagementAgentAdminss = {
+      "${var.loganalytics_dynamic_group_name}" = {
         compartment_id = null #Tenancy OCID
         defined_tags   = null
         freeform_tags  = null
         description    = "Logging Analytics Management Agent Dynamic group"
-        #matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${module.logging_analytics_compartment.iam_config.compartments["Logging-Analytics-Compartment"].id}}"]
-        matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${var.compartment_ocid}}"]
+        matching_rules = ["All {resource.type = 'managementagent', resource.compartment.id = ${local.find_compartment_id} }"]
       }
     }
 
     policies = {
-      Logging-Analytics-Policy = {
+      "${var.logging_analytics_policy_name}" = {
         description = "Logging Analytics Policy"
         statements = ["allow service loganalytics to READ loganalytics-features-family in tenancy",
-          "allow group Logging-Analytics-SuperAdmins to READ compartments in tenancy",
-          "allow group Logging-Analytics-SuperAdmins to MANAGE loganalytics-features-family in tenancy",
+          "allow group ${var.logging_analytics_group_name} to READ compartments in tenancy",
+          "allow group ${var.logging_analytics_group_name} to MANAGE loganalytics-features-family in tenancy",
           /* Use the following policies for production usage.
-          "allow group Logging-Analytics-SuperAdmins to MANAGE loganalytics-resources-family in tenancy",
-          "allow group Logging-Analytics-SuperAdmins to MANAGE management-dashboard-family in tenancy",
-          "allow group Logging-Analytics-SuperAdmins to READ metrics IN tenancy",
-          "allow group Logging-Analytics-SuperAdmins TO MANAGE management-agents IN tenancy",
-          "allow group Logging-Analytics-SuperAdmins to MANAGE management-agent-install-keys IN tenancy",
-          "allow group Logging-Analytics-SuperAdmins to READ users IN tenancy",*/
-          "allow dynamic-group ManagementAgentAdminss to MANAGE management-agents IN tenancy",
-          "allow dynamic-group ManagementAgentAdminss to USE METRICS IN tenancy",
-          "allow dynamic-group ManagementAgentAdminss to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} in tenancy",
-        "allow dynamic-group ManagementAgentAdminss to USE loganalytics-collection-warning in tenancy"
+          "allow group ${var.logging_analytics_group_name} to MANAGE loganalytics-resources-family in tenancy",
+          "allow group ${var.logging_analytics_group_name} to MANAGE management-dashboard-family in tenancy",
+          "allow group ${var.logging_analytics_group_name} to READ metrics IN tenancy",
+          "allow group ${var.logging_analytics_group_name} TO MANAGE management-agents IN tenancy",
+          "allow group ${var.logging_analytics_group_name} to MANAGE management-agent-install-keys IN tenancy",
+          "allow group ${var.logging_analytics_group_name} to READ users IN tenancy",*/
+          "allow dynamic-group ${var.loganalytics_dynamic_group_name} to MANAGE management-agents IN tenancy",
+          "allow dynamic-group ${var.loganalytics_dynamic_group_name} to USE METRICS IN tenancy",
+          "allow dynamic-group ${var.loganalytics_dynamic_group_name} to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} in tenancy",
+          "allow dynamic-group ${var.loganalytics_dynamic_group_name} to USE loganalytics-collection-warning in tenancy"
         ]
         version_date   = null
         compartment_id = null # Tenancy OCID
@@ -118,17 +107,17 @@ module "logging_analytics_quickstart" {
   }
 }
 
-resource "oci_log_analytics_namespace" "log_analytics_namespace" {
+resource "oci_log_analytics_namespace" "logging_analytics_namespace" {
   #Required
-  count          = var.log_analytics_namespace != "" ? 1 : 0
+  count          = var.onboard_logging_analytics == "yes" ? 1 : 0
   compartment_id = local.tenancy_id
   is_onboarded   = true
-  namespace      = var.log_analytics_namespace
+  namespace      = var.tenancy_ocid
   depends_on     = [module.logging_analytics_quickstart]
 }
 
-data "oci_log_analytics_namespace" "log_analytics_namespace" {
+data "oci_log_analytics_namespace" "logging_analytics_namespace" {
   #Required
-  count = 0
-  namespace = oci_log_analytics_namespace.log_analytics_namespace[count.index].namespace
+  #namespace = oci_log_analytics_namespace.logging_analytics_namespace[count.index].namespace
+  namespace = var.tenancy_ocid
 }

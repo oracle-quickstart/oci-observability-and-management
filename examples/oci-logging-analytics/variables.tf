@@ -6,7 +6,32 @@
 variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
-variable "log_analytics_namespace" {}
-variable "logging_analytics_user_email" {}
+
+variable "onboard_logging_analytics" {}
+
+variable "logging_analytics_user_email" {
+    default = "Dummy_Logging_Analytics_User_Email@oracle.com"
+}
+
+variable "create_compartment" {}
+variable "logging_analytics_compartment_name" {
+  default = "Logging-Analytics-Compartment"
+}
+
+variable "logging_analytics_group_name" {
+  default = "Logging-Analytics-SuperAdmins"
+}
+
+variable "logging_analytics_user_name" {
+  default = "Logging-Analytics-User-01"
+}
+
+variable "loganalytics_dynamic_group_name" {
+  default = "ManagementAgentAdmins"
+}
+
+variable "logging_analytics_policy_name" {
+  default = "Logging-Analytics-Policy"
+}
 
 

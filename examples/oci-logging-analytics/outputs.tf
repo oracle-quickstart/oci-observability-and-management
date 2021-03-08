@@ -9,6 +9,6 @@ output "logging_analytics_config" {
 
 output "logging_analytics_namespace" {
   description = "logging analytics namespace"
-  value       = data.oci_log_analytics_namespace.log_analytics_namespace
+  value       = data.oci_log_analytics_namespace.logging_analytics_namespace
 }
 
