@@ -13,6 +13,7 @@ In this example we will automate the following:
 * Create Dynamic Groups. 
 * Create Logging Analytics Policies. This is pre-defined.
 * Onboard Logging Analytics.
+* Enable Audit Logs.
 
 ## Using this example
 
