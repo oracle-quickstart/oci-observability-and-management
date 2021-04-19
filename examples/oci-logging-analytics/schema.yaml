@@ -29,18 +29,27 @@ variableGroups:
       - compartment_id
       - region
 
-  - title: Logging Analytics Configuration
+  - title: Optional Configuration
     variables:
       - create_compartment
       - compartment_ocid
       - logging_analytics_compartment_name
+      - create_user
       - logging_analytics_user_email
-      - onboard_logging_analytics
-      - log_analytics_namespace
-      - logging_analytics_group_name
       - logging_analytics_user_name
+      - onboard_logging_analytics
+      
+  - title: Required Configuration
+    variables:
+      - logging_analytics_group_name
       - loganalytics_dynamic_group_name
       - logging_analytics_policy_name
+
+  - title: Enable Audit Logs
+    variables:
+      - create_log_analytics_audit_log_group
+      - log_analytics_audit_log_group_name
+      - audit_service_connector_name
     
 variables:
   create_compartment:
@@ -49,12 +58,12 @@ variables:
     enum:
       - "yes"
       - "no"
-    default: "yes"
+    default: "no"
     required: true
   
   compartment_ocid:
     type: oci:identity:compartment:id
-    title: Logging Analytics Compartment
+    title: Select Existing Logging Analytics Compartment
     description: Select the existing compartment
     default: compartment_ocid
     required: true
@@ -73,40 +82,87 @@ variables:
         - create_compartment
         - "yes"
 
-  logging_analytics_user_email:
-      title: logging analytics New User Email
-      description: This will create a new user and sends the activation email. If not provided, it creates a user with dummy email.
-      required: true
-      default: "Dummy_Logging_Analytics_User_Email@oracle.com"
-  
   onboard_logging_analytics:
     type: enum
     title: Onboard Logging Analytics Namespace ?
     enum:
       - "yes"
       - "no"
-    default: "yes"
+    default: "no"
     required: true
   
   logging_analytics_group_name:
-    title: Logging Analytics Admin group name
+    title: Logging Analytics Admin IAM group name
     default: "Logging-Analytics-SuperAdmins"
     required: true
 
+  create_user:
+    type: enum
+    title: Create New Logging Analytics User ?
+    enum:
+      - "yes"
+      - "no"
+    default: "no"
+    required: true
+  
   logging_analytics_user_name:
     title: Logging Analytics User name
     default: "Logging-Analytics-User-01"
     required: true
+    visible:
+      eq:
+        - create_user
+        - "yes"
   
+  logging_analytics_user_email:
+    title: logging analytics New User Email
+    description: This will create a new user and sends the activation email.
+    default: "Logging_Analytics_User_Email@oracle.com"
+    required: true
+    visible:
+      eq:
+        - create_user
+        - "yes"
+
   loganalytics_dynamic_group_name:
     title: Logging Analytics dynamic group name
     default: "ManagementAgentAdmins"
     required: true
-  
+    
   logging_analytics_policy_name:
     title: Logging Analytics Policy name
     default: "Logging-Analytics-Policy"
     required: true
+  
+  create_log_analytics_audit_log_group:
+    type: enum
+    title: Enable Audit logs collection on Logging Analytics ?
+    enum:
+      - "yes"
+      - "no"
+    default: "no"
+    required: true
+  
+  log_analytics_audit_log_group_name:
+    title: Logging Analytics Log Group Name
+    description: This will create a new Logging Analytics Log Group Name.
+    required: true
+    default: "audit-loganalytics-group"
+    visible:
+      eq:
+        - create_log_analytics_audit_log_group
+        - "yes"
+      
+  audit_service_connector_name:
+    title: Audit Service Connector Hub from Logging to loganalytics
+    description: This will create a Audit Service Connector Hub from Logging to loganalytics.
+    required: true
+    default: "audit-logging-to-loganalytics"
+    visible:
+      eq:
+        - create_log_analytics_audit_log_group
+        - "yes"
+      
   
 outputGroups:
   - title: Logging Analytics Configuration

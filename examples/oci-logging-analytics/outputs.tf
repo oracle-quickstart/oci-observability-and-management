@@ -7,8 +7,3 @@ output "logging_analytics_config" {
   value       = module.logging_analytics_quickstart.iam_config
 }
 
-output "logging_analytics_namespace" {
-  description = "logging analytics namespace"
-  value       = data.oci_log_analytics_namespace.logging_analytics_namespace
-}
-
