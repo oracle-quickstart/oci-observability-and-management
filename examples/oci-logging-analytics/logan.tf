@@ -20,16 +20,17 @@ resource "oci_log_analytics_namespace" "logging_analytics_namespace" {
   depends_on     = [module.logging_analytics_quickstart]
 }
 
-resource "null_resource" "wait_60_seconds" {
+resource "null_resource" "wait_120_seconds" {
   depends_on = [oci_log_analytics_namespace.logging_analytics_namespace]
   provisioner "local-exec" {
-    command = "sleep 60s"
+    command = "sleep 120s"
     interpreter = ["/bin/bash", "-c"]
   }
 }
 
 resource "oci_log_analytics_log_analytics_log_group" "audit-loganalytics-group" {
     #Required
+    depends_on = [null_resource.wait_120_seconds]
     count = var.create_log_analytics_audit_log_group == "yes" ? 1 : 0
     compartment_id = var.compartment_ocid
     display_name = var.log_analytics_audit_log_group_name
