@@ -1,0 +1,1779 @@
+{
+  "dashboards": [
+    {
+      "compartmentId": "${compartment_ocid}",
+      "dashboard-id": "ocid1.managementdashboard.oc1..aaaaaaaa5c4qabot6xg74haplpey2zqk5de3euaffcnvb2z727osxohpaiba",
+      "data-config": [],
+      "defined-tags": {},
+      "description": "Dashboard provides information about:\n1) Traffic overview;\n2) WAF access by Security Modules;\n3) WAF & Backend Response codes;\n4) Enforcement points;\n5) Top 10: URL, Countries, Source IP",
+      "display-name": "WAF Activity Overview",
+      "freeform-tags": {},
+      "is-favorite": false,
+      "is-oob-dashboard": false,
+      "is-show-description": true,
+      "is-show-in-home": false,
+      "metadata-version": "2.0",
+      "nls": {},
+      "parameters-config": [],
+      "provider-id": "log-analytics",
+      "provider-name": "Logging Analytics",
+      "provider-version": "2.0",
+      "saved-searches": [
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF - total amount of requests - histogram",
+          "display-name": "WAF - Total Amount of Requests",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaael7oqi4px55c5p32cxgnir7g22bdddwblbtxds6gjzonkm6wcp5a",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename URI as Requests | timestats count as Requests",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              },
+              "showLogScale": false
+            },
+            "visualizationType": "records_histogram"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Top 10 Country Code - table format",
+          "display-name": "WAF Top 10 Country Code - count",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa4kecmqmntagtuhxaoqnalfq3gn4rkkpemtw2wck5zvzu3ejxk4sq",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename 'Client Host Country Code' as 'Country Code' | stats count by 'Country Code' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "summary_table"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "",
+          "display-name": "WAF Request by Countries",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa55hsx4mqzg7n3oh7c5c2ereiz3sinix4rqjkz7zuoz7b24b2tazq",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | geostats count as logrecords by 'Log Source' | sort -logrecords",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 48,
+              "timePeriod": "relative",
+              "units": "HOURS"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "GEOMAP_SETTINGS": {
+                  "basemap": "bi_world_map_light",
+                  "clusterColor": "rgb(255, 69, 0)",
+                  "filterOnZoom": true,
+                  "isShowLegend": true,
+                  "lat": 4966528.11244519,
+                  "lon": -2582960.015625,
+                  "mapZoom": 2,
+                  "mouseWheelEnabled": true,
+                  "pointColor": "rgb(0, 0, 255)",
+                  "srid": 3857,
+                  "toggleClusters": false
+                }
+              }
+            },
+            "visualizationType": "map"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Top 10 URL",
+          "display-name": "WAF Top 10 URL",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaalruyys3tllpto5re7kv2eekti5dmjk4zzusj3grreshecum5kdfq",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename URI as 'Request URL' | stats count by 'Request URL' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "summary_table"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF - total amount of requests",
+          "display-name": "WAF - Total Amount of Requests",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaatxhjuzjrnmgiudsmmpwem5oebsseuqbvc7pqwuhesiel7egzxbha",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename URI as Requests | stats count as Requests",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "tile"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Response Code",
+          "display-name": "WAF Response Code",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa4cuvy5usmgrqaiumcw74wpdscphyrtl7ablxqbsnu7qep5oxubka",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | timestats count by 'WAF Status Code'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              },
+              "showLogScale": false
+            },
+            "visualizationType": "records_histogram"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Access By Security Modules",
+          "display-name": "WAF Access By Security Modules",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa7kof742pmx6zm7cfel6if6qcigo3kohmnc76ldn2zwqus44zlebq",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' and 'Security Module' like in ('request%', 'response%') | stats count by 'Security Module'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "pie"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Top 10 Source IP Pie diagram",
+          "display-name": "WAF Top 10 Source IP diagram",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaawgcnvuwrpu46wgvq22jkwt3avbz43l4ywzulbhyaoxrct6zcbqua",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename 'Host IP Address (Client)' as 'Source IP' | stats count by 'Source IP' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "pie"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Response Code By WAF OCID & Enforcement Point",
+          "display-name": "WAF Response Code By WAF OCID & Enforcement Point",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaagird2wpx4wtvkijj6sxosahofod7ofsorojb7pgtsawa5npgdnhq",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename URI as Requests, 'OCI Resource OCID' as 'WAF OCID', 'OCI Resource Name' as 'Enforcement Point' | stats count by 'WAF OCID', 'Enforcement Point', 'WAF Status Code'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "treemap"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Backend Response Code",
+          "display-name": "WAF Backend Response Code",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaacamqqzqeixrbvksen6rqan5c3njfd2ago3da5vlabhrvnlxkfpvq",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | timestats count by 'Backend Status Code'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              },
+              "showLogScale": false
+            },
+            "visualizationType": "records_histogram"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Top 10 Country Code",
+          "display-name": "WAF Top 10 Country Code",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaasfyyitbeosccay75drv2qvtoratkfkk6gjojptfhh2nfu4vcj6ra",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename 'Client Host Country Code' as 'Country Code' | stats count by 'Country Code' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "cloud"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartment-id": "${compartment_ocid}",
+          "data-config": [],
+          "defined-tags": {},
+          "description": "WAF Top 10 Source IP",
+          "display-name": "WAF Top 10 Source IP",
+          "freeform-tags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaafbkxslcsa3af4vtygv3wxwhkfjvuumsslsf7ttsq4ndmukbgmqza",
+          "is-oob-saved-search": false,
+          "metadata-version": "2.0",
+          "nls": {},
+          "parameters-config": [],
+          "provider-id": "log-analytics",
+          "provider-name": "Logging Analytics",
+          "provider-version": "2.0",
+          "screen-image": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "ui-config": {
+            "queryString": "'Log Source' = 'OCI WAF Logs' | rename 'Host IP Address (Client)' as 'Source IP' | stats count by 'Source IP' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "ociwaf (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "ociwaf (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaafteeuqtjnoh4bps3ikjlvbu6fvvxkjad64mgnf72ilallt43t2na"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "ocid1.compartment.oc1..aaaaaaaaalxaughc2b7w7xhgtfgrbtmqixqlzjv4puavthypuwtre5r4dowa"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "summary_table"
+          },
+          "widget-template": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widget-v-m": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        }
+      ],
+      "screen-image": "todo: provide value[mandatory]",
+      "tiles": [
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF - Total Amount of Requests",
+          "drilldown-config": [],
+          "height": 4,
+          "nls": {},
+          "parameters-map": {},
+          "row": 4,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaatxhjuzjrnmgiudsmmpwem5oebsseuqbvc7pqwuhesiel7egzxbha",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 5
+        },
+        {
+          "column": 5,
+          "data-config": [],
+          "display-name": "WAF Access By Security Modules",
+          "drilldown-config": [],
+          "height": 4,
+          "nls": {},
+          "parameters-map": {},
+          "row": 4,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaa7kof742pmx6zm7cfel6if6qcigo3kohmnc76ldn2zwqus44zlebq",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 7
+        },
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF - Total Amount of Requests",
+          "drilldown-config": [],
+          "height": 3,
+          "nls": {},
+          "parameters-map": {},
+          "row": 8,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaael7oqi4px55c5p32cxgnir7g22bdddwblbtxds6gjzonkm6wcp5a",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "data-config": [],
+          "display-name": "WAF Backend Response Code",
+          "drilldown-config": [],
+          "height": 3,
+          "nls": {},
+          "parameters-map": {},
+          "row": 8,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaacamqqzqeixrbvksen6rqan5c3njfd2ago3da5vlabhrvnlxkfpvq",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF Response Code",
+          "drilldown-config": [],
+          "height": 3,
+          "nls": {},
+          "parameters-map": {},
+          "row": 11,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaa4cuvy5usmgrqaiumcw74wpdscphyrtl7ablxqbsnu7qep5oxubka",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "data-config": [],
+          "display-name": "WAF Top 10 URL",
+          "drilldown-config": [],
+          "height": 4,
+          "nls": {},
+          "parameters-map": {},
+          "row": 11,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaalruyys3tllpto5re7kv2eekti5dmjk4zzusj3grreshecum5kdfq",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF Top 10 Country Code",
+          "drilldown-config": [],
+          "height": 3,
+          "nls": {},
+          "parameters-map": {},
+          "row": 25,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaasfyyitbeosccay75drv2qvtoratkfkk6gjojptfhh2nfu4vcj6ra",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "data-config": [],
+          "display-name": "WAF Top 10 Country Code - count",
+          "drilldown-config": [],
+          "height": 3,
+          "nls": {},
+          "parameters-map": {},
+          "row": 25,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaa4kecmqmntagtuhxaoqnalfq3gn4rkkpemtw2wck5zvzu3ejxk4sq",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "data-config": [],
+          "display-name": "WAF Top 10 Source IP",
+          "drilldown-config": [],
+          "height": 5,
+          "nls": {},
+          "parameters-map": {},
+          "row": 15,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaafbkxslcsa3af4vtygv3wxwhkfjvuumsslsf7ttsq4ndmukbgmqza",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF Top 10 Source IP diagram",
+          "drilldown-config": [],
+          "height": 6,
+          "nls": {},
+          "parameters-map": {},
+          "row": 14,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaawgcnvuwrpu46wgvq22jkwt3avbz43l4ywzulbhyaoxrct6zcbqua",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF Response Code By WAF OCID & Enforcement Point",
+          "drilldown-config": [],
+          "height": 4,
+          "nls": {},
+          "parameters-map": {},
+          "row": 0,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaagird2wpx4wtvkijj6sxosahofod7ofsorojb7pgtsawa5npgdnhq",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 12
+        },
+        {
+          "column": 0,
+          "data-config": [],
+          "display-name": "WAF Request by Countries",
+          "drilldown-config": [],
+          "height": 5,
+          "nls": {},
+          "parameters-map": {},
+          "row": 20,
+          "saved-search-id": "ocid1.managementsavedsearch.oc1..aaaaaaaa55hsx4mqzg7n3oh7c5c2ereiz3sinix4rqjkz7zuoz7b24b2tazq",
+          "state": "DEFAULT",
+          "ui-config": {},
+          "width": 12
+        }
+      ],
+      "type": "normal",
+      "ui-config": {
+        "isFilteringEnabled": false,
+        "isRefreshEnabled": true,
+        "isTimeRangeEnabled": true
+      }
+    }
+  ]
+}

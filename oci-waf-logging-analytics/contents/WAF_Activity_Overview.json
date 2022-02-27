@@ -1,0 +1,1369 @@
+{
+  "dashboards": [
+    {
+      "compartmentId": "${compartment_ocid}",
+      "dashboardId": "ocid1.managementdashboard.oc1..aaaaaaaa5c4qabot6xg74haplpey2zqk5de3euaffcnvb2z727osxohpaiba",
+      "dataConfig": [],
+      "definedTags": {},
+      "description": "WAF Activity Overview",
+      "displayName": "WAF Activity Overview",
+      "freeformTags": {},
+      "isFavorite": false,
+      "isOobDashboard": false,
+      "isShowDescription": true,
+      "isShowInHome": false,
+      "metadataVersion": "2.0",
+      "nls": {},
+      "parametersConfig": [],
+      "providerId": "log-analytics",
+      "providerName": "Logging Analytics",
+      "providerVersion": "2.0",
+      "savedSearches": [
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF - total amount of requests - histogram",
+          "displayName": "WAF - Total Amount of Requests",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaael7oqi4px55c5p32cxgnir7g22bdddwblbtxds6gjzonkm6wcp5a",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename Path as Requests | timestats count as Requests",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              },
+              "showLogScale": false
+            },
+            "visualizationType": "records_histogram"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Top 10 Country Code - table format",
+          "displayName": "WAF Top 10 Country Code - count",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa4kecmqmntagtuhxaoqnalfq3gn4rkkpemtw2wck5zvzu3ejxk4sq",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename 'Client Host Country Code' as 'Country Code' | stats count by 'Country Code' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "summary_table"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Top 10 URL",
+          "displayName": "WAF Top 10 URL",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaalruyys3tllpto5re7kv2eekti5dmjk4zzusj3grreshecum5kdfq",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename Path as 'Request URL' | stats count by 'Request URL' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "summary_table"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF - total amount of requests",
+          "displayName": "WAF - Total Amount of Requests",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaatxhjuzjrnmgiudsmmpwem5oebsseuqbvc7pqwuhesiel7egzxbha",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename Path as Requests | stats count as Requests",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "tile"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Response Code",
+          "displayName": "WAF Response Code",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa4cuvy5usmgrqaiumcw74wpdscphyrtl7ablxqbsnu7qep5oxubka",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | timestats count by 'WAF Response Code'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              },
+              "showLogScale": false
+            },
+            "visualizationType": "records_histogram"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Access By Security Modules",
+          "displayName": "WAF Access By Security Modules",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa7kof742pmx6zm7cfel6if6qcigo3kohmnc76ldn2zwqus44zlebq",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf and 'WAF Security Module' like in ('request%', 'response%') | stats count by 'WAF Security Module'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "pie"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Top 10 Source IP Pie diagram",
+          "displayName": "WAF Top 10 Source IP diagram",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaawgcnvuwrpu46wgvq22jkwt3avbz43l4ywzulbhyaoxrct6zcbqua",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename Source as 'Source IP' | stats count by 'Source IP' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "pie"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Response Code By WAF OCID & Enforcement Point",
+          "displayName": "WAF Response Code By WAF OCID & Enforcement Point",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaagird2wpx4wtvkijj6sxosahofod7ofsorojb7pgtsawa5npgdnhq",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename Path as Requests, 'OCI Resource OCID' as 'WAF OCID', 'OCI Resource Name' as 'Enforcement Point' | stats count by 'WAF OCID', 'Enforcement Point', 'WAF Response Code'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l30min"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "treemap"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Backend Response Code",
+          "displayName": "WAF Backend Response Code",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaacamqqzqeixrbvksen6rqan5c3njfd2ago3da5vlabhrvnlxkfpvq",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | timestats count by 'Backend Status Code'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              },
+              "showLogScale": false
+            },
+            "visualizationType": "records_histogram"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Top 10 Country Code",
+          "displayName": "WAF Top 10 Country Code",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaasfyyitbeosccay75drv2qvtoratkfkk6gjojptfhh2nfu4vcj6ra",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename 'Client Host Country Code' as 'Country Code' | stats count by 'Country Code' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "cloud"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "WAF Top 10 Source IP",
+          "displayName": "WAF Top 10 Source IP",
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaafbkxslcsa3af4vtygv3wxwhkfjvuumsslsf7ttsq4ndmukbgmqza",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "2.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "queryString": "'Log Source' = com.oraclecloud.loadbalancer.waf | rename Source as 'Source IP' | stats count by 'Source IP' | top limit = 10 Count",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": false
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": [
+                  {
+                    "label": "lbwaf_log_analytics",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "includeSubCompartments": false
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": [
+                    {
+                      "label": "lbwaf_log_analytics",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "includeDependents": true,
+                    "scopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "numUnits": 7,
+              "timePeriod": "relative",
+              "units": "DAYS"
+            },
+            "visualizationOptions": {},
+            "visualizationType": "summary_table"
+          },
+          "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        }
+      ],
+      "screenImage": "todo: provide value[mandatory]",
+      "tiles": [
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF - Total Amount of Requests",
+          "drilldownConfig": [],
+          "height": 4,
+          "nls": {},
+          "parametersMap": {},
+          "row": 0,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaatxhjuzjrnmgiudsmmpwem5oebsseuqbvc7pqwuhesiel7egzxbha",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 5
+        },
+        {
+          "column": 5,
+          "dataConfig": [],
+          "displayName": "WAF Access By Security Modules",
+          "drilldownConfig": [],
+          "height": 4,
+          "nls": {},
+          "parametersMap": {},
+          "row": 0,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaa7kof742pmx6zm7cfel6if6qcigo3kohmnc76ldn2zwqus44zlebq",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 7
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF - Total Amount of Requests",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {},
+          "row": 4,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaael7oqi4px55c5p32cxgnir7g22bdddwblbtxds6gjzonkm6wcp5a",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "dataConfig": [],
+          "displayName": "WAF Backend Response Code",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {},
+          "row": 4,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaacamqqzqeixrbvksen6rqan5c3njfd2ago3da5vlabhrvnlxkfpvq",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF Response Code",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {},
+          "row": 7,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaa4cuvy5usmgrqaiumcw74wpdscphyrtl7ablxqbsnu7qep5oxubka",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "dataConfig": [],
+          "displayName": "WAF Top 10 URL",
+          "drilldownConfig": [],
+          "height": 6,
+          "nls": {},
+          "parametersMap": {},
+          "row": 7,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaalruyys3tllpto5re7kv2eekti5dmjk4zzusj3grreshecum5kdfq",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF Top 10 Country Code",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {},
+          "row": 10,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaasfyyitbeosccay75drv2qvtoratkfkk6gjojptfhh2nfu4vcj6ra",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF Top 10 Country Code - count",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {},
+          "row": 13,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaa4kecmqmntagtuhxaoqnalfq3gn4rkkpemtw2wck5zvzu3ejxk4sq",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF Top 10 Source IP",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {},
+          "row": 16,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaafbkxslcsa3af4vtygv3wxwhkfjvuumsslsf7ttsq4ndmukbgmqza",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "dataConfig": [],
+          "displayName": "WAF Top 10 Source IP diagram",
+          "drilldownConfig": [],
+          "height": 6,
+          "nls": {},
+          "parametersMap": {},
+          "row": 13,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaawgcnvuwrpu46wgvq22jkwt3avbz43l4ywzulbhyaoxrct6zcbqua",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "WAF Response Code By WAF OCID & Enforcement Point",
+          "drilldownConfig": [],
+          "height": 4,
+          "nls": {},
+          "parametersMap": {},
+          "row": 19,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaagird2wpx4wtvkijj6sxosahofod7ofsorojb7pgtsawa5npgdnhq",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 12
+        }
+      ],
+      "type": "normal",
+      "uiConfig": {
+        "isFilteringEnabled": false,
+        "isRefreshEnabled": true,
+        "isTimeRangeEnabled": true
+      }
+    }
+  ]
+}
