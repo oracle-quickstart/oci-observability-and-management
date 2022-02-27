@@ -1,0 +1,12 @@
+build.sh
+logan.zip
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+variables.tf
+waf-outputs.tf
+.terraform
+.gitignore
+.gitignore*
+.terraform*
+.*.swp
