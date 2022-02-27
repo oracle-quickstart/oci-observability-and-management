@@ -3,7 +3,7 @@
 
 # Onboard and create required policies
 module "logan-core" {
-  source       = "../modules/logan-core"
+  source       = "github.com/oracle-quickstart/oci-observability-and-management/modules/logan-core"
   tenancy_ocid = var.tenancy_ocid
   depends_on = [
     module.service_policies
@@ -25,7 +25,7 @@ module "logan-core" {
 #}
 
 module "service_policies" {
-  source            = "../modules/policies"
+  source            = "github.com/oracle-quickstart/oci-observability-and-management/modules/policies"
   compartment_ocid  = var.tenancy_ocid
   policy_statements = local.service_policy_statements
   providers = {
@@ -35,14 +35,14 @@ module "service_policies" {
 
 # Enable WAF and Log Collection from LB + WAF Logs
 module "regional_waf" {
-  source                   = "../modules/waf"
+  source                   = "github.com/oracle-quickstart/oci-observability-and-management/modules/waf"
   compartment_id           = var.compartment_ocid
   load_balancer_id         = var.waf_lb_ocid
 }
 
 # Create Log Group
 module "waf_la_log_group" {
-  source           = "../modules/logan-log-group"
+  source           = "github.com/oracle-quickstart/oci-observability-and-management/modules/logan-log-group"
   la_namespace     = module.logan-core.logan_namespace
   compartment_ocid = var.compartment_ocid
   log_analytics_log_group_name = var.waf_log_group_name
@@ -59,7 +59,7 @@ module "waf_logs_service_connector" {
 }
 
 module "install-dashbaords" {
-  source            = "../modules/dashboards"
+  source            = "github.com/oracle-quickstart/oci-observability-and-management/modules/dashboards"
   compartment_ocid  = var.compartment_ocid
   dashboard_files   = var.dashboard_files
   depends_on = [
