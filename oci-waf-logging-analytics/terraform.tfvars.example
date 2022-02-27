@@ -1,0 +1,13 @@
+tenancy_ocid="ocid1.tenancy.oc1..aaaaaaaanua5mvmgcova3ryrjeek2oywffq2boddcqdx6gh7hiakiegshqfq"
+#current_user_ocid="ocid1.user.oc1..aaaaaaaa3jvl46dot334ch26g5myhnlovrymcjmyswqynnetg43opbdqsina"
+onboard_logging_analytics=false
+#region="us-ashburn-1"
+region="ap-sydney-1"
+#fingerprint="f7:9c:eb:5c:28:f7:87:4a:14:8d:15:8d:6d:68:a7:76"
+#key_file="/Users/kvarun/.oci/oci_api_key.pem"
+#compartment_ocid="ocid1.tenancy.oc1..aaaaaaaanua5mvmgcova3ryrjeek2oywffq2boddcqdx6gh7hiakiegshqfq"
+compartment_ocid="ocid1.compartment.oc1..aaaaaaaaixi4imbq27qggp7yrhomhjcj7p3bqo4cdduaxqzgwoms3jy6szyq"
+log_group="ocid1.loganalyticsloggroup.oc1.ap-sydney-1.amaaaaaabulluiqars25eeeek4rqwliflq6fgiwfebyvha6nrovi4qzo4lma"
+#dashboard_files=["apm_home.json", "sample_db_2.json"]
+dashboard_files=["WAF_Activity_Overview.json"]
+waf_lb_ocid="ocid1.loadbalancer.oc1.ap-sydney-1.aaaaaaaafy5mspbmv4k4pomdohxpggkum5jj22fxaeghebq33zhk4g4chm3a"
