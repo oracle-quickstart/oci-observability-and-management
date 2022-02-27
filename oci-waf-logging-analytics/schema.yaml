@@ -1,0 +1,100 @@
+# Copyright (c) 2022 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+title: "OCI Web Application Firewall Monitoring with Logging Analytics"
+stackDescription: "This is a OCI stack for configuring Logging Analytics to monitoring OCI Web Application Firewall It creates all the necessary OCI resources * Optionally, onboards Logging Analytics Service * Creates required policies for logs collection, service connector"
+schemaVersion: 1.1.0
+version: "20190304"
+
+locale: "en"
+variableGroups:
+  - title: General Configuration
+    variables:
+    - tenancy_ocid
+    - compartment_ocid
+    - region
+    - current_user_ocid
+    - configure_waf_logs
+    - create_superadmin_policy
+    - logging_analytics_admin_group_name
+    visible: false
+
+  - title: Onboard Logging Analytics
+    variables:
+    - onboard_logging_analytics
+    visible: true
+
+  - title: Web Application Firewall monitoring inputs
+    variables:
+    - lb_compartment_ocid
+    - waf_lb_ocid
+    - waf_logs
+    - waf_log_group_name
+    - log_group
+    - dashboard_files
+
+variables:
+
+  logging_analytics_admin_group_name:
+    type: string
+    default: LoggingAnalytics-SuperAdmins
+    visible: false
+
+  onboard_logging_analytics:
+    type: boolean
+    visible: true 
+    default: false
+
+  tenancy_ocid: 
+    type: string
+    visible: false
+
+
+  region:
+    type: string
+    visible: false
+
+  current_user_ocid:
+    type: string
+    visible: false
+
+  configure_waf_logs:
+    title: Configure WAF monitoring with Logging Analytics
+    type: boolean
+    default: true
+    visible: false
+
+  create_superadmin_policy:
+    type: boolean
+    default: false
+    visible: false
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+
+  lb_compartment_ocid:
+    type: oci:identity:compartment:id
+    
+  waf_lb_ocid:
+    title: Existing LBaaS for enabling WAF
+    type: oci:loadbalancer:loadbalancer:id
+    required: true
+    dependsOn:
+      compartmentId: lb_compartment_ocid
+
+  waf_log_group_name:
+    description: logging log group name
+    type: string
+    default: waf_logs
+    visible: false
+
+  log_group:
+    description: Logging Analytics log group
+    type: string
+    pattern: ^ocid1\.([a-z0-9_-]{1,32})\.([a-z0-9_-]{1,15})\.([a-z0-9]{0,24})\.([a-z0-9]{60})$
+
+  dashboard_files:
+    type: array
+    default: [WAF_Activity_Overview.json]
+    required: true
+    visible: false
