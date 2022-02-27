@@ -1,8 +1,5 @@
 build.sh
-contents
 logan.zip
-oldschema.yaml
-schema.yaml
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
