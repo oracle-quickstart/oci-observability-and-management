@@ -1,8 +1,10 @@
 # oci-observability-and-management
 
-This repository has automation for various observability and management services on OCI.
+This repository has automation for various observability and management services on OCI. The examples folder has all the details.
 
-## OCI Logging Analytics      
+## OCI Logging Analytics 
+
+In this example we will get you started on the Oracle Cloud Infrastructure observability and management journey. This example quickly creates a audit logs dashboard with just one click. 
 
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/oci-observability-and-management/releases/download/3.0/oci-logging-analytics.zip) 
 
