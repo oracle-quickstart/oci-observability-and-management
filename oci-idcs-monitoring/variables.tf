@@ -34,6 +34,12 @@ variable "tracker-bucket" {
   default = "idcs-collector-bucket"
 }
 
+variable "subnet_ocid" {
+  default = "replace"
+}
+variable "create_network" {
+  default = true
+}
 variable "VCN-CIDR" {
   default = "10.0.0.0/16"
 }
@@ -55,6 +61,7 @@ variable "setup_policies" {
 }
 
 variable "dashboard_files" {
+  description = "Dashboard JSON files"
   type = set(string)
   default = ["IDCS_Audit_Analysis.json"]
   #default = ["WAF_Activity_Overview.json"]

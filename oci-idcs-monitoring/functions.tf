@@ -4,7 +4,7 @@
 resource "oci_functions_application" "IdcsAuditLogApp" {
   compartment_id = var.compartment_ocid
   display_name   = "IdcsAuditLogApp-${random_id.tag.hex}"
-  subnet_ids     = [oci_core_subnet.fnsubnet.id]
+  subnet_ids     = [var.create_network ? module.setup-network[0].fnsubnet_ocid : var.subnet_ocid]
   #defined_tags = { "${oci_identity_tag_namespace.IDCSAuditLogTagNamespace.name}.${oci_identity_tag.IDCSAuditLogTag.name}" = var.release }
 }
 
@@ -28,3 +28,20 @@ resource "oci_functions_function" "postauditlogs" {
   #defined_tags = { "${oci_identity_tag_namespace.IDCSAuditLogTagNamespace.name}.${oci_identity_tag.IDCSAuditLogTag.name}" = var.release }
 }
 
+resource "oci_logging_log" "log_on_fn_invoke" {
+  display_name = "log_on_fn_invoke"
+  log_group_id = oci_logging_log_group.log_group.id
+  log_type     = "SERVICE"
+
+  configuration {
+    source {
+      category    = "invoke"
+      resource    = oci_functions_application.IdcsAuditLogApp.id
+      service     = "functions"
+      source_type = "OCISERVICE"
+    }
+    compartment_id = var.compartment_ocid
+  }
+  is_enabled = true
+  #retention_duration = var.retention_duration
+}
