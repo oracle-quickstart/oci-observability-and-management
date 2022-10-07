@@ -1,0 +1,22 @@
+# Required for the OCI Provider
+tenancy_ocid="<tenancy_ocid>"
+compartment_ocid="<compartment_ocid>"
+user_ocid="<user_ocid>"
+fingerprint="<fingerprint>"
+private_key_path="<key_path>"
+log_analytics_group_id="<group_id>"
+ocir_user_name="<user_name>"
+ocir_user_password="<auth_token>"
+
+region="us-phoenix-1"
+
+idcs_url="<url>"
+idcs_clientid="client_id>"
+idcs_cred_vault_compartment="<compartment_ocid>"
+idcs_clientsecret="<secret>"
+
+log_analytics_entity_name="IDCS Server"
+# Change this only if you want to use a custom log source
+log_source="IDCS Audit API Logs"
+# Deployment name is used in resource names
+deployment_name="test"
