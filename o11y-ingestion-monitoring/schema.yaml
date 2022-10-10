@@ -1,0 +1,448 @@
+# Copyright (c) 2022, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+  title: "Management Agent Alarms in Oracle Cloud Infrastructure"
+  schemaVersion: 1.1.0
+  description: "Create alarms specific to Management Agent and Logging Analytics metrics.\nPrerequisite: Ensure users have the required IAM policies and permissions to create alarms."
+  version: "20200301"
+  locale: "en"
+
+  variableGroups:
+  - title: General Configuration
+    visible: false
+    variables:
+      - tenancy_ocid
+      - region
+      - compartment_ocid
+    
+  - title: Required Configuration
+    visible: true
+    variables:
+      - metric_compartment_id
+      - metric_compartment_id_in_subtree
+      - create_empty_topic
+      - destinations_topic_ids
+      - stackId
+      - policyInfo
+
+  - title: Management Agent Alarms Configuration
+    visible: true  
+    variables:
+      - agentAlarmsInfo
+      - customizeAgentAlarms
+      - availabilityAlarm
+      - availabilityAlarmInterval
+      - availabilityAlarmSeverity
+      - cpuAlarm
+      - cpuAlarmInterval
+      - cpuAlarmThreshold
+      - cpuAlarmSeverity
+      - diskAlarm
+      - diskAlarmInterval
+      - diskAlarmThreshold
+      - diskAlarmSeverity
+      - memoryAlarm
+      - memoryAlarmInterval
+      - memoryAlarmThreshold
+      - memoryAlarmSeverity
+
+  - title: Logging Analytics Alarms Configuration
+    visible: true  
+    variables:
+      - needLoggingAnalyticsMetrics
+      - loganAlarmsInfo
+      - customizeLoganAlarms
+      - loganDataSizeAlarm
+      - loganDataSizeAlarmInterval
+      - loganDataSizeAlarmThreshold
+      - loganDataSizeAlarmSeverity
+      - loganUploadFailureAlarm
+      - loganUploadFailureAlarmInterval
+      - loganUploadFailureAlarmThreshold
+      - loganUploadFailureAlarmSeverity
+
+  variables:
+    metric_compartment_id:
+      type: oci:identity:compartment:id
+      required: true
+      default: ${compartment_ocid}
+      title: Management Agent Compartment
+      description: Compartment where the management agents reside.
+
+    destinations_topic_ids:
+      type: string
+      required: true
+      dependsOn: create_empty_topic
+      visible: 
+        not:
+          - create_empty_topic
+      title: Notification topic OCID
+      pattern: ^ocid1.onstopic[.][A-Za-z0-9.]*
+      description: OCID of the destination topic where the notifications will be sent. For information about getting an existing topic or creating a new one, see <a target="_blank" href="https://docs.oracle.com/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm">Notifications Overview</a>.
+
+    create_empty_topic:
+      type: boolean
+      default: true
+      title: Create new topic
+      description: Creates a new destination topic without any subscriptions. Uncheck if using an existing topic ID.
+
+    metric_compartment_id_in_subtree:
+      type: boolean
+      required: true
+      visible: 
+        and:
+          - or:
+            - eq:
+              - metric_compartment_id
+              - tenancy_ocid
+      default: true
+      title: Enable nested management agent compartments
+      description: Applicable only for root compartment. It includes child compartments.
+
+    region:
+      visible: false
+
+    tenancy_ocid:
+      visible: false
+
+    compartment_ocid:
+      visible: false
+
+    stackId:
+      type: string
+      required: true
+      title: Stack identifier
+      description: A name that can help with the resource identification.
+
+    policyInfo:
+      type: text
+      required: true
+      title: Prerequisite - Review Required Policies
+      description: Before creating alarms, ensure the above policies are set up in the specific compartment. For a boarder scope, use in tenancy instead of the specific compartment.
+      multiline: true
+      default: "allow group AlarmUsers to manage alarms in compartment <compartment_name>\nallow group AlarmUsers to read metrics in compartment <compartment_name>\nallow group AlarmUsers to use ons-topics in compartment <compartment_name>"
+
+    agentAlarmsInfo:
+      type: text
+      required: true
+      multiline: true
+      title: "The following management agent alarms will be created:"
+      default: "1. Critical alarm when management agent is not communicating within 5 minutes interval.\n2. Critical alarm when CPU usage is greater than 70% within 5 minutes interval.\n3. Critical alarm when disk space usage is greater than 1GB. within 5 minutes interval.\n4. Critical alarm when memory usage greater than 600MB. within 5 minutes interval."
+ 
+    customizeAgentAlarms:
+      type: boolean
+      required: false
+      default: false
+      title: Customize management agent alarms
+      description: Modify alarm settings (interval, threshold or severity) of any of the above alarms.
+
+    cpuAlarm:
+      type: boolean
+      required: false
+      dependsOn: customizeAgentAlarms
+      visible: customizeAgentAlarms
+      default: true
+      title: CPU alarm
+      description: Set up an alarm when management agent's CPU percentage is greater than the threshold.
+
+    cpuAlarmInterval:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - cpuAlarm
+      default: 5
+      minimum: 5
+      title: CPU alarm interval in minutes
+
+    cpuAlarmThreshold:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - cpuAlarm
+      default: 70
+      title: CPU alarm threshold in percentage
+
+    cpuAlarmSeverity:
+      type: enum
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - cpuAlarm
+      title: CPU alarm severity
+      default: CRITICAL
+      enum:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO
+
+    diskAlarm:
+      type: boolean
+      required: false
+      dependsOn: customizeAgentAlarms
+      visible: customizeAgentAlarms
+      default: true
+      title: Disk alarm
+      description: Set up an alarm when the amount of disk space used under "agent_inst" is greater than the threshold.
+
+    diskAlarmInterval:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - diskAlarm
+      default: 5
+      minimum: 5
+      title: Disk alarm interval in minutes
+
+    diskAlarmThreshold:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - diskAlarm
+      default: 1000
+      title: Disk alarm threshold in megabytes
+
+    diskAlarmSeverity:
+      type: enum
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - diskAlarm
+      title: Disk alarm severity
+      default: CRITICAL
+      enum:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO
+
+    memoryAlarm:
+      type: boolean
+      required: false
+      dependsOn: customizeAgentAlarms
+      visible: customizeAgentAlarms
+      default: true
+      title: Memory alarm
+      description: Set up an alarm when the amount of memory consumed by the management agent's JVM is greater than the threshold.
+
+    memoryAlarmInterval:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - memoryAlarm
+      default: 5
+      minimum: 5
+      title: Memory alarm interval in minutes
+
+    memoryAlarmThreshold:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - memoryAlarm
+      default: 600
+      title: Memory alarm threshold in megabytes
+
+    memoryAlarmSeverity:
+      type: enum
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - memoryAlarm
+      title: Memory alarm severity
+      default: CRITICAL
+      enum:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO
+
+    availabilityAlarm:
+      type: boolean
+      required: false
+      dependsOn: customizeAgentAlarms
+      visible: customizeAgentAlarms
+      default: true
+      title: Availability alarm
+      description: Set up an alarm when the management agent is not communicating to Monitoring service.
+
+    availabilityAlarmInterval:
+      type: number
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - availabilityAlarm
+      default: 5
+      title: Availability alarm interval in minutes
+
+    availabilityAlarmSeverity:
+      type: enum
+      required: true
+      dependsOn: customizeAgentAlarms
+      visible: 
+        and:
+          - customizeAgentAlarms
+          - availabilityAlarm
+      title: Availability alarm severity
+      default: CRITICAL
+      enum:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO
+
+    needLoggingAnalyticsMetrics:
+      type: boolean
+      required: true
+      default: true
+      title: Add logging analytics metrics
+      description: Set up alarms for metrics from Logging Analytics service.
+
+    loganAlarmsInfo:
+      type: text
+      required: true
+      dependsOn: needLoggingAnalyticsMetrics
+      visible: needLoggingAnalyticsMetrics
+      title: "The following logging analytics alarms will be created:"
+      default: "1. Critical alarm when there is no log collection upload within 15 minutes interval.\n2. Critical alarm when log Collection upload failure occurs within 5 minutes interval."
+
+    customizeLoganAlarms:
+      type: boolean
+      required: false
+      default: false
+      dependsOn: needLoggingAnalyticsMetrics
+      visible: needLoggingAnalyticsMetrics
+      title: Customize logging analytics alarms
+      description: Modify alarm settings (interval, threshold or severity) of any of the above alarms.
+
+    loganDataSizeAlarm:
+      type: boolean
+      dependsOn: needLoggingAnalyticsMetrics
+      visible: 
+        and: 
+          - needLoggingAnalyticsMetrics
+          - customizeLoganAlarms
+      required: false
+      default: true
+      title: Logging analytics upload data size alarm
+      description: Set up an alarm when the log collection upload data size is greater than the threshold.
+
+    loganDataSizeAlarmInterval:
+      type: number
+      required: true
+      dependsOn: customizeLoganAlarms
+      visible: 
+        and:
+          - customizeLoganAlarms
+          - needLoggingAnalyticsMetrics
+          - loganDataSizeAlarm
+      default: 15
+      minimum: 5
+      title: Upload data size alarm interval in minutes
+
+    loganDataSizeAlarmThreshold:
+      type: number
+      required: true
+      dependsOn: customizeLoganAlarms
+      visible: 
+        and:
+          - customizeLoganAlarms
+          - needLoggingAnalyticsMetrics
+          - loganDataSizeAlarm
+      default: 0
+      title: Upload data size alarm threshold in bytes
+
+    loganDataSizeAlarmSeverity:
+      type: enum
+      required: true
+      dependsOn: customizeLoganAlarms
+      visible: 
+        and:
+          - customizeLoganAlarms
+          - needLoggingAnalyticsMetrics
+          - loganDataSizeAlarm
+      title: Upload data size alarm severity
+      default: CRITICAL
+      enum:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO 
+    
+    loganUploadFailureAlarm:
+      type: boolean
+      required: false
+      default: true
+      visible: 
+        and: 
+          - needLoggingAnalyticsMetrics
+          - customizeLoganAlarms
+      title: Logging analytics upload failure alarm
+      description: Set up an alarm when there are log collection upload failures greater than the threshold.
+
+    loganUploadFailureAlarmInterval:
+      type: number
+      required: true
+      dependsOn: customizeLoganAlarms
+      visible: 
+        and:
+          - customizeLoganAlarms
+          - needLoggingAnalyticsMetrics
+          - loganUploadFailureAlarm
+      default: 5
+      minimum: 5
+      title: Upload failure alarm interval in minutes
+
+    loganUploadFailureAlarmThreshold:
+      type: number
+      required: true
+      dependsOn: customizeLoganAlarms
+      visible: 
+        and:
+          - customizeLoganAlarms
+          - needLoggingAnalyticsMetrics
+          - loganUploadFailureAlarm
+      default: 0
+      title: Upload failure alarm threshold in number
+
+    loganUploadFailureAlarmSeverity:
+      type: enum
+      required: true
+      dependsOn: customizeLoganAlarms
+      visible: 
+        and:
+          - customizeLoganAlarms
+          - needLoggingAnalyticsMetrics
+          - loganUploadFailureAlarm
+      title: Upload failure alarm severity
+      default: CRITICAL
+      enum:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO 
