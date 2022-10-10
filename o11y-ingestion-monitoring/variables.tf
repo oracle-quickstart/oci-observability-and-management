@@ -6,7 +6,7 @@ variable "tenancy_ocid" {}
 variable "region" {}
 variable "metric_compartment_id" {}
 variable "metric_compartment_id_in_subtree" {
-  default = false
+  default = true
 }
 variable "destinations_topic_ids" {
   default = ""
@@ -20,7 +20,7 @@ variable "customizeLoganAlarms" {
   default = false
 }
 variable "needLoggingAnalyticsMetrics" {
-  default = false
+  default = true
 }
 variable "cpuAlarm" {
   default = true

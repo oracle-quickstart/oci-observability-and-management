@@ -47,7 +47,7 @@ resource "oci_monitoring_alarm" "this_cpuAlarm" {
 
   #Optional
   body = "Percentage Cpu usage of the agent has exceeded the threshold value"
-  metric_compartment_id_in_subtree = var.metric_compartment_id_in_subtree
+  metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
 
 resource "oci_monitoring_alarm" "this_diskAlarm" {
@@ -65,7 +65,7 @@ resource "oci_monitoring_alarm" "this_diskAlarm" {
 
   #Optional
   body = "Amount of disk space used has exceeded the threshold value"
-  metric_compartment_id_in_subtree = var.metric_compartment_id_in_subtree
+  metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
 
 resource "oci_monitoring_alarm" "this_memoryAlarm" {
@@ -83,7 +83,7 @@ resource "oci_monitoring_alarm" "this_memoryAlarm" {
 
   #Optional
   body = "Amount of memory consumed by the agent's JVM has exceeded the threshold value"
-  metric_compartment_id_in_subtree = var.metric_compartment_id_in_subtree
+  metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
 
 resource "oci_monitoring_alarm" "this_availabilityAlarm" {
@@ -101,7 +101,7 @@ resource "oci_monitoring_alarm" "this_availabilityAlarm" {
 
   #Optional
   body = "Agent cannot communicate with the Monitoring Service"
-  metric_compartment_id_in_subtree = var.metric_compartment_id_in_subtree
+  metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
 
 resource "oci_monitoring_alarm" "this_loganUploadDataSizeAlarm" {
@@ -119,7 +119,7 @@ resource "oci_monitoring_alarm" "this_loganUploadDataSizeAlarm" {
 
   #Optional
   body = "Logging Analyics - Log Collection Upload Data Size has exceeded the limit"
-  metric_compartment_id_in_subtree = var.metric_compartment_id_in_subtree
+  metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
 
 resource "oci_monitoring_alarm" "this_loganUploadFailureAlarm" {
@@ -137,5 +137,5 @@ resource "oci_monitoring_alarm" "this_loganUploadFailureAlarm" {
 
   #Optional
   body = "Logging Analytics - Log Collection Upload Failures seen"
-  metric_compartment_id_in_subtree = var.metric_compartment_id_in_subtree
+  metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
