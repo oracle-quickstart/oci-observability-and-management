@@ -1,0 +1,927 @@
+{
+    "dashboards": [
+        {
+            "dashboardId": "ocid1.managementdashboard.oc1..aaaaaaaaazjn7qclenk2zh3byaby3uru3vpm5k6o5zikqfidmkvckyuuvooa",
+            "providerId": "log-analytics",
+            "providerName": "Logging Analytics",
+            "providerVersion": "2.0",
+            "tiles": [
+                {
+                    "displayName": "Successful admin action by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaah63dhccfbklsp43usyzwosmfp5c5xl63xyobfgo3pb7j3kykhfvq",
+                    "row": 0,
+                    "column": 0,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {
+                        "searchSettings": {
+                            "showAllRegions": []
+                        }
+                    },
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Successful admin action by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaa6rgyaviwjab2nez2ezemlbupw4q6bxsubi7icd7ht65udjocos5a",
+                    "row": 3,
+                    "column": 0,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Successful admin action by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaaics65mmxzi6lbaln7igib3lnr3zrxn37igryy2xys675g26ghxda",
+                    "row": 6,
+                    "column": 0,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Successful grant of admin roles",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaafu54rbhq2hupodk6iv6jfrqpjocltcdhkikky746g4ykvmgfcnra",
+                    "row": 9,
+                    "column": 0,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Failed admin action by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaannhem4r4ov2uf3ngaefvajd2ohs7lzpuuvpot7bcgarbc5u24qqa",
+                    "row": 0,
+                    "column": 6,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {
+                        "searchSettings": {
+                            "showAllRegions": []
+                        }
+                    },
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Failed admin action by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaaoe2epe3v7j3svtfcvg4caojfd44ntempxk6tsjwdm5bp4vi6oyaa",
+                    "row": 3,
+                    "column": 6,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Failed admin action by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaagg3qyw4wfwyk2dqbzjw3xv5ytm7icoyjbhab4ths4jiwu6rovwxa",
+                    "row": 6,
+                    "column": 6,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Failed grant admin roles",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaaanw6enr2o6tbjciyanpfif3kuxjokpsmgof3z6b6fgvogt4tyivq",
+                    "row": 9,
+                    "column": 6,
+                    "height": 3,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                }
+            ],
+            "displayName": "IDCS Admin Governance",
+            "description": "IDCS Admin Governance",
+            "compartmentId": "${compartment_ocid}",
+            "isOobDashboard": false,
+            "isShowInHome": false,
+            "metadataVersion": "2.0",
+            "isShowDescription": true,
+            "screenImage": "todo: provide value[mandatory]",
+            "nls": {},
+            "uiConfig": {
+                "isFilteringEnabled": false,
+                "isTimeRangeEnabled": true,
+                "isRefreshEnabled": true
+            },
+            "dataConfig": [],
+            "type": "normal",
+            "isFavorite": false,
+            "savedSearches": [
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaannhem4r4ov2uf3ngaefvajd2ohs7lzpuuvpot7bcgarbc5u24qqa",
+                    "displayName": "Failed admin action by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_failure_by_user_link",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l7day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "link",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*failure' | link msecactorname, 'Event ID' | classify topcount = 300 msecactorname, 'Event ID', Count",
+                        "logGroupCompartmentId": "${compartment_ocid}",
+                        "classifySettings": {},
+                        "searchSettings": {
+                            "showAllRegions": []
+                        }
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaaoe2epe3v7j3svtfcvg4caojfd44ntempxk6tsjwdm5bp4vi6oyaa",
+                    "displayName": "Failed admin action by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_failure_by_user_TreeMap",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l7day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "treemap",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*failure' | stats count as 'events generated by users' by msecactorname, 'Event ID'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa6rgyaviwjab2nez2ezemlbupw4q6bxsubi7icd7ht65udjocos5a",
+                    "displayName": "Successful admin action by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_success_by_user_TreeMap",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "treemap",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*success' | stats count as 'events generated by users' by msecactorname, 'Event ID'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaagg3qyw4wfwyk2dqbzjw3xv5ytm7icoyjbhab4ths4jiwu6rovwxa",
+                    "displayName": "Failed admin action by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_failure_by_user_TreeMap",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l7day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "records_histogram",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*failure' | timestats count by msecactorname",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaafu54rbhq2hupodk6iv6jfrqpjocltcdhkikky746g4ykvmgfcnra",
+                    "displayName": "Successful grant of admin roles",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_role_grant_success",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "table",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*role*success' | rename msecactorname as 'grant by' | rename 'Event ID' as action | rename msecdestrsrcname as 'grant to' | rename msecdestprog as 'granted application' | rename msecrsrcname as role | fields -Entity, -'Entity Type', -'Host Name (Server)', -'Problem Priority', -Label, -'Log Source', 'grant by', action, 'grant to', 'granted application', role",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaah63dhccfbklsp43usyzwosmfp5c5xl63xyobfgo3pb7j3kykhfvq",
+                    "displayName": "Successful admin action by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_success_by_user_link",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "link",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*success' | link msecactorname, 'Event ID' | classify topcount = 300 msecactorname, 'Event ID', Count",
+                        "logGroupCompartmentId": "${compartment_ocid}",
+                        "classifySettings": {},
+                        "searchSettings": {
+                            "showAllRegions": []
+                        }
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaaanw6enr2o6tbjciyanpfif3kuxjokpsmgof3z6b6fgvogt4tyivq",
+                    "displayName": "Failed grant admin roles",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_role_grant_failure",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l7day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "table",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*role*failure' | rename msecactorname as 'grant by' | rename 'Event ID' as action | rename msecdestrsrcname as 'grant to' | rename msecdestprog as 'granted application' | rename msecrsrcname as role | fields -Entity, -'Entity Type', -'Host Name (Server)', -'Problem Priority', -Label, -'Log Source', 'grant by', action, 'grant to', 'granted application', role",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaaics65mmxzi6lbaln7igib3lnr3zrxn37igryy2xys675g26ghxda",
+                    "displayName": "Successful admin action by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_admin_success_by_user_Histo",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "records_histogram",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user and 'Event ID' like 'admin*success' | timestats count by msecactorname",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                }
+            ],
+            "freeformTags": {},
+            "definedTags": {}
+        },
+        {
+            "dashboardId": "ocid1.managementdashboard.oc1..aaaaaaaac74retd3qatasvz4u6scedad6kar3t3smpm4ljkquxkr6iiuamtq",
+            "providerId": "log-analytics",
+            "providerName": "Logging Analytics",
+            "providerVersion": "2.0",
+            "tiles": [
+                {
+                    "displayName": "a total of",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaaqavfxpvp5x5jatcxsxep5o5uutk7jdgrupzkdwp7i2666sa2chia",
+                    "row": 0,
+                    "column": 0,
+                    "height": 2,
+                    "width": 2,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Application events",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaawjkz4amqjn5qbci7uhwmkbu26sfk3awavpplpuym5tdlcbfxbksa",
+                    "row": 0,
+                    "column": 2,
+                    "height": 2,
+                    "width": 4,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Events by application by type",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaarcxblixye6lwtc35qpykiz5dbtdpum2i2fpnlv2i6v2jnn5jmhea",
+                    "row": 2,
+                    "column": 0,
+                    "height": 4,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Repartition by application",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaahz2utf2bds3ddlmexvtt5j3xajkny6ypvpeov2urgp4nnv6w2l2a",
+                    "row": 6,
+                    "column": 0,
+                    "height": 3,
+                    "width": 3,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Repartition by event type",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaazi25dti7io46nocwbx23vxb2s3zo3bdcihz2qd33na3jgvmqzj4q",
+                    "row": 6,
+                    "column": 3,
+                    "height": 3,
+                    "width": 3,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "a total of",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaayj37nqu55azlvla3wokyvuxz2zo2uvhobglpvz5byz4hrozacila",
+                    "row": 0,
+                    "column": 6,
+                    "height": 2,
+                    "width": 2,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "User events",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaafuhbzb4wmlmvvoxv5v2s2yu7fkqvfxy2bmv6ivqyblv2ozvxlrfq",
+                    "row": 0,
+                    "column": 8,
+                    "height": 2,
+                    "width": 4,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Events by user by type",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaardnwmpjwpqg2h4dnk57t3p2fzxfjfnp3aezoe3cagg72oceiwjeq",
+                    "row": 2,
+                    "column": 6,
+                    "height": 4,
+                    "width": 6,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Repartition by user",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaa3hcs3kvbiucfyjebvakwx42acnreibt5xymwmsakwlvlknnufama",
+                    "row": 6,
+                    "column": 6,
+                    "height": 3,
+                    "width": 3,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                },
+                {
+                    "displayName": "Repartition by event type",
+                    "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaagysp2xlyweiarsl3wbu6vh3zg3iioynwrypqtqviw3lnv2mdcdja",
+                    "row": 6,
+                    "column": 9,
+                    "height": 3,
+                    "width": 3,
+                    "nls": {},
+                    "uiConfig": {},
+                    "dataConfig": [],
+                    "state": "DEFAULT",
+                    "drilldownConfig": [
+                        {}
+                    ]
+                }
+            ],
+            "displayName": "IDCS Audit Logs",
+            "description": "IDCS Audit Logs",
+            "compartmentId": "${compartment_ocid}",
+            "isOobDashboard": false,
+            "isShowInHome": false,
+            "metadataVersion": "2.0",
+            "isShowDescription": true,
+            "screenImage": "todo: provide value[mandatory]",
+            "nls": {},
+            "uiConfig": {
+                "isFilteringEnabled": false,
+                "isTimeRangeEnabled": true,
+                "isRefreshEnabled": true
+            },
+            "dataConfig": [],
+            "type": "normal",
+            "isFavorite": false,
+            "savedSearches": [
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaarcxblixye6lwtc35qpykiz5dbtdpum2i2fpnlv2i6v2jnn5jmhea",
+                    "displayName": "Events by application by type",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_by_application_by_event_type",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "treemap",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = app | stats count as 'events generated by users' by createdby, 'Event ID'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaayj37nqu55azlvla3wokyvuxz2zo2uvhobglpvz5byz4hrozacila",
+                    "displayName": "a total of",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_users",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "tile",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user | stats count as 'events generated by users'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaaqavfxpvp5x5jatcxsxep5o5uutk7jdgrupzkdwp7i2666sa2chia",
+                    "displayName": "a total of",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_applications",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "tile",
+                        "visualizationOptions": {},
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = app | stats count as 'events generated by applications'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaazi25dti7io46nocwbx23vxb2s3zo3bdcihz2qd33na3jgvmqzj4q",
+                    "displayName": "Repartition by event type",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_applications_by_Event",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "numUnits": 14,
+                            "units": "MONTHS",
+                            "timePeriod": "relative"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "pie",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = app | stats count as 'events generated by applications' by 'Event ID'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaahz2utf2bds3ddlmexvtt5j3xajkny6ypvpeov2urgp4nnv6w2l2a",
+                    "displayName": "Repartition by application",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_applications_by Application Name",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "numUnits": 14,
+                            "units": "MONTHS",
+                            "timePeriod": "relative"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "pie",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = app | stats count as 'events generated by applications' by msecactordisplayname",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaafuhbzb4wmlmvvoxv5v2s2yu7fkqvfxy2bmv6ivqyblv2ozvxlrfq",
+                    "displayName": "User events",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_users_histo",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "table_histogram",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user | timestats count as 'events generated by users'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaardnwmpjwpqg2h4dnk57t3p2fzxfjfnp3aezoe3cagg72oceiwjeq",
+                    "displayName": "Events by user by type",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_users_histo",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "treemap",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user | stats count as 'events generated by users' by msecactorname, 'Event ID'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaagysp2xlyweiarsl3wbu6vh3zg3iioynwrypqtqviw3lnv2mdcdja",
+                    "displayName": "Repartition by event type",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_users_by_user",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "pie",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user | stats count as 'events generated by users' by 'Event ID'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaa3hcs3kvbiucfyjebvakwx42acnreibt5xymwmsakwlvlknnufama",
+                    "displayName": "Repartition by user",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_users_by_user",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "pie",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = user | stats count as 'events generated by users' by msecactordisplayname",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                },
+                {
+                    "id": "ocid1.managementsavedsearch.oc1..aaaaaaaawjkz4amqjn5qbci7uhwmkbu26sfk3awavpplpuym5tdlcbfxbksa",
+                    "displayName": "Application events",
+                    "providerId": "log-analytics",
+                    "providerVersion": "2.0",
+                    "providerName": "Logging Analytics",
+                    "compartmentId": "${compartment_ocid}",
+                    "isOobSavedSearch": false,
+                    "description": "events_on_applications_histo",
+                    "nls": {},
+                    "type": "WIDGET_SHOW_IN_DASHBOARD",
+                    "uiConfig": {
+                        "timeSelection": {
+                            "timePeriod": "l14day"
+                        },
+                        "showTitle": true,
+                        "visualizationType": "table_histogram",
+                        "visualizationOptions": {
+                            "showLogScale": false,
+                            "showMsgBody": false
+                        },
+                        "queryString": "'Log Source' = 'IDCS Audit API Logs' and createdbytype = app | timestats count as 'events generated by applications'",
+                        "logGroupCompartmentId": "${compartment_ocid}"
+                    },
+                    "dataConfig": [],
+                    "screenImage": " ",
+                    "metadataVersion": "2.0",
+                    "widgetTemplate": "jet-modules/dashboards/widgets/lxSavedSearchWidget.html",
+                    "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget",
+                    "freeformTags": {},
+                    "definedTags": {}
+                }
+            ],
+            "freeformTags": {},
+            "definedTags": {}
+        }
+    ],
+    "freeformTags": {},
+    "definedTags": {}
+}
