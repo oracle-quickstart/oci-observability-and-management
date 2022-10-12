@@ -1,0 +1,1446 @@
+{
+  "dashboards": [
+    {
+      "dashboardId": "ocid1.managementdashboard.oc1..aaaaaaaaivo6c23oojibuqjqkan3vfpgcdtclpx3vcirqrberfqra3fuh2xq",
+      "compartmentId": "${compartment_ocid}",
+      "dataConfig": [],
+      "definedTags": {},
+      "description": "",
+      "displayName": "EBS Functional Overview",
+      "drilldownConfig": [],
+      "freeformTags": {},
+      "isFavorite": false,
+      "isOobDashboard": false,
+      "isShowDescription": true,
+      "isShowInHome": false,
+      "metadataVersion": "2.0",
+      "nls": {},
+      "parametersConfig": [
+        {
+          "localStorageKey": "log-analytics-loggroup-filter",
+          "name": "log-analytics-loggroup-filter",
+          "parametersMap": {
+            "isStoreInLocalStorage": true
+          },
+          "savedSearchId": "OOBSS-management-dashboard-filter-4a",
+          "state": "DEFAULT",
+          "uiConfig": {
+            "defaultWidth": 3,
+            "filterName": "log-analytics-loggroup-filter",
+            "internalKey": "OOBSS-management-dashboard-filter-4a",
+            "minWidth": 3,
+            "vizFilterType": "lxLogGroupDashFilterType"
+          }
+        },
+        {
+          "localStorageKey": "log-analytics-entity-filter",
+          "name": "log-analytics-entity-filter",
+          "parametersMap": {
+            "isStoreInLocalStorage": true
+          },
+          "savedSearchId": "OOBSS-management-dashboard-filter-2a",
+          "state": "DEFAULT",
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "Log Set",
+          "height": 1,
+          "localStorageKey": "log-analytics-logset-filter",
+          "name": "log-analytics-logset-filter",
+          "nls": {},
+          "parametersMap": {
+            "isStoreInLocalStorage": true
+          },
+          "row": 0,
+          "savedSearchId": "OOBSS-management-dashboard-filter-3a",
+          "state": "DEFAULT",
+          "uiConfig": {
+            "defaultWidth": 6,
+            "filterName": "log-analytics-logset-filter",
+            "hidden": "$(window.logSetNotEnabled)",
+            "internalKey": "OOBSS-management-dashboard-filter-3a",
+            "minWidth": 6,
+            "vizFilterType": "lxLogSetDashFilterType"
+          },
+          "width": 0
+        },
+        {
+          "displayName": "$(bundle.globalSavedSearch.TIME)",
+          "name": "time",
+          "src": "$(context.time)"
+        }
+      ],
+      "providerId": "log-analytics",
+      "providerName": "Logging Analytics",
+      "providerVersion": "3.0.0",
+      "savedSearches": [
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "Ebusiness Suite Functional Issues",
+          "displayName": "EBS Functional cluster",
+          "drilldownConfig": [],
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaav2qg7p6a4h2ntknijpaxh5cam5uu6gns54n5oignu45rqnkgoh3q",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-4a"
+              ],
+              "displayName": "Log Group Compartment",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-log-group-compartment",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-2a"
+              ],
+              "displayName": "Entity",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-entity",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-3a"
+              ],
+              "displayName": "Log Set",
+              "editUi": {
+                "inputType": "none"
+              },
+              "hidden": "$(window.logSetNotEnabled)",
+              "name": "log-analytics-log-set",
+              "required": true
+            }
+          ],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "3.0.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "enableWidgetInApp": true,
+            "internalKey": "ocid1.managementsavedsearch.oc1..aaaaaaaav2qg7p6a4h2ntknijpaxh5cam5uu6gns54n5oignu45rqnkgoh3q",
+            "queryString": "'Log Source' like 'EBS Sensor*' | eval 'File SR' = url('https://support.oracle.com/epmos/faces/SrCreate', SR) | fields -'Log Source' | cluster",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "endTimeUtc": "2022-05-25T11:30:59.211Z",
+              "startTimeUtc": "2022-05-25T11:30:00.000Z",
+              "timePeriod": "cust"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "LINK_SEARCH_SETTINGS": {
+                  "chartHeightVal": 200,
+                  "chartOptions": [
+                    "bar"
+                  ],
+                  "chartType": "bar",
+                  "chartWidthVal": 60,
+                  "columnAliases": {},
+                  "dashboardOptions": {
+                    "showAnalyzeTab": [],
+                    "showChartsTab": [],
+                    "showSummary": [
+                      "on"
+                    ],
+                    "showTable": [
+                      "on"
+                    ],
+                    "showTabs": []
+                  },
+                  "groupAliasP": "Issues",
+                  "groupAliasS": "Issue",
+                  "hiddenCharts": {
+                    "groupColumn": true
+                  },
+                  "hiddenClassifyCharts": {},
+                  "hiddenColumns": {
+                    "eventstats8_func1_sum_g_count": true,
+                    "eventstats8_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "g_duration": true,
+                    "g_endepoch": true,
+                    "g_startepoch": true,
+                    "query_end_time": true,
+                    "query_start_time": true,
+                    "trend_interval": true,
+                    "trend_interval_unit": true
+                  },
+                  "highlightColumnStatus": {
+                    "highlightedGroup1": {
+                      "on": true,
+                      "title": false
+                    }
+                  },
+                  "linkSummaryInput": "card=<field:Total Issues>\ncard=<field:Product Areas>",
+                  "logAliasP": "EBS Sensor Records",
+                  "mergeHighlightColumns": [
+                    "off"
+                  ],
+                  "showAllRegions": [],
+                  "showCombinedCharts": [
+                    "off"
+                  ],
+                  "showNonUnitRawData": [
+                    "off"
+                  ],
+                  "showStack": [
+                    "off"
+                  ],
+                  "showToolTips": [
+                    "on"
+                  ],
+                  "showUnitRawData": [],
+                  "smartGroup": [
+                    "off"
+                  ],
+                  "styleDefaults": {
+                    "lineType": "curved",
+                    "markerDisplayed": "on"
+                  },
+                  "tableColumns": [
+                    "High Priority",
+                    "Issue",
+                    "Description",
+                    "Number of Issues",
+                    "Business Flow",
+                    "Business Impact",
+                    "Product to raise SR if help needed",
+                    "Prod Area",
+                    "File SR",
+                    "Total Issues",
+                    "Product Areas"
+                  ]
+                }
+              }
+            },
+            "visualizationType": "cluster",
+            "vizType": "lxSavedSearchWidgetType"
+          },
+          "widgetTemplate": "visualizations/chartWidgetTemplate.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "Ebusiness Suite Functional Issues",
+          "displayName": "SD: EBS Functional Issues",
+          "drilldownConfig": [],
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaafk7qkygl45iqbizrhl4jpchcq2zjkrx5nxvmhdqx5rr7trkpukjq",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-4a"
+              ],
+              "displayName": "Log Group Compartment",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-log-group-compartment",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-2a"
+              ],
+              "displayName": "Entity",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-entity",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-3a"
+              ],
+              "displayName": "Log Set",
+              "editUi": {
+                "inputType": "none"
+              },
+              "hidden": "$(window.logSetNotEnabled)",
+              "name": "log-analytics-log-set",
+              "required": true
+            }
+          ],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "3.0.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "enableWidgetInApp": true,
+            "internalKey": "ocid1.managementsavedsearch.oc1..aaaaaaaafk7qkygl45iqbizrhl4jpchcq2zjkrx5nxvmhdqx5rr7trkpukjq",
+            "queryString": "'Log Source' like 'EBS Sensor*' | link 'Log Source' | rename Count as 'Number of Issues' | stats latest(sensor) as Sensor | lookup table = 'EBS Functional Sensors' select 'Issue Summary', 'Issue Description' as Description, 'Solution KM Note' as N1, 'Business Flow', 'Business Impact', 'Product to raise SR if help needed', 'Prod Area', 'Issue Severity' using Sensor = 'Metric Name' | eval Issue = url('https://support.oracle.com/knowledge/Oracle%20E-Business%20Suite/' || replace(N1, '.', _) || '.html', 'Issue Summary') | eval 'File SR' = url('https://support.oracle.com/epmos/faces/SrCreate', SR) | highlightgroups color = #FF5733 [ * | where 'Issue Severity' = '4' ] as 'High Priority' | eventstats sum('Number of Issues') as 'Total Issues', distinctcount('Prod Area') as 'Product Areas' | fields -N1, -'Issue Severity', -Sensor, -'Issue Summary'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": []
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "GEOMAP_SETTINGS": {
+                  "basemap": "bi_world_map_light",
+                  "clusterColor": "rgb(192, 192, 192)",
+                  "filterOnZoom": false,
+                  "isShowLegend": true,
+                  "lat": 2273030.9269876885,
+                  "lon": 0,
+                  "mapZoom": 1,
+                  "pointColor": "rgb(0, 0, 255)",
+                  "srid": 3857,
+                  "toggleClusters": false
+                },
+                "LINK_SEARCH_SETTINGS": {
+                  "chartHeightVal": 200,
+                  "chartOptions": [
+                    "bar"
+                  ],
+                  "chartType": "bar",
+                  "chartWidthVal": 60,
+                  "columnAliases": {},
+                  "dashboardOptions": {
+                    "showAnalyzeTab": [],
+                    "showChartsTab": [],
+                    "showSummary": [
+                      "on"
+                    ],
+                    "showTable": [
+                      "on"
+                    ],
+                    "showTabs": []
+                  },
+                  "groupAliasP": "Issues",
+                  "groupAliasS": "Issue",
+                  "hiddenCharts": {
+                    "groupColumn": true
+                  },
+                  "hiddenClassifyCharts": {},
+                  "hiddenColumns": {
+                    "eventstats13_func1_sum_g_count": true,
+                    "eventstats13_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "eventstats14_func1_sum_g_count": true,
+                    "eventstats14_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "eventstats8_func1_sum_g_count": true,
+                    "eventstats8_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "g_duration": true,
+                    "g_endepoch": true,
+                    "g_startepoch": true,
+                    "query_end_time": true,
+                    "query_start_time": true,
+                    "trend_interval": true,
+                    "trend_interval_unit": true
+                  },
+                  "highlightColumnStatus": {
+                    "highlightedGroup1": {
+                      "on": true,
+                      "title": true
+                    }
+                  },
+                  "linkSummaryInput": "card=<field:Total Issues>\ncard=<field:Product Areas>",
+                  "logAliasP": "EBS Sensor Records",
+                  "mergeHighlightColumns": [
+                    "off"
+                  ],
+                  "showAllRegions": [],
+                  "showCombinedCharts": [
+                    "off"
+                  ],
+                  "showNonUnitRawData": [
+                    "off"
+                  ],
+                  "showStack": [
+                    "off"
+                  ],
+                  "showToolTips": [
+                    "on"
+                  ],
+                  "showUnitRawData": [],
+                  "smartGroup": [
+                    "off"
+                  ],
+                  "styleDefaults": {
+                    "lineType": "curved",
+                    "markerDisplayed": "on"
+                  },
+                  "tableColumns": [
+                    "High Priority",
+                    "Issue",
+                    "Description",
+                    "Number of Issues",
+                    "Business Flow",
+                    "Business Impact",
+                    "Product to raise SR if help needed",
+                    "Prod Area",
+                    "File SR",
+                    "Total Issues",
+                    "Product Areas",
+                    "Name",
+                    "Segment1",
+                    "Segment2",
+                    "Segment3",
+                    "ST",
+                    "ET",
+                    "S1",
+                    "More Info",
+                    "ST1",
+                    "ET1",
+                    "S2",
+                    "Log Source",
+                    "Count"
+                  ]
+                },
+                "primaryFieldDname": "Original Log Content",
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "link",
+            "vizType": "lxSavedSearchWidgetType"
+          },
+          "widgetTemplate": "visualizations/chartWidgetTemplate.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "",
+          "displayName": "ebsvm_onprem_network_access",
+          "drilldownConfig": [],
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaaga2q7pacmb24c2s7yxvivzrqqyrvtdvvgp5nfnhic72zlwht4fxa",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-4a"
+              ],
+              "displayName": "Log Group Compartment",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-log-group-compartment",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-2a"
+              ],
+              "displayName": "Entity",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-entity",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-3a"
+              ],
+              "displayName": "Log Set",
+              "editUi": {
+                "inputType": "none"
+              },
+              "hidden": "$(window.logSetNotEnabled)",
+              "name": "log-analytics-log-set",
+              "required": true
+            }
+          ],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "3.0.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "enableWidgetInApp": true,
+            "queryString": "'Log Group' = 'luna-lab-data' and 'Log Source' = 'OCI VCN Flow Unified Schema Logs' and 'Client Coordinates' != null | geostats count as logrecords by 'Log Source' | sort -logrecords",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": false,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": []
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "Luna",
+                    "value": "${compartment_ocid}"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": false,
+                    "ScopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "Luna",
+                      "value": "${compartment_ocid}"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l7day"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "GEOMAP_SETTINGS": {
+                  "basemap": "bi_world_map_light",
+                  "clusterColor": "rgb(192, 192, 192)",
+                  "filterOnZoom": false,
+                  "isShowLegend": true,
+                  "lat": 2273030.9269876885,
+                  "lon": 0,
+                  "mapZoom": 1,
+                  "pointColor": "rgb(0, 0, 255)",
+                  "srid": 3857,
+                  "toggleClusters": false
+                },
+                "primaryFieldDname": "Original Log Content",
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "map",
+            "vizType": "lxSavedSearchWidgetType"
+          },
+          "widgetTemplate": "visualizations/chartWidgetTemplate.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "Ebusiness Suite Functional Issues across areas",
+          "displayName": "Issues and Product Areas",
+          "drilldownConfig": [],
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaatmhthsaabbu67vd4ywgywnaxwszuecerb5bqoivie3auuvp2uj2q",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-4a"
+              ],
+              "displayName": "Log Group Compartment",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-log-group-compartment",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-2a"
+              ],
+              "displayName": "Entity",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-entity",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-3a"
+              ],
+              "displayName": "Log Set",
+              "editUi": {
+                "inputType": "none"
+              },
+              "hidden": "$(window.logSetNotEnabled)",
+              "name": "log-analytics-log-set",
+              "required": true
+            }
+          ],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "3.0.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "enableWidgetInApp": true,
+            "queryString": "'Log Source' like 'EBS Sensor*' | lookup table = 'EBS Functional Sensors' select 'Issue Summary', 'Issue Description' as Description, 'Solution KM Note' as N1, 'Business Flow', 'Business Impact', 'Product to raise SR if help needed', 'Prod Area', 'Issue Severity' using sensor = 'Metric Name' | stats count as 'Total Issues' by Description, 'Prod Area'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": []
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "GEOMAP_SETTINGS": {
+                  "basemap": "bi_world_map_light",
+                  "clusterColor": "rgb(192, 192, 192)",
+                  "filterOnZoom": false,
+                  "isShowLegend": true,
+                  "lat": 2273030.9269876885,
+                  "lon": 0,
+                  "mapZoom": 1,
+                  "pointColor": "rgb(0, 0, 255)",
+                  "srid": 3857,
+                  "toggleClusters": false
+                },
+                "LINK_SEARCH_SETTINGS": {
+                  "chartHeightVal": 200,
+                  "chartOptions": "bar",
+                  "chartType": "bar",
+                  "chartWidthVal": 60,
+                  "columnAliases": {},
+                  "dashboardOptions": {
+                    "showAnalyzeTab": [],
+                    "showChartsTab": [],
+                    "showSummary": [
+                      "on"
+                    ],
+                    "showTSCharts": [],
+                    "showTable": [
+                      "on"
+                    ],
+                    "showTabs": []
+                  },
+                  "groupAliasP": "Issues",
+                  "groupAliasS": "Issue",
+                  "hiddenCharts": {
+                    "groupColumn": true
+                  },
+                  "hiddenClassifyCharts": {},
+                  "hiddenColumns": {
+                    "eventstats13_func1_sum_g_count": true,
+                    "eventstats13_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "eventstats14_func1_sum_g_count": true,
+                    "eventstats14_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "eventstats8_func1_sum_g_count": true,
+                    "eventstats8_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "g_duration": true,
+                    "g_endepoch": true,
+                    "g_startepoch": true,
+                    "query_end_time": true,
+                    "query_start_time": true,
+                    "trend_interval": true,
+                    "trend_interval_unit": true
+                  },
+                  "highlightColumnStatus": {
+                    "highlightedGroup1": {
+                      "on": true,
+                      "title": true
+                    }
+                  },
+                  "linkSummaryInput": "card=<field:Total Issues>\ncard=<field:Product Areas>",
+                  "logAliasP": "EBS Sensor Records",
+                  "mergeHighlightColumns": [
+                    "off"
+                  ],
+                  "showAllRegions": [],
+                  "showCombinedCharts": [
+                    "off"
+                  ],
+                  "showNonUnitRawData": [
+                    "off"
+                  ],
+                  "showStack": [
+                    "off"
+                  ],
+                  "showToolTips": [
+                    "on"
+                  ],
+                  "showUnitRawData": [],
+                  "smartGroup": [
+                    "off"
+                  ],
+                  "styleDefaults": {},
+                  "tableColumns": [
+                    "High Priority",
+                    "Issue",
+                    "Description",
+                    "Number of Issues",
+                    "Business Flow",
+                    "Business Impact",
+                    "Product to raise SR if help needed",
+                    "Prod Area",
+                    "File SR",
+                    "Total Issues",
+                    "Product Areas",
+                    "Name",
+                    "Segment1",
+                    "Segment2",
+                    "Segment3",
+                    "ST",
+                    "ET",
+                    "S1",
+                    "More Info",
+                    "ST1",
+                    "ET1",
+                    "S2",
+                    "Log Source",
+                    "Count"
+                  ],
+                  "timeseries": {
+                    "timestats1": {
+                      "chartHeightVal": 200,
+                      "chartOptions": "lineWithMarker",
+                      "chartType": "line",
+                      "chartWidthVal": 60,
+                      "colorColumn": 0,
+                      "hiddenTSCharts": {},
+                      "showCombinedCharts": [
+                        "on"
+                      ],
+                      "showLegend": [
+                        "off"
+                      ],
+                      "showStack": [
+                        "off"
+                      ],
+                      "showToolTips": [
+                        "off"
+                      ],
+                      "smartGroup": [
+                        "on"
+                      ],
+                      "timeSeriesColorPalette": {
+                        "0": "lookupField4xt_5540322972955376823xf17"
+                      },
+                      "timeSeriesColorPaletteCustom": {
+                        "0": {}
+                      },
+                      "tsFilters": {
+                        "selectAllFilters": [
+                          "off"
+                        ],
+                        "selectedTSFilters": [
+                          "lookupField4xt_5540322972955376823xf17",
+                          "timestats1_func1_sum_g_count"
+                        ],
+                        "showTSFilters": [
+                          "on"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "primaryFieldDname": "Original Log Content",
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "treemap",
+            "vizType": "lxSavedSearchWidgetType"
+          },
+          "widgetTemplate": "visualizations/chartWidgetTemplate.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        },
+        {
+          "compartmentId": "${compartment_ocid}",
+          "dataConfig": [],
+          "definedTags": {},
+          "description": "Ebusiness Suite Functional Issues Trend",
+          "displayName": "Issue Trend",
+          "drilldownConfig": [],
+          "freeformTags": {},
+          "id": "ocid1.managementsavedsearch.oc1..aaaaaaaawmkehnb3o4j5bgdo2mqk37wctxm2ticrhxazoo7o23dz3ni2p6qa",
+          "isOobSavedSearch": false,
+          "metadataVersion": "2.0",
+          "nls": {},
+          "parametersConfig": [
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-4a"
+              ],
+              "displayName": "Log Group Compartment",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-log-group-compartment",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-2a"
+              ],
+              "displayName": "Entity",
+              "editUi": {
+                "inputType": "none"
+              },
+              "name": "log-analytics-entity",
+              "required": true
+            },
+            {
+              "defaultFilterIds": [
+                "OOBSS-management-dashboard-filter-3a"
+              ],
+              "displayName": "Log Set",
+              "editUi": {
+                "inputType": "none"
+              },
+              "hidden": "$(window.logSetNotEnabled)",
+              "name": "log-analytics-log-set",
+              "required": true
+            }
+          ],
+          "providerId": "log-analytics",
+          "providerName": "Logging Analytics",
+          "providerVersion": "3.0.0",
+          "screenImage": " ",
+          "type": "WIDGET_SHOW_IN_DASHBOARD",
+          "uiConfig": {
+            "enableWidgetInApp": true,
+            "queryString": "'Log Source' like 'EBS Sensor*' | lookup table = 'EBS Functional Sensors' select 'Issue Summary', 'Issue Description' as Description, 'Solution KM Note' as N1, 'Business Flow', 'Business Impact', 'Product to raise SR if help needed', 'Prod Area', 'Issue Severity' using sensor = 'Metric Name' | timestats count as 'Total Issues' by 'Prod Area'",
+            "scopeFilters": {
+              "Entity": {
+                "flags": {
+                  "IncludeDependents": true,
+                  "ScopeCompartmentId": "${compartment_ocid}"
+                },
+                "type": "Entity",
+                "values": []
+              },
+              "LogGroup": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "LogGroup",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "LogSet": {
+                "flags": {},
+                "type": "LogSet",
+                "values": []
+              },
+              "MetricCompartment": {
+                "flags": {},
+                "type": "MetricCompartment",
+                "values": []
+              },
+              "ResourceCompartment": {
+                "flags": {
+                  "IncludeSubCompartments": true
+                },
+                "type": "ResourceCompartment",
+                "values": [
+                  {
+                    "label": "emdemo (root)",
+                    "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "LogGroup",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                },
+                {
+                  "flags": {},
+                  "type": "MetricCompartment",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeDependents": true,
+                    "ScopeCompartmentId": "${compartment_ocid}"
+                  },
+                  "type": "Entity",
+                  "values": []
+                },
+                {
+                  "flags": {},
+                  "type": "LogSet",
+                  "values": []
+                },
+                {
+                  "flags": {
+                    "IncludeSubCompartments": true
+                  },
+                  "type": "ResourceCompartment",
+                  "values": [
+                    {
+                      "label": "emdemo (root)",
+                      "value": "ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq"
+                    }
+                  ]
+                }
+              ],
+              "isGlobal": false
+            },
+            "showTitle": true,
+            "timeSelection": {
+              "timePeriod": "l60min"
+            },
+            "visualizationOptions": {
+              "customVizOpt": {
+                "GEOMAP_SETTINGS": {
+                  "basemap": "bi_world_map_light",
+                  "clusterColor": "rgb(192, 192, 192)",
+                  "filterOnZoom": false,
+                  "isShowLegend": true,
+                  "lat": 2273030.9269876885,
+                  "lon": 0,
+                  "mapZoom": 1,
+                  "pointColor": "rgb(0, 0, 255)",
+                  "srid": 3857,
+                  "toggleClusters": false
+                },
+                "LINK_SEARCH_SETTINGS": {
+                  "chartHeightVal": 200,
+                  "chartOptions": "bar",
+                  "chartType": "bar",
+                  "chartWidthVal": 60,
+                  "columnAliases": {},
+                  "dashboardOptions": {
+                    "showAnalyzeTab": [],
+                    "showChartsTab": [],
+                    "showSummary": [
+                      "on"
+                    ],
+                    "showTSCharts": [],
+                    "showTable": [
+                      "on"
+                    ],
+                    "showTabs": []
+                  },
+                  "groupAliasP": "Issues",
+                  "groupAliasS": "Issue",
+                  "hiddenCharts": {
+                    "groupColumn": true
+                  },
+                  "hiddenClassifyCharts": {},
+                  "hiddenColumns": {
+                    "eventstats13_func1_sum_g_count": true,
+                    "eventstats13_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "eventstats14_func1_sum_g_count": true,
+                    "eventstats14_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "eventstats8_func1_sum_g_count": true,
+                    "eventstats8_func2_distinct_count_lookupField4xt_5540322972955376823xf17": true,
+                    "g_duration": true,
+                    "g_endepoch": true,
+                    "g_startepoch": true,
+                    "query_end_time": true,
+                    "query_start_time": true,
+                    "trend_interval": true,
+                    "trend_interval_unit": true
+                  },
+                  "highlightColumnStatus": {
+                    "highlightedGroup1": {
+                      "on": true,
+                      "title": true
+                    }
+                  },
+                  "linkSummaryInput": "card=<field:Total Issues>\ncard=<field:Product Areas>",
+                  "logAliasP": "EBS Sensor Records",
+                  "mergeHighlightColumns": [
+                    "off"
+                  ],
+                  "showAllRegions": [],
+                  "showCombinedCharts": [
+                    "off"
+                  ],
+                  "showNonUnitRawData": [
+                    "off"
+                  ],
+                  "showStack": [
+                    "off"
+                  ],
+                  "showToolTips": [
+                    "on"
+                  ],
+                  "showUnitRawData": [],
+                  "smartGroup": [
+                    "off"
+                  ],
+                  "styleDefaults": {},
+                  "tableColumns": [
+                    "High Priority",
+                    "Issue",
+                    "Description",
+                    "Number of Issues",
+                    "Business Flow",
+                    "Business Impact",
+                    "Product to raise SR if help needed",
+                    "Prod Area",
+                    "File SR",
+                    "Total Issues",
+                    "Product Areas",
+                    "Name",
+                    "Segment1",
+                    "Segment2",
+                    "Segment3",
+                    "ST",
+                    "ET",
+                    "S1",
+                    "More Info",
+                    "ST1",
+                    "ET1",
+                    "S2",
+                    "Log Source",
+                    "Count"
+                  ],
+                  "timeseries": {
+                    "timestats1": {
+                      "chartHeightVal": 200,
+                      "chartOptions": "lineWithMarker",
+                      "chartType": "line",
+                      "chartWidthVal": 60,
+                      "colorColumn": 0,
+                      "hiddenTSCharts": {},
+                      "showCombinedCharts": [
+                        "on"
+                      ],
+                      "showLegend": [
+                        "off"
+                      ],
+                      "showStack": [
+                        "off"
+                      ],
+                      "showToolTips": [
+                        "off"
+                      ],
+                      "smartGroup": [
+                        "on"
+                      ],
+                      "timeSeriesColorPalette": {
+                        "0": "lookupField4xt_5540322972955376823xf17"
+                      },
+                      "timeSeriesColorPaletteCustom": {
+                        "0": {}
+                      },
+                      "tsFilters": {
+                        "selectAllFilters": [
+                          "off"
+                        ],
+                        "selectedTSFilters": [
+                          "lookupField4xt_5540322972955376823xf17",
+                          "timestats1_func1_sum_g_count"
+                        ],
+                        "showTSFilters": [
+                          "on"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "primaryFieldDname": "Original Log Content",
+                "primaryFieldIname": "mbody"
+              }
+            },
+            "visualizationType": "records_histogram",
+            "vizType": "lxSavedSearchWidgetType"
+          },
+          "widgetTemplate": "visualizations/chartWidgetTemplate.html",
+          "widgetVM": "jet-modules/dashboards/widgets/lxSavedSearchWidget"
+        }
+      ],
+      "screenImage": "todo: provide value[mandatory]",
+      "tiles": [
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "EBS Functional cluster",
+          "drilldownConfig": [],
+          "height": 5,
+          "nls": {},
+          "parametersMap": {
+            "log-analytics-entity": "$(dashboard.params.log-analytics-entity-filter)",
+            "log-analytics-log-group-compartment": "$(dashboard.params.log-analytics-loggroup-filter)"
+          },
+          "row": 13,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaav2qg7p6a4h2ntknijpaxh5cam5uu6gns54n5oignu45rqnkgoh3q",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 6,
+          "dataConfig": [],
+          "displayName": "ebsvm_onprem_network_access",
+          "drilldownConfig": [],
+          "height": 5,
+          "nls": {},
+          "parametersMap": {
+            "log-analytics-entity": "$(dashboard.params.log-analytics-entity-filter)",
+            "log-analytics-log-group-compartment": "$(dashboard.params.log-analytics-loggroup-filter)",
+            "log-analytics-log-set": "$(dashboard.params.log-analytics-logset-filter)"
+          },
+          "row": 13,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaaga2q7pacmb24c2s7yxvivzrqqyrvtdvvgp5nfnhic72zlwht4fxa",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 6
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "SD: EBS Functional Issues",
+          "drilldownConfig": [],
+          "height": 7,
+          "nls": {},
+          "parametersMap": {
+            "log-analytics-entity": "$(dashboard.params.log-analytics-entity-filter)",
+            "log-analytics-log-group-compartment": "$(dashboard.params.log-analytics-loggroup-filter)",
+            "time": "$(dashboard.params.time)"
+          },
+          "row": 6,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaafk7qkygl45iqbizrhl4jpchcq2zjkrx5nxvmhdqx5rr7trkpukjq",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 12
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "Issue Trend",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {
+            "log-analytics-entity": "$(dashboard.params.log-analytics-entity-filter)",
+            "log-analytics-log-group-compartment": "$(dashboard.params.log-analytics-loggroup-filter)"
+          },
+          "row": 0,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaawmkehnb3o4j5bgdo2mqk37wctxm2ticrhxazoo7o23dz3ni2p6qa",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 12
+        },
+        {
+          "column": 0,
+          "dataConfig": [],
+          "displayName": "Issues and Product Areas",
+          "drilldownConfig": [],
+          "height": 3,
+          "nls": {},
+          "parametersMap": {
+            "log-analytics-entity": "$(dashboard.params.log-analytics-entity-filter)",
+            "log-analytics-log-group-compartment": "$(dashboard.params.log-analytics-loggroup-filter)"
+          },
+          "row": 3,
+          "savedSearchId": "ocid1.managementsavedsearch.oc1..aaaaaaaatmhthsaabbu67vd4ywgywnaxwszuecerb5bqoivie3auuvp2uj2q",
+          "state": "DEFAULT",
+          "uiConfig": {},
+          "width": 12
+        }
+      ],
+      "type": "normal",
+      "uiConfig": {
+        "isFilteringEnabled": false,
+        "isRefreshEnabled": true,
+        "isTimeRangeEnabled": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+# Copyright (c) 2022, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+title: "Oracle E-Buisiness Suite Log Collection Quick Start"
+
+description: "Monitoring EBS using Management Agent"
+
+stackDescription: "
+Monitors EBS Logs using Management Agent deployed on a new Compute Instance after applying necessary Dynamic Groups and Policies. 
+Logging Analytics plugin on the agent is also deployed to assist with the monitoring.
+This stack enables Source-Entity Auto Association in Logging Analytics which can be disabled later 
+if auto association of entities is not desired.
+"
+
+version: "20190304"
+schemaVersion: 1.1.0
+locale: "en"
+
+source:
+  type: quickstart
+
+variableGroups:
+  - title: General OCI Configurations
+    visible: false
+    variables:
+      - tenancy_ocid
+      - compartment_ocid
+      - region
+      
+  - title: Products
+    visible: true
+    variables:
+      - products
+
+  - title: VCN Info
+    visible: true
+    variables:
+      - db_compartment
+      - vcn_ocid
+      - subnet_ocid
+
+  - title: Database Info
+    visible: true
+    variables:
+      - db_host
+      - db_port
+      - db_service
+      - db_username
+      - db_cred_compartment
+      - db_credentials
+      - db_user_role
+
+  - title: Compute Instance details
+    visible: true
+    variables:
+      - instance_name
+      - availability_domain
+      - instance_shape
+      - user_ssh_secret
+
+  - title: Management Agent IAM Policies
+    visible: true
+    variables:
+      - setup_policies
+
+  - title: Log Analytics Configuration
+    visible: true
+    variables:
+      - resource_compartment
+      - la_entity_name
+      - create_log_group
+
+  - title: Select Log Analytics Log Group
+    visible:
+        not: 
+        - create_log_group
+    variables:
+      - log_group_ocid
+
+variables:
+  products:
+    type: array
+    items:
+      type: string
+    title: "Select Products"
+    description: Select the products. 
+    required: true
+#    default: ["Oracle Advanced Benefits", "Oracle Advanced Supply Chain Planning", "Oracle Approvals Management", "Oracle Assets",  "Oracle Cash Management", "Oracle Cost Management", "Oracle E-Business Suite Technology Stack", "Oracle Financials for EMEA", "Oracle General Ledger", "Oracle HRMS (UK)", "Oracle Human Resources", "Oracle Inventory Management", "Oracle iProcurement", "Oracle Materials Requirement Planning",  "Oracle Order Management",  "Oracle Payables",  "Oracle Payroll",  "Oracle Process Manufacturing Financials", "Oracle Process Manufacturing Process Execution", "Oracle Project Billing", "Oracle Project Costing", "Oracle Project Planning and Control", "Oracle Public Sector Financials", "Oracle Purchasing", "Oracle Receivables", "Oracle Shipping Execution", "Oracle Time and Labor", "Oracle Trading Community", "Oracle Work in Process", "Oracle Workflow"]
+    default: ["Oracle Advanced Benefits", "Oracle Workflow"]
+    minItems: 1
+    uniqueItems: true
+
+  db_compartment:
+    type: oci:identity:compartment:id
+    title: Select DB Compartment
+    description: The compartment where your EBS DB resides
+    required: true
+    default: compartment_ocid
+
+  vcn_ocid:
+    title: Select existing VCN
+    type: oci:core:vcn:id
+    dependsOn:
+      compartmentId: db_compartment
+    visible: true
+    required: true
+
+  subnet_ocid:
+    title: Select existing Subnet
+    type: oci:core:subnet:id
+    dependsOn:
+      compartmentId: db_compartment
+      vcnId: vcn_ocid
+    visible: true
+    required: true
+
+  instance_name:
+    type: string
+    title: Instance name
+    required: true
+    visible: true
+    description: The Compute Instance where Management Agent will be deployed
+    default: EBS-MgmtAgent
+    
+  availability_domain:
+    title: Availability domain
+    type: oci:identity:availabilitydomain:name
+    required: true
+    dependsOn:
+      compartmentId: db_compartment
+    visible: true
+
+  instance_shape:
+    title: Instance shape
+    type: oci:core:instanceshape:name
+    dependsOn:
+      compartmentId: db_compartment
+      availabilityDomain: availability_domain
+    visible: true
+    required: true
+    default: VM.Standard.E2.1
+
+  user_ssh_secret: 
+    type: oci:core:ssh:publickey
+    title: SSH Public Key
+    description: The public SSH key for the key-pair that you want to use, if you wish to login to the instances over SSH.
+    visible: true
+    required: false
+
+  db_host:
+    type: string
+    title: DB Host Name
+    description: The host for EBS Database.
+    required: true
+    default: "129.146.29.110"
+
+  db_port:
+    type: number
+    title: DB Port
+    description: The port for EBS Database.
+    required: true
+    default: 1521
+
+  db_service:
+    type: string
+    title: DB Service Name
+    description: Service name for EBS Database.
+    required: true
+    default: "ebsdb"
+
+  db_cred_compartment:
+    type: oci:identity:compartment:id
+    title: Select Vault Compartment
+    description: The compartment where your DB credential resides
+    required: true
+    default: compartment_ocid
+
+  db_username:
+    type: string
+    title: "DB Username"
+    description: "The username to use to connect to DB"
+    required: true
+    default: "apps"
+
+  db_credentials:
+    type: "oci:kms:secret:id"
+    title: "Vault Secret"
+    description: The secret that contains DB Password for the above user.
+    dependsOn:
+      compartmentId: db_cred_compartment
+    required: true
+  
+  db_user_role:
+    type: enum
+    title: "Database User Role"
+    description: Select the role of the database user. 
+    required: true
+    enum:
+      - NORMAL
+      - SYSASM
+      - SYSDBA
+    default: NORMAL
+
+  setup_policies:
+    type: boolean
+    title: Setup default policies
+    description: Uncheck it if you already have all the required policies for Management Agent set.
+    required: true
+    default: true
+
+  resource_compartment:
+    type: oci:identity:compartment:id
+    title: Select Log Analytics Resource Compartment
+    description: The compartment where your log analytics resources reside.
+    required: true
+    default: compartment_ocid
+
+  la_entity_name:
+    type: string
+    title: "Log Analytics Entity Name"
+    description: "Entity Name for EBS in Log Analytics."
+    required: true
+    default: "TestEBS"
+
+  create_log_group:
+    type: boolean
+    title: Create Log Group
+    description: Create Log Group (uncheck if you already have a log group).
+    required: true
+    visible: true
+    default: false
+
+  log_group_ocid:
+    type: oci:logan:loggroup:id
+    visible: 
+        not:
+          - create_log_group
+    required: 
+         not:
+           - create_log_group
+    title: "Log Analytics Log Group"
+    description: Select Log Group.
+    dependsOn:
+      compartmentId: ${resource_compartment}
+
+outputGroups:
+  - title: Resource dashboards
+    outputs:
+      - host_ocid
+      - agent_dashboard
+      - entity_dashboard
+
+outputs:
+  agent_dashboard:
+    type: link
+    title: Management Agent
+    displayText: Agent
+    visible: true
+
+  # No need to create link manually, Resource Manager automatically creates hyperlink to the resource in console
+  host_ocid:
+    type: ocid
+    title: Compute Instance
+    displayText: Instance
+    visible: true
+
+  entity_dashboard:
+    type: link
+    title: Logging Analytics Entity
+    displayText: Entity
+    visible: true
+
+primaryOutputButton: ${dashboard}
