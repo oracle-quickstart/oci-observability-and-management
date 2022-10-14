@@ -1,0 +1,239 @@
+## Copyright © 2022, Oracle and/or its affiliates. 
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+title: "Automate loading IDCS Audit log data to log analytics using a serverless application"
+stackDescription: "Automate loading IDCS Audit logs to  log analytics using a serverless application."
+schemaVersion: 1.1.0
+version: "20220608"
+locale: "en"
+
+variableGroups:
+- title: General Configuration
+  visible: false
+  variables:
+  - tenancy_ocid
+  - region
+  - release
+  - ocir_repo_name
+  - compartment_ocid
+  - dashboard_files
+
+- title: IDCS Details
+  visible: true  
+  variables:
+  - idcs_url
+  - idcs_clientid
+  - idcs_cred_vault_compartment
+  - idcs_client_vaultsecret
+  - deployment_name
+
+- title: Collection Details (function, network, and object storage)
+  visible: true  
+  variables:
+  - ocir_user_name
+  - ocir_user_password
+  - create_network
+  - show_advanced_collection 
+
+- title: Select	Network Subnet
+  visible:
+      not:
+        - create_network
+  variables:
+  - subnet_ocid
+
+- title: Network Setup
+  visible:
+      and:
+        - create_network
+        - show_advanced_collection
+  variables:
+  - VCN-CIDR
+  - fnsubnet-CIDR
+
+- title: Optional Collection Details
+  visible:
+      and:
+        - show_advanced_collection
+  variables:
+  - tracker-bucket
+  - setup_policies
+
+- title: Logging Analytics Configuration
+  visible: true  
+  variables:
+  - log_analytics_group_id
+  - log_analytics_entity_name
+  - show_advanced_la 
+
+- title: Log Analytics Optional Configuration
+  visible: 
+      and:
+        - show_advanced_la
+  variables:      
+  - log_source
+
+variables:
+  
+  show_advanced_collection:
+    type: boolean
+    title: "Show advanced collection options?"
+    description: "Shows advanced collection options."
+    visible: true
+    default: false
+
+  show_advanced_la:
+    type: boolean
+    title: "Show advanced Log analytics options?"
+    description: "Shows advanced Log analytics options."
+    visible: true
+    default: false
+
+  setup_policies:
+    type: boolean
+    title: "Setup Policies for Function?"
+    description: "Uncheck only if policies has already been set for functions in this compartment."
+    visible: true
+    default: true
+
+  create_network:
+    type: boolean
+    title: "Create Network"
+    description: "Uncheck only if you already have a public subnet with security policies."
+    visible: true
+    default: true
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    visibile: true
+    title: "Compartment"
+    description: "Choose compartment where you want to create the solution resources."
+
+  region:
+    type: oci:identity:region:name
+    required: true
+    visibile: true
+    title: "Region"
+    description: "Choose region where you want to deploy the resources defined by this stack."
+
+  subnet_ocid:
+    type: oci:core:subnet:id
+    required:
+         not:
+          create_network
+    visibile:
+         not:
+          create_network
+    title: "Subnet"
+    description: "Select an existing subnet for creating resources."
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  log_analytics_group_id:
+    type: oci:logan:loggroup:id
+    required: true
+    visibile: true
+    title: "Log Group"
+    description: "Log Analytics Log Group"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  ocir_user_name:
+    type: string
+    required: true
+    visibile: true
+    title: "OCIR username"
+    description: "Oracle Cloud Infrastructure Registry username (your OCI username)." 
+
+  ocir_user_password:
+    type: password
+    required: true
+    visibile: true
+    title: "OCIR user password"
+    description: "Oracle Cloud Infrastructure Registry user password (your OCI user authtoken)." 
+
+  idcs_url:
+    type: string
+    required: true
+    visibile: true
+    title: "IDCS URL"
+    description: "URL for IDCS API to fetch logs."
+
+  idcs_clientid:
+    type: string
+    required: true
+    visibile: true
+    title: "IDCS Client ID"
+    description: "Client ID for IDCS API to fetch logs." 
+
+  idcs_cred_vault_compartment:
+    type: oci:identity:compartment:id
+    title: Select Vault Compartment
+    description: The compartment where your DB credential resides
+    required: true
+    default: compartment_ocid
+
+  idcs_client_vaultsecret:
+    type: "oci:kms:secret:id"
+    title: "Vault Secret"
+    description: "The vault secret that contains IDCS client password"
+    dependsOn:
+      compartmentId: idcs_cred_vault_compartment
+    required: true
+
+  deployment_name:
+    type: string
+    required: true
+    visibile: true
+    title: "IDCS Identifier"
+    description: "Identitier for IDCS Server"
+
+  log_analytics_entity_name:
+    type: string
+    required: true
+    visibile: true
+    title: "IDCS Entity Name"
+    description: "Oracle Log Analytics Entity Name for IDCS" 
+    default: "IDCS Server"
+
+
+  # Optional Configuration
+
+  log_source:
+    type: string
+    required: true
+    visibile: true
+    title: "Log Analytics Log Source"
+    description: "Log Analytics Log Source to be associated with IDCS audit logs."
+
+  VCN-CIDR:
+    type: string
+    required: false
+    default: "10.0.0.0/16"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: "VCN CIDR"
+    description: "Choose VCN's CIDR block where Fn App will be deployed."
+
+  fnsubnet-CIDR:
+    type: string
+    required: false
+    default: "10.0.2.0/24"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: "Subnet CIDR"
+    description: "Choose Public Subnet's CIDR where Fn App will be deployed."  
+
+  tracker-bucket:
+    type: string
+    required: false
+    default: "idcs-collector-bucket"
+    title: "tracker Bucket Name"
+    description: "Choose Bucket Name for storing tracker file."
+
+  dashboard_files:
+    type: array
+    default: [IDCS_Audit_Analysis.json]
+    required: true
+    visible: false
+
+outputs:

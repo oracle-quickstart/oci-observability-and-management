@@ -41,7 +41,7 @@ If you don't have the required permissions and quota, contact your tenancy admin
 Now, you'll want a local copy of this repo. You can make that with the commands:
 
     git clone https://github.com/oracle-quickstart/oci-observability-and-management.git
-    cd oci-observability-and-management/oci-idcs-monitoring
+    cd oci-observability-and-management/oci-idcs-monitoring/terraform
     ls
 
 ### Prerequisites
