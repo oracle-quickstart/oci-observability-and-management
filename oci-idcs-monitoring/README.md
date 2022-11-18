@@ -17,7 +17,7 @@ If you don't have the required permissions and quota, contact your tenancy admin
 
 ## Deploy Using Oracle Resource Manager
 
-1. Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/oracle-quickstart/oci-observability-and-management/releases/oci-idcs-auditlog-monitoring-latest.zip)
+1. Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/oracle-quickstart/oci-observability-and-management/oci-idcs-auditlog-monitoring-latest.zip)
 
 #    If you aren't already signed in, when prompted, enter the tenancy and user credentials.
 
@@ -84,10 +84,11 @@ compartment_ocid = "<compartment_ocid>"
 # IDCS info
 idcs_url = "<IDCS_URL>"
 idcs_clientid = "<IDCS_CLIENTID>"
+idcs_cred_vault_compartment = "<VAULT_COMPARTMENT-OCID>" 
 idcs_client_vaultsecret = "<VAULT_SECRET-OCID>"
 
 # Logging Analytics info
-logging_analytics_group_id = "<logging_analytics_group_ocid>"
+log_analytics_group_id = "<log_analytics_group_ocid>"
 # New entity will be created 
 log_analytics_entity_name = "<IDCS entity name>"
 
