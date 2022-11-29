@@ -27,3 +27,17 @@ git clone https://github.com/oracle-quickstart/oci-observability-and-management.
 cd oci-observability-and-management
 cd examples/oci-logging-analytics
 ```
+
+## Contributing
+
+This project welcomes contributions from the community. Before submitting a pull
+request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
+
+## License
+
+Copyright (c) 2021, 2022 Oracle and/or its affiliates.
+Released under the Universal Permissive License (UPL), Version 1.0.
+See [LICENSE](./LICENSE) for more details.
+
+[oci]: https://cloud.oracle.com/en_US/cloud-infrastructure
+[oci terraform]: https://registry.terraform.io/providers/oracle/oci/latest/docs
