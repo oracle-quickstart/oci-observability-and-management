@@ -58,14 +58,16 @@ module "instance_tenancy_policies" {
   }
   create_dynamicgroup   = false
   policy_name           = local.instance_tenancy_policy_name
-  policy_description    = "These polices allow compute instances to enable entity auto association and Agents to upload logs to Log Analytics"
+  policy_description    = "These polices allow compute instances to install and configure mgmt agent and Agents to upload logs to Log Analytics"
   policy_compartment_id = var.tenancy_ocid
   policy_statements = [
-# "Allow DYNAMIC-GROUP ${local.instance_dynamic_group_name} to {LOG_ANALYTICS_SOURCE_ENABLE_AUTOASSOC} in tenancy",
     "Allow DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} in tenancy",
     "ALLOW DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} TO MANAGE management-agents IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} TO USE METRICS IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE management-agents IN COMPARTMENT ID ${var.db_compartment}",
+    "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE management-agent-install-keys IN COMPARTMENT ID ${var.db_compartment}",
+    "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE OBJECTS IN COMPARTMENT ID ${var.db_compartment}",
+    "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO READ BUCKETS IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO READ secret-family in COMPARTMENT ID ${var.db_cred_compartment} where target.secret.id = '${var.db_credentials}'"
   ]
 
@@ -104,6 +106,7 @@ module "create_compute_instance" {
 
   source = "./modules/core_compute"
 
+  tenancy_id          = var.tenancy_ocid
   compartment_ocid    = var.db_compartment
   availability_domain = var.availability_domain
   display_name        = var.instance_name
@@ -115,21 +118,24 @@ module "create_compute_instance" {
   db_name             = local.db_name
   namespace           = local.namespace
   log_group_ocid      = var.create_log_group? oci_log_analytics_log_analytics_log_group.test_log_group[0].id : var.log_group_ocid
+  bucket_name         = var.bucket_name
+  file_name           = var.file_name
 }
 
-# This creates a 2 minutes delay that is required in further execution
+# This creates a 5 minutes delay that is required in further execution
 module "wait_until_agent_is_ready" {
   depends_on = [
     module.create_compute_instance
   ]
 
   source          = "./modules/time_delay"
-  wait_in_minutes = 2
+  wait_in_minutes = 5
 }
 
 module "macs_interactions" {
   # Wait for some time as agent creation might take time and might not be available immediately
   depends_on = [
+    module.create_compute_instance,
     module.wait_until_agent_is_ready
   ]
 
@@ -171,6 +177,7 @@ module "logan_sources" {
   ]
   source = "./modules/logan_sources"
   namespace = local.namespace
+  compartment_id = var.resource_compartment
   for_each = toset(var.products)
       path = format("%s/%s", "./contents/sources", each.value) 
 }

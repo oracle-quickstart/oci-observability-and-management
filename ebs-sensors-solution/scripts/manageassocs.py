@@ -7,8 +7,9 @@ import xml.etree.ElementTree as ET
 
 def main(argv):
     try:
-        options, args = getopt.getopt(argv, "h:c:e:l:p:",
-                                      ["compartmentid =",
+        options, args = getopt.getopt(argv, "h:a:c:e:l:p:",
+                                      ["action =",
+                                       "compartmentid =",
                                        "entityid =",
                                        "loggroupid =",
                                        "path ="])
@@ -17,12 +18,15 @@ def main(argv):
     except:
         print("Error Message ")
 
+    action = ''
     compartmentid = ''
     entityid = ''
     loggroupid = ''
     path = ''
     for name, value in options:
-        if name in ['-c', '--compartmentid']:
+        if name in ['-a', '--action']:
+            action = value
+        elif name in ['-c', '--compartmentid']:
             compartmentid = value
         elif name in ['-e', '--entityid']:
             entityid = value
@@ -43,6 +47,7 @@ def main(argv):
         sourcenames = set(srcnames)
 
         print("######################### Source entity Associations Details ######################")
+        print("action :: ", action)
         print("compartment_id :: ", compartmentid)
         print("loggroup_id :: ", loggroupid)
         print("path :: ", path)
@@ -71,6 +76,9 @@ def main(argv):
             print("Entity State :: ", lc_state)
             if (lc_state == 'ACTIVE'):
                 break
+            elif (lc_state == 'DELETED'):
+                print('Exit without creating/deleting assocs as the entity is in DELETED state')
+                exit()
             else:
                 print('Entity is still not ACTIVE. Current lifecycle state: ', lc_state)
             try:
@@ -78,31 +86,52 @@ def main(argv):
             except Exception:
                 continue
 
-        items=[]
-        for source in sourcenames:
-            assoc = oci.log_analytics.models.UpsertLogAnalyticsAssociation(
-                agent_id=get_entity.data.management_agent_id,
-                source_name=source,
-                entity_id=entityid,
-                entity_name=get_entity.data.name,
-                entity_type_name=get_entity.data.entity_type_internal_name,
-                host=get_entity.data.hostname,
-                log_group_id=loggroupid)
-            items.append(assoc)
+        if (action == 'upsert'):
+            items=[]
+            for source in sourcenames:
+                assoc = oci.log_analytics.models.UpsertLogAnalyticsAssociation(
+                    agent_id=get_entity.data.management_agent_id,
+                    source_name=source,
+                    entity_id=entityid,
+                    entity_name=get_entity.data.name,
+                    entity_type_name=get_entity.data.entity_type_internal_name,
+                    host=get_entity.data.hostname,
+                    log_group_id=loggroupid)
+                items.append(assoc)
 
-        assocs=oci.log_analytics.models.UpsertLogAnalyticsAssociationDetails(
-            compartment_id=compartmentid,
-            items=items)
+            assocsToAdd=oci.log_analytics.models.UpsertLogAnalyticsAssociationDetails(
+                compartment_id=compartmentid,
+                items=items)
 
-        # Read assoc payload from json file
-        upsert_associations_response = la_client.upsert_associations(
-            namespace_name = namespace,
-            upsert_log_analytics_association_details = assocs,
-            is_from_republish = False)
+            # Read assoc payload from json file
+            upsert_associations_response = la_client.upsert_associations(
+                namespace_name = namespace,
+                upsert_log_analytics_association_details = assocsToAdd,
+                is_from_republish = False)
 
-        print(upsert_associations_response.headers)
+            print('upsert_associations_response:: ',upsert_associations_response.headers)
+        elif (action == 'delete'):
+            items=[]
+            for source in sourcenames:
+                assoc = oci.log_analytics.models.DeleteLogAnalyticsAssociation(
+                    agent_id=get_entity.data.management_agent_id,
+                    source_name=source,
+                    entity_id=entityid,
+                    entity_type_name=get_entity.data.entity_type_internal_name,
+                    host=get_entity.data.hostname,
+                    log_group_id=loggroupid)
+                items.append(assoc)
+            assocsToDelete=oci.log_analytics.models.DeleteLogAnalyticsAssociationDetails(
+                compartment_id=compartmentid,
+                items=items)
+
+            # Delete associations
+            delete_associations_response = la_client.delete_associations(
+                namespace_name=namespace,
+                delete_log_analytics_association_details=assocsToDelete)
+            print('delete_associations_response:: ', delete_associations_response.headers)
     except Exception:
-        print('Error in adding source-entity association')
+        print('Error in adding or deleting source-entity association')
         raise
 
 def getsourcenames(filepath):

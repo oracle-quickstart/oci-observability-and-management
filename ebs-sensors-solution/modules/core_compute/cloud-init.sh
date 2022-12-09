@@ -25,89 +25,54 @@ Mime-Version: 1.0
 # Copyright (c) 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-TMP_DIR=`pwd`/cloud_init_tmp
+TMP_DIR=/tmp/cloud_init_tmp
 mkdir $TMP_DIR
 
-BASE_DIR="/var/lib/oracle-cloud-agent/plugins/oci-managementagent"
+BASE_DIR="/opt/oracle"
 CREDS_JSON_FILE=$TMP_DIR/upsertCreds.json
-PLUGIN_OCID_FILE=$TMP_DIR/plugin.ocid
-AGENT_OCID_FILE=$TMP_DIR/agent.ocid
-LOG_GROUP_OCID_FILE=$TMP_DIR/loggroup.ocid
-TIMEOUT_EXITCODE=2
 
 cleanup_before_exit(){
 	# Delete temporarily create files
   rm -rf $TMP_DIR
-  rm -rf $ATP_WALLET_ZIP
 
   echo "Deleted temporary files"
 }
 
 trap cleanup_before_exit EXIT 
 
-startTime=10#$(date +"%M")
-while true
-do
-    sleep 10s
-
-    if [[ -d "$BASE_DIR/polaris/agent_inst/discovery/PrometheusEmitter" && ! -f "$BASE_DIR/polaris/agent_inst/config/security/resource/agent.lifecycle" ]]; then
-        echo "Agent is available now"
-        break
-    else
-        echo "Waiting for agent to become available..."
-    fi
-
-    diff=$((endTime - startTime))
-
-    #Wait for max 5 mins
-    if (( $diff >= 5 )); then
-        echo "Timeout: $diff mins, timedout!"
-        break
-    fi
-done
-
-echo "Installing oci-cli for fetching secrets"
+echo "Installing oci-cli"
 
 yum -y install python36-oci-cli
 
-# Read agent ocid file
-source $BASE_DIR/polaris/agent_inst/config/security/resource/agent.ocid
+echo "Installing Jdk8"
+yum -y install jdk1.8.x86_64
 
-# Create agent.ocid file for CLI
-cat > $AGENT_OCID_FILE <<EOF
-[
-"$agent"
-]
-EOF
+# Install management agent instead of using OCA 
+echo "Getting agent url"
+agenturl=$(oci management-agent agent-image list --auth instance_principal --compartment-id ${tenancy_id} | grep object-url | grep Linux | grep rpm | cut -d \" -f 4)
+# extract bucket and namespace from url
+namespace=$(echo $agenturl | cut -d\/ -f 5)
+bucketName=$(echo $agenturl | cut -d\/ -f 7)
 
-# Get plugin ocid and create plugin.ocid
-echo "Getting plugin ocid"
-oci --auth instance_principal management-agent plugin list --compartment-id ${compartment_ocid} --query "data[?name == 'logan'].id" > $PLUGIN_OCID_FILE
+# get rpm
+echo "Getting mgmt agent rpm $namespace:$bucketName $agenturl"
+oci os object get --auth instance_principal --namespace $namespace --bucket-name $bucketName --name Linux-x86_64/latest/oracle.mgmt_agent.rpm --file $TMP_DIR/mgmt_agent.rpm
 
-# Deploy logan plugin
-echo "Deploying Logan plugin"
-deployPlugin=$(oci --auth instance_principal management-agent agent deploy-plugins --agent-compartment-id "${compartment_ocid}" --agent-ids file://$AGENT_OCID_FILE --plugin-ids file://$PLUGIN_OCID_FILE --wait-for-state SUCCEEDED --max-wait-seconds 300 2>&1)
-deployPluginExitCode=$?
+echo "Creating install key"
+installKeyId=$(oci management-agent install-key create --auth instance_principal --display-name MgmtAgentInstallKey --compartment-id ${compartment_ocid} | grep managementagentinstallkey |cut -d\" -f 4)
 
-if [[ $deployPluginExitCode != 0 ]]; then
-  echo "Failed to deploy plugin due to: $deployPlugin"
+echo "Getting install key cotent $installKeyId"
+oci management-agent install-key get-install-key-content --auth instance_principal --management-agent-install-key-id $installKeyId --file $TMP_DIR/input.rsp
 
-  if [[ $deployPluginExitCode == $TIMEOUT_EXITCODE ]]; then
-    echo "Manually checking if plugin deployment succeeded..."
-    pluginFound=$(oci management-agent agent get --agent-id $agent --auth instance_principal --raw-output --query "data.\"plugin-list\"" | grep "logan" 2>&1)
-    pluginFoundExitCode=$?
+echo "Service.plugin.logan.download=true" >> $TMP_DIR/input.rsp
 
-    if [[ $pluginFoundExitCode != 0 ]]; then
-      echo "No Logan plugin found, exiting Management Agent setup"
-      exit 1
-    fi
-  else
-    echo "Exiting Management Agent setup"
-    exit 1
-  fi
-fi
+cp $TMP_DIR/input.rsp /tmp/input.rsp
 
-echo "Successfully deployed logan plugin"
+echo "Installing Agent RPM"
+sudo rpm -ivh $TMP_DIR/mgmt_agent.rpm
+
+echo "Setting up agent"
+sudo /opt/oracle/mgmt_agent/agent_inst/bin/setup.sh opts=$TMP_DIR/input.rsp
 
 # Get secret from vault
 password=$(oci secrets secret-bundle get --auth instance_principal --raw-output --secret-id ${secret_ocid} --query "data.\"secret-bundle-content\".content" | base64 -d )
@@ -130,14 +95,23 @@ cat > $CREDS_JSON_FILE <<EOF
 EOF
 
 # Add creds in agent wallet
-sudo -u oracle-cloud-agent bash -c "cat $CREDS_JSON_FILE | bash /var/lib/oracle-cloud-agent/plugins/oci-managementagent/polaris/agent_inst/bin/credential_mgmt.sh -s logan -o upsertCredentials"
+sudo -u mgmt_agent bash -c "cat $CREDS_JSON_FILE | bash /opt/oracle/mgmt_agent/agent_inst/bin/credential_mgmt.sh -s logan -o upsertCredentials"
 
 echo "Successfully added secrets to agent wallet"
 
 # Add EBS DB logon property
-echo "loganalytics.database_sql.dblogonversion=omc_oracle_db_instance:${entity_name}=8" >> /var/lib/oracle-cloud-agent/plugins/oci-managementagent/polaris/agent_inst/config/emd.properties
+echo "loganalytics.database_sql.dblogonversion=omc_oracle_db_instance:${entity_name}=8" >> /opt/oracle/mgmt_agent/agent_inst/config/emd.properties
 
+echo "Fetching schedule file from object storage"
+# fetch schedule file from object storage
+oci os object get --auth instance_principal --bucket-name ${bucket_name} --name ${schedule_file} --file $TMP_DIR/schedule_file.csv
+cp $TMP_DIR/schedule_file.csv /tmp/schedule_file.csv
+
+# put schedule file in agent directory 
+sudo mkdir -p  $BASE_DIR/mgmt_agent/agent_inst/laconfig && sudo cp $TMP_DIR/schedule_file.csv $BASE_DIR/mgmt_agent/agent_inst/laconfig/logan_schedule_database_sql_ebs.csv
+
+echo "Restarting mgmt agent"
 # restart agent
-sudo systemctl stop oracle-cloud-agent; sleep 5; sudo systemctl start oracle-cloud-agent
+sudo systemctl stop mgmt_agent; sleep 5; sudo systemctl start mgmt_agent
 
 --MIMEBOUNDARY--

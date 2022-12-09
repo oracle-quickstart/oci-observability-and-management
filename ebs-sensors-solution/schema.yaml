@@ -63,6 +63,12 @@ variableGroups:
     variables:
       - setup_policies
 
+  - title: Schedule File Location
+    visible: true
+    variables:
+      - bucket_name
+      - file_name
+
   - title: Log Analytics Configuration
     visible: true
     variables:
@@ -85,7 +91,8 @@ variables:
     title: "Select Products"
     description: Select the products. 
     required: true
-    default: ["Oracle Advanced Benefits", "Oracle Advanced Supply Chain Planning", "Oracle Approvals Management", "Oracle Assets",  "Oracle Cash Management", "Oracle Cost Management", "Oracle E-Business Suite Technology Stack", "Oracle Financials for EMEA", "Oracle General Ledger", "Oracle HRMS (UK)", "Oracle Human Resources", "Oracle Inventory Management", "Oracle iProcurement", "Oracle Materials Requirement Planning",  "Oracle Order Management",  "Oracle Payables",  "Oracle Payroll",  "Oracle Process Manufacturing Financials", "Oracle Process Manufacturing Process Execution", "Oracle Project Billing", "Oracle Project Costing", "Oracle Project Planning and Control", "Oracle Public Sector Financials", "Oracle Purchasing", "Oracle Receivables", "Oracle Shipping Execution", "Oracle Time and Labor", "Oracle Trading Community", "Oracle Work in Process", "Oracle Workflow"]
+#    default: ["Oracle Advanced Benefits", "Oracle Advanced Supply Chain Planning", "Oracle Approvals Management", "Oracle Assets",  "Oracle Cash Management", "Oracle Cost Management", "Oracle E-Business Suite Technology Stack", "Oracle Financials for EMEA", "Oracle General Ledger", "Oracle HRMS (UK)", "Oracle Human Resources", "Oracle Inventory Management", "Oracle iProcurement", "Oracle Materials Requirement Planning",  "Oracle Order Management",  "Oracle Payables",  "Oracle Payroll",  "Oracle Process Manufacturing Financials", "Oracle Process Manufacturing Process Execution", "Oracle Project Billing", "Oracle Project Costing", "Oracle Project Planning and Control", "Oracle Public Sector Financials", "Oracle Purchasing", "Oracle Receivables", "Oracle Shipping Execution", "Oracle Time and Labor", "Oracle Trading Community", "Oracle Work in Process", "Oracle Workflow"]
+    default: ["Oracle Advanced Benefits", "Oracle Workflow"]
     minItems: 1
     uniqueItems: true
 
@@ -214,9 +221,21 @@ variables:
   la_entity_name:
     type: string
     title: "Log Analytics Entity Name"
-    description: "Entity Name for EBS in Log Analytics."
+    description: "Entity Name for EBS DB in Log Analytics."
     required: true
-    default: "TestEBS"
+    default: "TestEBS-DB"
+
+  bucket_name:
+    type: string
+    title: "Object Storage Bucket Name"
+    description: "Object Storage bucket name where schedule file is stored."
+    required: true
+
+  file_name:
+    type: string
+    title: "Schedule File Object Name"
+    description: "The name of object for Schedule file."
+    required: true
 
   create_log_group:
     type: boolean

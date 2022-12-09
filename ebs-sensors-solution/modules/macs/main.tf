@@ -2,11 +2,13 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 # Get instance ocid
+# find the agent with is_customer_deployed = true and use that
 data "oci_management_agent_management_agents" "agent_deployed" {
   compartment_id       = var.compartment_ocid
-  is_customer_deployed = false
+  is_customer_deployed = true
   host_id              = var.instance_ocid
 }
+
 
 # Get available plugins
 data "oci_management_agent_management_agent_plugins" "available_plugins" {
@@ -18,11 +20,3 @@ locals {
   # agent_id        = data.oci_management_agent_management_agents.agent_deployed.management_agents[0].id
   updated_details = data.oci_management_agent_management_agents.agent_deployed.management_agents[0]
 }
-
-/*
-# Deploy LOGAN plugin
-resource "oci_management_agent_management_agent" "updated_agent" {
-    managed_agent_id    = local.agent_id
-    deploy_plugins_id   = [local.logan_plugin_id]
-}
-*/

@@ -108,6 +108,7 @@ EBS Sensor: MFG OM Order Lines in BOOKED status that are missing Workflow Assign
 EBS Sensor: FIN AP Functional Currency Invoices for Which Base Amount is Populated - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Partially cancelled Invoice(s) found - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Orphan invoice distributions with no line found - Weekly,WEEK,SAT,1
+"EBS Sensor: MFG OM Shippable Kit Models not OM Interfaced, but its components are interfaced - Weekly",WEEK,SAT,1
 EBS Sensor: FIN GL Posted unbalanced journals - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Shipped Delivery Details Owned by an Open Delivery - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Shipped Delivery Details Where Shipped Quantity is Zero - Weekly,WEEK,SAT,1

@@ -1,6 +1,10 @@
 # Copyright (c) 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
+variable "tenancy_id" {
+  type        = string
+}
+
 variable "compartment_ocid" {
   type        = string
   description = "Compartment Identifier"
@@ -52,4 +56,12 @@ variable "log_group_ocid" {
 variable "namespace" {
   type        = string
   description = "The Logging Analytics namespace used for the request."
+}
+
+variable "bucket_name" {
+  type        = string
+}
+
+variable "file_name" {
+  type        = string
 }
