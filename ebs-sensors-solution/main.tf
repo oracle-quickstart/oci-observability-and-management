@@ -86,12 +86,12 @@ module "create_mgmtagent_dynamicgroup" {
   tenancy_ocid              = var.tenancy_ocid
   dynamic_group_name        = local.mgmtagent_dynamic_group_name
   dynamic_group_description = "This is a Management Agent dynamic group created by Agent stack"
-  matching_rule             = "ALL {resource.type='managementagent', resource.compartment.id='${var.compartment_ocid}'}"
+  matching_rule             = "ALL {resource.type='managementagent', resource.compartment.id='${var.db_compartment}'}"
 
   create_policies       = false
   policy_name           = local.mgmtagent_policy_name
   policy_description    = "These are the required policies for Management Agent functionality"
-  policy_compartment_id = var.compartment_ocid
+  policy_compartment_id = var.db_compartment
   policy_statements = [
     "ALLOW DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} TO MANAGE management-agents IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} TO USE METRICS IN COMPARTMENT ID ${var.db_compartment}"
