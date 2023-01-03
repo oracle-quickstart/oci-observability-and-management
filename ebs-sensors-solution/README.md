@@ -5,7 +5,7 @@ As part of this deployment, a compute instance is created and MACS agent is conf
 
 ## Prerequisites
 - VCN and subnet from where database can be accessed.
-- Database password should be stored as a vault secret.
+- The subnet should have access to OCI Services (via a Service Gateway)
 - Quota to create the following resources: 1 Compute instance,  1 dynamic group, 1 policy
 - Store EBS DB password in OCI Vault in base encoded form. 
 - Store schedule file in OCI Object Storage bucket. 

@@ -76,7 +76,7 @@ def main(argv):
                                source_name=source)
                 print("Delete response ::", response.headers)
             except oci.exceptions.ServiceError as e:
-                if e.status != 404:
+                if e.status != 404 or e.status != 409:
                     print("Error in deleting source :",e, flush=True)
                 raise e
             except Exception as e:
