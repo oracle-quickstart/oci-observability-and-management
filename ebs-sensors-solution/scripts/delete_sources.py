@@ -7,10 +7,8 @@ import xml.etree.ElementTree as ET
 
 def main(argv):
     try:
-        options, args = getopt.getopt(argv, "h:c:e:l:p:",
+        options, args = getopt.getopt(argv, "h:c:p:",
                                       ["compartmentid =",
-                                       "entityid =",
-                                       "loggroupid =",
                                        "path ="])
         print('options: ', options)
         print('args: ', args)
@@ -18,18 +16,12 @@ def main(argv):
         print("Error Message ")
 
     compartmentid = ''
-    entityid = ''
-    loggroupid = ''
     path = ''
     for name, value in options:
-        if name in ['-c', '--compartmentid']:
-            compartmentid = value
-        elif name in ['-e', '--entityid']:
-            entityid = value
-        elif name in ['-l', '--loggroupid']:
-            loggroupid = value
-        elif name in ['-p', '--path']:
+        if name in ['-p', '--path']:
             path = value
+        elif name in ['-c', '--compartmentid']:
+            compartmentid = value
 
     try:
         # get source names from the given path
@@ -42,12 +34,10 @@ def main(argv):
         srcnames = getsourcenames(path)
         sourcenames = set(srcnames)
 
-        print("######################### Source entity Associations Details ######################")
-        print("compartment_id :: ", compartmentid)
-        print("loggroup_id :: ", loggroupid)
+        print("######################### Source Details ######################")
+        print("compartment-id :: ", compartmentid)
         print("path :: ", path)
         print("sources :: ", sourcenames)
-        print("entity_id :: ", entityid)
 
         # get oci obo token from env var settings and create signer from obo delegation token
         obo_token = os.environ.get("OCI_obo_token")
@@ -60,49 +50,41 @@ def main(argv):
         namespace = object_storage_client.get_namespace().data
         print("Tenancy NameSpace :: ", namespace)
 
-        # Before proceeding to add association(s), check if the entity is eligible
-        # by looking at lifecycleState and lifecycleDetails
-        maxRetries = 30
-        while (maxRetries > 0):
-            get_entity = la_client.get_log_analytics_entity(
-                namespace_name=namespace,
-                log_analytics_entity_id=entityid)
-            lc_state = get_entity.data.lifecycle_state
-            print("Entity State :: ", lc_state)
-            if (lc_state == 'ACTIVE'):
-                break
-            else:
-                print('Entity is still not ACTIVE. Current lifecycle state: ', lc_state)
-            try:
-                time.sleep(10)
-            except Exception:
-                continue
-
-        items=[]
+        etag = ''
         for source in sourcenames:
-            assoc = oci.log_analytics.models.UpsertLogAnalyticsAssociation(
-                agent_id=get_entity.data.management_agent_id,
-                source_name=source,
-                entity_id=entityid,
-                entity_name=get_entity.data.name,
-                entity_type_name=get_entity.data.entity_type_internal_name,
-                host=get_entity.data.hostname,
-                log_group_id=loggroupid)
-            items.append(assoc)
+            # get source
+            try:
+                response = la_client.get_source(
+                               namespace_name=namespace, 
+                               compartment_id=compartmentid,
+                               source_name=source)
+                print("Get Source Response ::", response.headers)
+                # get etag from get source response
+                etag = response.headers.get("eTag")
+            except oci.exceptions.ServiceError as e:
+                if e.status == 404:
+                    print("404 Error getting source: ", source)
+                    continue
+                print("Error in getting source :",e, flush=True)
+                raise e
 
-        assocs=oci.log_analytics.models.UpsertLogAnalyticsAssociationDetails(
-            compartment_id=compartmentid,
-            items=items)
+            print("Deleting source :: ", source)
+            try:
+                response = la_client.delete_source(
+                               namespace_name=namespace, 
+                               if_match=etag,
+                               source_name=source)
+                print("Delete response ::", response.headers)
+            except oci.exceptions.ServiceError as e:
+                if e.status != 404 or e.status != 409:
+                    print("Error in deleting source :",e, flush=True)
+                raise e
+            except Exception as e:
+                print(e,flush=True)
+                raise e
 
-        # Read assoc payload from json file
-        upsert_associations_response = la_client.upsert_associations(
-            namespace_name = namespace,
-            upsert_log_analytics_association_details = assocs,
-            is_from_republish = False)
-
-        print(upsert_associations_response.headers)
-    except Exception:
-        print('Error in adding source-entity association')
+    except Exception as e:
+        print("Error in deleting sources: ",e)
         raise
 
 def getsourcenames(filepath):

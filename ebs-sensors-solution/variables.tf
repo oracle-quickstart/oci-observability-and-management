@@ -98,6 +98,15 @@ variable "la_entity_name" {
   default     = "TestEBS"
   description = "The EBS Entity Name."
 }
+
+variable "bucket_name" {
+  type        = string
+}
+
+variable "file_name" {
+  type        = string
+}
+
 variable "log_group_ocid" {
   type        = string
   default     = "dummy"
@@ -123,6 +132,7 @@ variable "products" {
 variable "dashboard_files" {
   description = "Dashboard JSON files"
   type = set(string)
-  default = ["eBS-sensors-dashboard.json"]
+  default = ["EBS-Dashboards.json"]
+  #default = ["eBS-sensors-dashboard.json"]
 }
 

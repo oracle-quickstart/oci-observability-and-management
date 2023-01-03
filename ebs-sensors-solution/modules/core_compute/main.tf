@@ -36,15 +36,15 @@ resource "oci_core_instance" "mgmtagent_instance" {
     source_id   = local.image_ocid
   }
 
-  agent_config {
-    are_all_plugins_disabled = false
-    is_management_disabled   = true
-    is_monitoring_disabled   = true
-    plugins_config {
-      name          = "Management Agent"
-      desired_state = "ENABLED"
-    }
-  }
+#  agent_config {
+#    are_all_plugins_disabled = true
+#    is_management_disabled   = true
+#    is_monitoring_disabled   = true
+#    plugins_config {
+#      name          = "Management Agent"
+#      desired_state = "DISABLED"
+#    }
+#  }
 
   create_vnic_details {
     assign_public_ip = true
@@ -61,12 +61,15 @@ resource "oci_core_instance" "mgmtagent_instance" {
     ssh_authorized_keys = var.public_key
     user_data = base64encode(templatefile(format("%s/%s", path.module, "cloud-init.sh"),
       {
+        tenancy_id       = var.tenancy_id,
         secret_ocid      = var.db_secret_ocid,
         username         = var.db_user,
         entity_name      = var.db_name,
         compartment_ocid = var.compartment_ocid
         log_group_ocid   = var.log_group_ocid
         namespace        = var.namespace
+        bucket_name      = var.bucket_name
+        schedule_file    = var.file_name
     }))
   }
 }
