@@ -1,0 +1,38 @@
+# Required for the OCI Provider
+tenancy_ocid="<TENANCY_OCID>"
+compartment_ocid="<COMPARTMENT_OCID>"
+config_file_profile="DEFAULT"
+
+db_compartment="<DB_COMPARTMENT_OCID>"
+db_cred_compartment="<VAULT_COMPARTMENT_OCID>"
+
+region="<REGION>"
+db_host="<DB_HOST>"
+db_port=<DB_PORT>
+db_service="<DB_SERVICE_NAME>"
+db_username="<DB_USER_NAME>"
+db_credentials="<VAULT_SECRET_OCID>"
+db_user_role="NORMAL"
+
+subnet_ocid="<DB_NETWORK_SUBNET_OCID>"
+instance_name="EBSAgentVM"
+availability_domain="<AD>"
+instance_shape="VM.Standard.E2.1"
+user_ssh_secret="<SSH-KEY>"
+
+# set to false if creating dynamic groups and policies manually
+setup_policies=true
+
+bucket_name="<BUCKET_NAME>"
+file_name="logan_schedule_database_sql_EBS.csv"
+
+resource_compartment="<RESOURCE_COMPARTMENT_OCID>"
+create_log_group=false
+log_group_ocid="<LOG_GROUP_OCID>"
+# Name of LA Entity for EBS-DB
+la_entity_name="TestEBS-DB"
+
+# Selected products
+products="Oracle Advanced Benefits,Oracle Workflow"
+
+#products="Oracle Advanced Benefits,Oracle Advanced Supply Chain Planning,Oracle Approvals Management,Oracle Assets,Oracle Cash Management,Oracle Cost Management,Oracle E-Business Suite Technology Stack,Oracle Financials for EMEA,Oracle General Ledger,Oracle HRMS (UK),Oracle Human Resources,Oracle Inventory Management,Oracle iProcurement,Oracle Materials Requirement Planning,Oracle Order Management,Oracle Payables,Oracle Payroll,Oracle Process Manufacturing Financials,Oracle Process Manufacturing Process Execution,Oracle Project Billing,Oracle Project Costing,Oracle Project Planning and Control,Oracle Public Sector Financials,Oracle Purchasing,Oracle Receivables,Oracle Shipping Execution,Oracle Time and Labor,Oracle Trading Community,Oracle Work in Process,Oracle Workflow
