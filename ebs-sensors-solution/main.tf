@@ -1,10 +1,6 @@
 # Copyright (c) 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-data "oci_objectstorage_namespace" "os_namespace" {
-  compartment_id = var.compartment_ocid
-}
-
 locals {
   namespace                    = data.oci_objectstorage_namespace.os_namespace.namespace
   timestamp                    = formatdate("YYYYMMDDhhmmss", timestamp())
@@ -65,7 +61,7 @@ module "instance_tenancy_policies" {
     "ALLOW DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} TO MANAGE management-agents IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.mgmtagent_dynamic_group_name} TO USE METRICS IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE management-agents IN COMPARTMENT ID ${var.db_compartment}",
-    "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE management-agent-install-keys IN COMPARTMENT ID ${var.db_compartment}",
+  #  "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE management-agent-install-keys IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO MANAGE OBJECTS IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO READ BUCKETS IN COMPARTMENT ID ${var.db_compartment}",
     "ALLOW DYNAMIC-GROUP ${local.instance_dynamic_group_name} TO READ secret-family in COMPARTMENT ID ${var.db_cred_compartment} where target.secret.id = '${var.db_credentials}'"
@@ -122,14 +118,14 @@ module "create_compute_instance" {
   file_name           = var.file_name
 }
 
-# This creates a 5 minutes delay that is required in further execution
+# This creates a 3 minutes delay that is required in further execution
 module "wait_until_agent_is_ready" {
   depends_on = [
     module.create_compute_instance
   ]
 
   source          = "./modules/time_delay"
-  wait_in_minutes = 5
+  wait_in_minutes = 3
 }
 
 module "macs_interactions" {
@@ -176,16 +172,18 @@ module "logan_sources" {
       module.la_entity
   ]
   source = "./modules/logan_sources"
+  auth_type = var.auth_type
+  config_file_profile = var.config_file_profile
   namespace = local.namespace
   compartment_id = var.resource_compartment
-  for_each = toset(var.products)
+  for_each = toset(split(",", var.products))
       path = format("%s/%s", "./contents/sources", each.value) 
 }
 
 resource "null_resource" "import_lookups" {
   
   provisioner "local-exec" {
-    command = "python3 ./scripts/import_lookup.py -t Lookup -n \"EBS Functional Sensors\" -f ./contents/lookups/EBS_Lookup.csv"
+    command = "python3 ./scripts/import_lookup.py -t Lookup -a ${var.auth_type} -p ${var.config_file_profile} -n \"EBS Functional Sensors\" -f ./contents/lookups/EBS_Lookup.csv"
   }
 }
 
@@ -204,7 +202,9 @@ module "create_assoc" {
     module.wait_until_entity_is_ready, module.logan_sources
   ]
   source = "./modules/logan_associations"
-  for_each = toset(var.products)
+  for_each = toset(split(",", var.products))
+      auth_type = var.auth_type
+      config_file_profile = var.config_file_profile
       entity_compartment_id = var.resource_compartment
       entity_id = module.la_entity.entity_id
       filepath = format("%s/%s", "./contents/sources", each.value)

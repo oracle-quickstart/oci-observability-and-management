@@ -7,3 +7,6 @@ variable "path" {
 variable "namespace" {
   type = string
 }
+
+variable "auth_type" {}
+variable "config_file_profile" {}

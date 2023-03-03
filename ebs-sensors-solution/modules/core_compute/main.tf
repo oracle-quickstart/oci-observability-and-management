@@ -36,15 +36,15 @@ resource "oci_core_instance" "mgmtagent_instance" {
     source_id   = local.image_ocid
   }
 
-#  agent_config {
-#    are_all_plugins_disabled = true
-#    is_management_disabled   = true
-#    is_monitoring_disabled   = true
-#    plugins_config {
-#      name          = "Management Agent"
-#      desired_state = "DISABLED"
-#    }
-#  }
+  agent_config {
+    are_all_plugins_disabled = false
+    is_management_disabled   = true
+    is_monitoring_disabled   = true
+    plugins_config {
+      name          = "Management Agent"
+      desired_state = "ENABLED"
+    }
+  }
 
   create_vnic_details {
     assign_public_ip = true

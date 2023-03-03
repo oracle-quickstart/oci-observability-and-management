@@ -7,8 +7,10 @@ import xml.etree.ElementTree as ET
 
 def main(argv):
     try:
-        options, args = getopt.getopt(argv, "h:a:c:e:l:p:",
-                                      ["action =",
+        options, args = getopt.getopt(argv, "h:o:a:p:c:e:l:f:",
+                                      ["operation =",
+                                       "authtype =",
+                                       "profile =",
                                        "compartmentid =",
                                        "entityid =",
                                        "loggroupid =",
@@ -18,49 +20,65 @@ def main(argv):
     except:
         print("Error Message ")
 
-    action = ''
+    operation = ''
     compartmentid = ''
     entityid = ''
     loggroupid = ''
-    path = ''
+    filepath = ''
+    authType = ''
+    profile = ''
     for name, value in options:
-        if name in ['-a', '--action']:
-            action = value
+        if name in ['-o', '--operation']:
+            operation = value
+        elif name in ['-a', '--authtype']:
+            authType = value
+        elif name in ['-p', '--profile']:
+            profile = value
         elif name in ['-c', '--compartmentid']:
             compartmentid = value
         elif name in ['-e', '--entityid']:
             entityid = value
         elif name in ['-l', '--loggroupid']:
             loggroupid = value
-        elif name in ['-p', '--path']:
-            path = value
+        elif name in ['-f', '--filepath']:
+            filepath = value
 
     try:
         # get source names from the given path
         sourcenames = []
-        if (not path):
-            print ("Error: Source path is empty!")
+        if (not filepath):
+            print ("Error: Source filepath is empty!")
             return
-        if path.startswith('"') and path.endswith('"'):
-            path = path[1:-1]
-        srcnames = getsourcenames(path)
+        if filepath.startswith('"') and filepath.endswith('"'):
+            filepath = filepath[1:-1]
+        srcnames = getsourcenames(filepath)
         sourcenames = set(srcnames)
 
         print("######################### Source entity Associations Details ######################")
-        print("action :: ", action)
+        print("operation :: ", operation)
+        print("authtype :: ", authType)
+        print("profile :: ", profile)
         print("compartment_id :: ", compartmentid)
         print("loggroup_id :: ", loggroupid)
-        print("path :: ", path)
+        print("filepath :: ", filepath)
         print("sources :: ", sourcenames)
         print("entity_id :: ", entityid)
 
-        # get oci obo token from env var settings and create signer from obo delegation token
-        obo_token = os.environ.get("OCI_obo_token")
-        signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=obo_token)
-        # create LogAnalytics client using signer
-        la_client = oci.log_analytics.LogAnalyticsClient(config={}, signer=signer)
-        #Create Objectstorage client
-        object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
+
+        la_client = None
+        object_storage_client = None
+
+        if (authType == 'user'):
+            config = oci.config.from_file("~/.oci/config", profile)
+            la_client = oci.log_analytics.LogAnalyticsClient(config=config)
+            object_storage_client = oci.object_storage.ObjectStorageClient(config=config)
+        else:
+            # get oci obo token from env var settings and create signer from obo delegation token
+            obo_token = os.environ.get("OCI_obo_token")
+            signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=obo_token)
+            # create LogAnalytics client using signer
+            la_client = oci.log_analytics.LogAnalyticsClient(config={}, signer=signer)
+            object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
 
         namespace = object_storage_client.get_namespace().data
         print("Tenancy NameSpace :: ", namespace)
@@ -86,7 +104,7 @@ def main(argv):
             except Exception:
                 continue
 
-        if (action == 'upsert'):
+        if (operation == 'upsert'):
             items=[]
             for source in sourcenames:
                 assoc = oci.log_analytics.models.UpsertLogAnalyticsAssociation(
@@ -110,7 +128,7 @@ def main(argv):
                 is_from_republish = False)
 
             print('upsert_associations_response:: ',upsert_associations_response.headers)
-        elif (action == 'delete'):
+        elif (operation == 'delete'):
             items=[]
             for source in sourcenames:
                 assoc = oci.log_analytics.models.DeleteLogAnalyticsAssociation(
