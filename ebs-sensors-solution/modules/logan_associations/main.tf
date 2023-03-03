@@ -5,6 +5,8 @@
 # Upsert or delete Associations
 resource null_resource manage_assocs {
   triggers = {
+    auth_type = var.auth_type
+    profile_name = var.config_file_profile
     compartment_id = var.entity_compartment_id
     entity_id = var.entity_id
     loggroup_id = var.loggroup_id
@@ -13,11 +15,11 @@ resource null_resource manage_assocs {
   }
 
   provisioner "local-exec" {
-    command = "python3 ./scripts/manageassocs.py -a upsert -c ${self.triggers.compartment_id} -e ${self.triggers.entity_id} -l ${self.triggers.loggroup_id} -p ${self.triggers.path}"
+    command = "python3 ./scripts/manageassocs.py -o upsert -a ${self.triggers.auth_type} -p ${self.triggers.profile_name} -c ${self.triggers.compartment_id} -e ${self.triggers.entity_id} -l ${self.triggers.loggroup_id} -f ${self.triggers.path}"
   }
 
   provisioner "local-exec" {
     when = destroy
-    command = "python ./scripts/manageassocs.py -a delete -c ${self.triggers.compartment_id} -e ${self.triggers.entity_id} -l ${self.triggers.loggroup_id} -p ${self.triggers.path}"
+    command = "python ./scripts/manageassocs.py -o delete -a ${self.triggers.auth_type} -p ${self.triggers.profile_name} -c ${self.triggers.compartment_id} -e ${self.triggers.entity_id} -l ${self.triggers.loggroup_id} -f ${self.triggers.path}"
   }
 }

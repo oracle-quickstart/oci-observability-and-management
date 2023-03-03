@@ -22,3 +22,6 @@ variable "filepath" {
   type        = string
   description = "Source file Path"
 }
+
+variable "auth_type" {}
+variable "config_file_profile" {}

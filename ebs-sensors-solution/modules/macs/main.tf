@@ -5,7 +5,7 @@
 # find the agent with is_customer_deployed = true and use that
 data "oci_management_agent_management_agents" "agent_deployed" {
   compartment_id       = var.compartment_ocid
-  is_customer_deployed = true
+  is_customer_deployed = false
   host_id              = var.instance_ocid
 }
 

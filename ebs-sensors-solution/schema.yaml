@@ -59,7 +59,7 @@ variableGroups:
       - user_ssh_secret
 
   - title: Management Agent IAM Policies
-    visible: false
+    visible: true
     variables:
       - setup_policies
 
@@ -85,16 +85,47 @@ variableGroups:
 
 variables:
   products:
-    type: array
-    items:
-      type: string
+    type: enum
     title: "Select Products"
     description: Select the products. 
     required: true
-    default: ["Oracle Advanced Benefits", "Oracle Advanced Supply Chain Planning", "Oracle Approvals Management", "Oracle Assets",  "Oracle Cash Management", "Oracle Cost Management", "Oracle E-Business Suite Technology Stack", "Oracle Financials for EMEA", "Oracle General Ledger", "Oracle HRMS (UK)", "Oracle Human Resources", "Oracle Inventory Management", "Oracle iProcurement", "Oracle Materials Requirement Planning",  "Oracle Order Management",  "Oracle Payables",  "Oracle Payroll",  "Oracle Process Manufacturing Financials", "Oracle Process Manufacturing Process Execution", "Oracle Project Billing", "Oracle Project Costing", "Oracle Project Planning and Control", "Oracle Public Sector Financials", "Oracle Purchasing", "Oracle Receivables", "Oracle Shipping Execution", "Oracle Time and Labor", "Oracle Trading Community", "Oracle Work in Process", "Oracle Workflow"]
-#    default: ["Oracle Advanced Benefits", "Oracle Workflow"]
-    minItems: 1
-    uniqueItems: true
+    enum: 
+    - Oracle Advanced Benefits
+    - Oracle Advanced Supply Chain Planning
+    - Oracle Approvals Management
+    - Oracle Assets
+    - Oracle Cash Management
+    - Oracle Cost Management
+    - Oracle E-Business Suite Technology Stack
+    - Oracle Financials for EMEA
+    - Oracle General Ledger
+    - Oracle HRMS (UK)
+    - Oracle Human Resources
+    - Oracle Inventory Management
+    - Oracle iProcurement
+    - Oracle Materials Requirement Planning
+    - Oracle Order Management
+    - Oracle Payables
+    - Oracle Payroll
+    - Oracle Process Manufacturing Financials
+    - Oracle Process Manufacturing Process Execution
+    - Oracle Project Billing
+    - Oracle Project Costing
+    - Oracle Project Planning and Control
+    - Oracle Public Sector Financials
+    - Oracle Purchasing
+    - Oracle Receivables
+    - Oracle Shipping Execution
+    - Oracle Time and Labor
+    - Oracle Trading Community
+    - Oracle Work in Process
+    - Oracle Workflow
+    additionalProps:
+      allowMultiple: true
+      minItems: 1
+      uniqueItems: true
+    default: Oracle Advanced Benefits, Oracle Workflow
+    #default: ["Oracle Advanced Benefits", "Oracle Advanced Supply Chain Planning", "Oracle Approvals Management", "Oracle Assets",  "Oracle Cash Management", "Oracle Cost Management", "Oracle E-Business Suite Technology Stack", "Oracle Financials for EMEA", "Oracle General Ledger", "Oracle HRMS (UK)", "Oracle Human Resources", "Oracle Inventory Management", "Oracle iProcurement", "Oracle Materials Requirement Planning",  "Oracle Order Management",  "Oracle Payables",  "Oracle Payroll",  "Oracle Process Manufacturing Financials", "Oracle Process Manufacturing Process Execution", "Oracle Project Billing", "Oracle Project Costing", "Oracle Project Planning and Control", "Oracle Public Sector Financials", "Oracle Purchasing", "Oracle Receivables", "Oracle Shipping Execution", "Oracle Time and Labor", "Oracle Trading Community", "Oracle Work in Process", "Oracle Workflow"]
 
   db_compartment:
     type: oci:identity:compartment:id
@@ -259,6 +290,20 @@ variables:
     description: Select Log Group.
     dependsOn:
       compartmentId: ${resource_compartment}
+
+  auth_type:
+    type: string
+    title: "Authentication Type"
+    visible: false
+    required: true
+    default: instance
+
+  config_file_profile:
+    type: string
+    title: "Authentication Config Profile"
+    visible: false
+    required: true
+    default: DEFAULT
 
 outputGroups:
   - title: Resource dashboards

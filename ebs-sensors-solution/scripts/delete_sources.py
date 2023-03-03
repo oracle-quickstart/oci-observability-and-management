@@ -7,51 +7,70 @@ import xml.etree.ElementTree as ET
 
 def main(argv):
     try:
-        options, args = getopt.getopt(argv, "h:c:p:",
-                                      ["compartmentid =",
-                                       "path ="])
+        options, args = getopt.getopt(argv, "h:a:p:c:f:",
+                                      ["authtype =",
+                                       "profile =",
+                                       "compartmentid =",
+                                       "filepath ="])
         print('options: ', options)
         print('args: ', args)
     except:
         print("Error Message ")
 
     compartmentid = ''
-    path = ''
+    filepath = ''
+    authType = 'user'
+    profile = ''
     for name, value in options:
-        if name in ['-p', '--path']:
-            path = value
+        if name in ['-a', '--authtype']:
+            authType = value
+        elif name in ['-p', '--profile']:
+            profile = value
+        elif name in ['-f', '--filepath']:
+            filepath = value
         elif name in ['-c', '--compartmentid']:
             compartmentid = value
 
     try:
         # get source names from the given path
         sourcenames = []
-        if (not path):
-            print ("Error: Source path is empty!")
+        if (not filepath):
+            print ("Error: Source filepath is empty!")
             return
-        if path.startswith('"') and path.endswith('"'):
-            path = path[1:-1]
-        srcnames = getsourcenames(path)
+        if filepath.startswith('"') and filepath.endswith('"'):
+            filepath = filepath[1:-1]
+        srcnames = getsourcenames(filepath)
         sourcenames = set(srcnames)
 
         print("######################### Source Details ######################")
+        print("authtype :: ", authType)
+        print("profile :: ", profile)
         print("compartment-id :: ", compartmentid)
-        print("path :: ", path)
+        print("filepath :: ", filepath)
         print("sources :: ", sourcenames)
 
-        # get oci obo token from env var settings and create signer from obo delegation token
-        obo_token = os.environ.get("OCI_obo_token")
-        signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=obo_token)
-        # create LogAnalytics client using signer
-        la_client = oci.log_analytics.LogAnalyticsClient(config={}, signer=signer)
-        #Create Objectstorage client
-        object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
+        la_client = None
+        object_storage_client = None
+
+        if (authType == 'user'):
+            config = oci.config.from_file("~/.oci/config", profile)
+            la_client = oci.log_analytics.LogAnalyticsClient(config=config)
+            object_storage_client = oci.object_storage.ObjectStorageClient(config=config)
+        else:
+            # get oci obo token from env var settings and create signer from obo delegation token
+            obo_token = os.environ.get("OCI_obo_token")
+            signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=obo_token)
+            # create LogAnalytics client using signer
+            la_client = oci.log_analytics.LogAnalyticsClient(config={}, signer=signer)
+            object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
 
         namespace = object_storage_client.get_namespace().data
         print("Tenancy NameSpace :: ", namespace)
 
         etag = ''
         for source in sourcenames:
+            # escape source name
+            #source = source.replace("\/", "%2F")
             # get source
             try:
                 response = la_client.get_source(

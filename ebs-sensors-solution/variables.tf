@@ -1,6 +1,14 @@
 # Copyright (c) 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
+variable "config_file_profile" {
+  default = "DEFAULT"
+}
+
+variable "auth_type" {
+    default = "instance"
+}
+
 variable "tenancy_ocid" {
   type        = string
   description = "The OCID of the tenancy."
@@ -34,7 +42,7 @@ variable "region" {
 variable "instance_name" {
   type        = string
   description = "Display name for compute instance"
-  default     = "ATP-MgmtAgent"
+  default     = "EBS-MgmtAgent"
 }
 
 variable "availability_domain" {
@@ -47,10 +55,10 @@ variable "instance_shape" {
   description = "The shape of an instance. The shape determines the number of CPUs, amount of memory, and other resources allocated to the instance."
 }
 
-variable "vcn_ocid" {
-  type        = string
-  description = "The OCID of the VCN to create the instance in."
-}
+#variable "vcn_ocid" {
+#  type        = string
+#  description = "The OCID of the VCN to create the instance in."
+#}
 
 variable "subnet_ocid" {
   type        = string
@@ -126,7 +134,7 @@ variable "create_log_group" {
 }
 
 variable "products" {
-  type = list(string)
+  type = string
 }
 
 variable "dashboard_files" {
