@@ -39,8 +39,8 @@ EBS Sensor: MFG OM Cancelled Dropship Line(s) have associated open PO Line(s) - 
 EBS Sensor: MFG OM Cancelled or Closed SO Headers with Open Lines - Weekly,WEEK,SAT,1
 "EBS Sensor: MFG OM Model Lines Cancelled, but where at least one Child Line is not Cancelled - Weekly",WEEK,SAT,1
 EBS Sensor: MFG OM Cancelled Sales Order(s) with an improperly set Open Flag - Weekly,WEEK,SAT,1
-EBS Sensor: FIN AP Check(s) with Missing/Incorrect References Detected - Weekly,WEEK,SAT,1
-EBS Sensor: FIN AP Prepayment apply/unapply Event not getting Accounted - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP Check(s) with Missing or Incorrect References Detected - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP Prepayment apply or unapply Event not getting Accounted - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Expired Pricing Entity(s) exist - Daily,DAY,1,1
 EBS Sensor: MFG PM GEM5 CMPNT COST ID S sequence created with greater value than 21474836647 - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Prepayment event incorrectly accounted - Weekly,WEEK,SAT,1
@@ -59,7 +59,7 @@ EBS Sensor: FIN AP Posted Flags are Incorrect for Accounted Payments - Weekly,WE
 EBS Sensor: FIN AP Invoice accounting event(s) with incorrect accounting hold status - Weekly,WEEK,SAT,1
 EBS Sensor: MFG VCP MSCANAPP ORA-20000 or MSCCRPAR ORA-02149 ORA-014074 or MSCSDW ORA-02149 - Daily,DAY,1,1
 EBS Sensor: FIN AP Posted Flags are Incorrect for Accounted Invoices - Weekly,WEEK,SAT,1
-EBS Sensor: FIN AP LOW-IMPACT/INFREQUENT issues on checks detected - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP LOW-IMPACT or INFREQUENT issues on checks detected - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Accounting Fails Due to Missing Liability Account on Invoice Header - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Multiple Entities Created for Payment(s) - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP AWT Distributions Missing OR Incorrect AWT RELATED ID - Weekly,WEEK,SAT,1
@@ -74,10 +74,10 @@ EBS Sensor: FIN AP Invoice Distribution Line exist that are not Reversed correct
 EBS Sensor: FIN AP Invoice with issue in amounts or base amounts found - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Prepayment Accounted for Multiple Times the Prepayment amount - Weekly,WEEK,SAT,1
 "EBS Sensor: MFG OM Ship Set stuck Part of Set Shipped, Part of Set Not Shipped - Weekly",WEEK,SAT,1
-EBS Sensor: MFG OM Shipped Delivery Details Not Eligible for OM/INV Interfacing - Weekly,WEEK,SAT,1
+EBS Sensor: MFG OM Shipped Delivery Details Not Eligible for OM or INV Interfacing - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Lines In OMERROR found - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Lines in Workflow Error - Weekly,WEEK,SAT,1
-EBS Sensor: MFG OM Order Lines in BOOKED status that are missing Workflow Assignment/Activity - Weekly,WEEK,SAT,1
+EBS Sensor: MFG OM Order Lines in BOOKED status that are missing Workflow Assignment or Activity - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Functional Currency Invoices for Which Base Amount is Populated - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Partially cancelled Invoice(s) found - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Orphan invoice distributions with no line found - Weekly,WEEK,SAT,1
@@ -113,15 +113,15 @@ EBS Sensor: FIN AP Reversing distribution pairs which have not been encumbered -
 EBS Sensor: FIN AP Approved distributions containing unprocessed budgetary control events w BC event not acctd - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AR Adjustment Events in error - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA Burden cost amounts or rates are populated on uncosted expenditure items - Weekly,WEEK,SAT,1
-EBS Sensor: FIN AP Quantity Billed / Amount Billed Mismatch - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP Quantity Billed or Amount Billed Mismatch - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Amount and base amounts different for functional currency AWT - Weekly,WEEK,SAT,1
-EBS Sensor: FIN AP establishment id value is null in table zx lines/zx lines summary - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP establishment id value is null in table zx lines or zx lines summary - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Values of match type and dist match type are not in sync - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Payment with Accounting dates out of sync with the Subledger tables - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Assets tracking flag set incorrectly on matched distributions - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Invoice cancellation related issue - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Invoice matching related issue - Weekly,WEEK,SAT,1
-EBS Sensor: FIN GL Mass Allocation batch and/or formula is Stuck In Process Status - Weekly,WEEK,SAT,1
+EBS Sensor: FIN GL Mass Allocation batch and or formula is Stuck In Process Status - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA Burden distributions missing for expendiutre items flagged as cost burden distributed - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Booked SO Headers with non-booked Lines - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA PRC: Distribute Total Burdened Cost process errors with ADJ EI NOT DISTRIBUTED - Weekly,WEEK,SAT,1
@@ -129,7 +129,7 @@ EBS Sensor: HCM HR Benefits Enrollment rate overrides exist where no Thru date v
 EBS Sensor: FIN FCA Missing Legal Reporting Status on transactions - Weekly,WEEK,SAT,1
 EBS Sensor: FIN GL Posting program is failing for several batches with Error3 - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA Expenditure Items Exist with Expenditure Item Dates After the Task Finish Dates - Weekly,WEEK,SAT,1
-EBS Sensor: MFG VCP MSCCRPAR module: Create APS Partitions errors with ORA-14080 / ORA-02149 - Weekly,WEEK,SAT,1
+EBS Sensor: MFG VCP MSCCRPAR module: Create APS Partitions errors with ORA-14080 or ORA-02149 - Weekly,WEEK,SAT,1
 EBS Sensor: FIN GL Journal Import Ends With Error EU02 - Monthly,MONTH,LAST,1
 EBS Sensor: FIN PA SYSTEM REFERENCE Columns Are Null for Reversal Cost Distribution Lines - Weekly,WEEK,SAT,1
 EBS Sensor: HCM PAY UK Legislation FPS Rolled Back Using ROLLBACK Not GB ROLLBACK - Weekly,WEEK,SAT,1
@@ -223,7 +223,7 @@ EBS Sensor: HCM PAY Data Corruption in Payroll Cost Allocation Keyflex - Weekly,
 EBS Sensor: FIN GL Balance corruption for summary accounts - Weekly,WEEK,SAT,1
 EBS Sensor: HCM PAY Duplicate Retro assignments with null Retro Assignment Action - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AR Unbalanced Distributions for Adjustment - Weekly,WEEK,SAT,1
-EBS Sensor: MFG INV Lot Numbers exist with Trailing and/or Leading Spaces - Weekly,WEEK,SAT,1
+EBS Sensor: MFG INV Lot Numbers exist with Trailing and or Leading Spaces - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA Raw And Burden Cost For Adjustment Lines Are Not Matching With Original Expenditure Item - Weekly,WEEK,SAT,1
 EBS Sensor: HCM PAY Uncompiled fast formula detected - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Duplicate bank account in IBY EXT BANK ACCOUNTS - Weekly,WEEK,SAT,1
@@ -232,10 +232,10 @@ EBS Sensor: FIN AP Orphan check with no data in ap checks all table - Weekly,WEE
 EBS Sensor: FIN GL Journal Import Ends With Error EM30 - Monthly,MONTH,LAST,1
 EBS Sensor: ATG CT There are more than 500k records in the FND CONCURRENT REQUESTS table - Weekly,WEEK,SAT,12
 EBS Sensor: FIN GL Error 12 During Funds Checking or Posting of Receivables Journals - Weekly,WEEK,SAT,1
-EBS Sensor: FIN GL Journal Batch Name has Leading and/or Trailing spaces - Weekly,WEEK,SAT,1
+EBS Sensor: FIN GL Journal Batch Name has Leading and or Trailing spaces - Weekly,WEEK,SAT,1
 EBS Sensor: MFG INV Stuck transactions with orphaned reservations - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AR Receipts with Multiple Current Rows - Weekly,WEEK,SAT,1
-EBS Sensor: FIN AP Incorrect Accounting of Prepay Applied due to prior unapplied prepay/cancelled payment - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP Incorrect Accounting of Prepay Applied due to prior unapplied prepay or cancelled payment - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Historical upgraded events found to be missing records in xla distribution links - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Order lines after full receipt of goods are not Fulfilled - Daily,DAY,1,1
 EBS Sensor: FIN AR Receipts with Null EVENT ID - Weekly,WEEK,SAT,1
@@ -265,9 +265,9 @@ EBS Sensor: FIN PA Distribute Costs Error Unable to create cost distribution lin
 EBS Sensor: FIN GL Journal Import Ends With Error EC03 While Running Consolidation - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA Transactions causing duplicate actuals in Projects from PO Receipts - Weekly,WEEK,SAT,1
 EBS Sensor: MFG INV Item orphan records in MTL PENDING ITEM STATUS table but not in MTL SYSTEM ITEMS B - Monthly,MONTH,1,12
-EBS Sensor: MFG DM Pending/Error Move Transactions (WIP MOVE TXN INTERFACE) - Weekly,WEEK,SAT,1
+EBS Sensor: MFG DM Pending or Error Move Transactions (WIP MOVE TXN INTERFACE) - Weekly,WEEK,SAT,1
 EBS Sensor: MFG OM Sales Order LInes Shipped but not Inventory Interfaced - Weekly,WEEK,SAT,1
-EBS Sensor: MFG PO Items from GBPA/BPA not translated in iProcurement - Weekly,WEEK,SAT,1
+EBS Sensor: MFG PO Items from GBPA or BPA not translated in iProcurement - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AR Transaction missing Payment Schedules record(s) - Weekly,WEEK,SAT,1
 EBS Sensor: FIN PA The assets costs are not interfacing to FA - Weekly,WEEK,SAT,1
 EBS Sensor: ATG WF Notification Emails are not Getting Sent and Mailer Log Shows ORA-24010 - Daily,DAY,1,12
@@ -275,11 +275,11 @@ EBS Sensor: MFG DM Create Accounting-Cost management Un-Processed Event transact
 EBS Sensor: FIN AP Duplicate external Payee in iby external payees all - Weekly,WEEK,SAT,1
 EBS Sensor: MFG INV Errors are present in the Material Transactions Temp table - Monthly,MONTH,25,1
 EBS Sensor: FIN GL The posted status for journal lines do not match header - Weekly,WEEK,SAT,1
-EBS Sensor: MFG INV Serial Numbers exist with Trailing and/or Leading Spaces - Monthly,MONTH,1,12
+EBS Sensor: MFG INV Serial Numbers exist with Trailing and or Leading Spaces - Monthly,MONTH,1,12
 "EBS Sensor: FIN AR Adjustment Events in error, GL Period not open - Weekly",WEEK,SUN,12
 EBS Sensor: MFG PO Oracle Text (Intermedia) search index is out of sync for some items in iProcurement Catalog - Weekly,WEEK,SAT,1
 EBS Sensor: FIN FCA Missing VAT Driving Date in EMEA VAT Setup - Weekly,WEEK,SAT,1
-EBS Sensor: MFG VCP MSCNEW / MSCONEW Failing with Signal xx or APP-MRP-22064 errors or Plan Output incorrect - Weekly,WEEK,SAT,1
+EBS Sensor: MFG VCP MSCNEW or MSCONEW Failing with Signal xx or APP-MRP-22064 errors or Plan Output incorrect - Weekly,WEEK,SAT,1
 EBS Sensor: FIN GL Latest open period in GL LEDGERS is incorrect - Weekly,WEEK,SAT,1
 EBS Sensor: FIN GL Journal Import Ends With Error EM01 - Invalid journal entry category - Monthly,MONTH,LAST,1
 EBS Sensor: MFG INV Item orphan records are present in the MTL ITEM CATEGORIES table but not present in MTL SYST - Monthly,MONTH,1,12
@@ -302,7 +302,7 @@ EBS Sensor: MFG PO Found invalid receiving events for the last 30 days - Monthly
 EBS Sensor: FIN AR Adjustments with Null EVENT ID - Weekly,WEEK,SAT,1
 EBS Sensor: FIN FCA The VAT Registration Number is not populated in Customer Sites - Weekly,WEEK,SAT,1
 EBS Sensor: FIN GL GL INTERFACE Rows with Status PROCESSED Remain in the Table - Weekly,WEEK,SAT,1
-EBS Sensor: ATG CT Purge FND AQ Tables to avoid Concurrent Manager/Request performance issue - Monthly,MONTH,1,12
+EBS Sensor: ATG CT Purge FND AQ Tables to avoid Concurrent Manager or Request performance issue - Monthly,MONTH,1,12
 EBS Sensor: ATG CT There are more than 500k records in the FND LOG MESSAGES table - Weekly,WEEK,SAT,12
 EBS Sensor: ATG CT OPP Fails To Pick Up Concurrent Request With Error: Unable to find an Output Post Processor - Weekly,WEEK,SAT,12
 EBS Sensor: FIN GL Error 12 During Funds Checking or Posting of Payables Journals - Weekly,WEEK,SAT,1

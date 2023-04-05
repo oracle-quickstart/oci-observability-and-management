@@ -17,6 +17,6 @@ resource "null_resource" "delete_sources" {
 
   provisioner "local-exec" {
     when = destroy
-    command = "python ./scripts/delete_sources.py -a ${self.triggers.auth_type} -p ${self.triggers.profile_name} -c ${self.triggers.compartment_id} -f ${self.triggers.path}"
+    command = "python3 ./scripts/delete_sources.py -a ${self.triggers.auth_type} -p ${self.triggers.profile_name} -c ${self.triggers.compartment_id} -f ${self.triggers.path}"
   }
 }

@@ -54,7 +54,8 @@ Now, you'll want a local copy of this repo. You can make that with the commands:
     ls
 
 ### Prerequisites
-First off, you'll need to do some pre-deploy setup for Docker and Fn Project inside your machine:
+First off, install python3 if it is not already installed.
+You'll need to do some pre-deploy setup for Docker and Fn Project inside your machine:
 
 ```
 sudo su -
