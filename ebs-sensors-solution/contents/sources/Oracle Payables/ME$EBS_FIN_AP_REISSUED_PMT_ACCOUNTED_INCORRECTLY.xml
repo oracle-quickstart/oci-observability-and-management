@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Reissued Check Accounted Incorrectly - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Reissued Check Accounted Incorrectly - Weekly</DisplayName>
+    <Description><![CDATA[Payment Created and Payment Cleared events created for reissued checks are accounted with incorrect amounts/huge rounding lines.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_REISSUED_PMT_ACCOUNTED_INCORRECTLY' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id key_data FROM (SELECT      check_id check_id  FROM      (          WITH ctrl AS (              SELECT DISTINCT                  aip.check_id              FROM                  (                      SELECT DISTINCT                          ph.check_id                      FROM                          apps.ap_payment_history_all ph                      WHERE                          ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )                  )                       chks,                  apps.ap_invoice_payments_all aip,                  apps.ap_invoice_payments_all aip2,                  apps.ap_checks_all           ac1              WHERE                  ac1.void_date IS NOT NULL                  AND ac1.status_lookup_code = 'VOIDED'                  AND ac1.check_id = aip2.check_id                  AND aip.check_id != aip2.check_id                  AND aip2.invoice_id = aip.invoice_id                  AND aip.check_id = chks.check_id          )          SELECT /*+ ordered use_nl(ac, aph, xe, xh, xl) */              ac.check_id          FROM              ctrl,              apps.ap_checks_all            ac,              apps.ap_payment_history_all   aph,              apps.xla_events               xe,              apps.xla_ae_headers           xh,              apps.xla_ae_lines             xl,              apps.ap_system_parameters_all asp          WHERE                  xl.application_id = 200              AND aph.check_id = ac.check_id              AND ac.check_id = ctrl.check_id              AND ac.void_date IS NULL              AND EXISTS (                  SELECT                      1                  FROM                      apps.ap_invoice_payments_all aip                  WHERE                      aip.check_id = ac.check_id                  GROUP BY                      aip.check_id                  HAVING                      SUM(aip.amount) = ac.amount              )              AND aph.accounting_event_id = xe.event_id              AND aph.posted_flag = 'Y'              AND xe.event_id = xh.event_id              AND xh.upg_batch_id IS NULL              AND xe.event_type_code IN ( 'PAYMENT CREATED', 'REFUND RECORDED', 'PAYMENT CLEARED' )              AND xe.event_status_code = 'P'              AND xe.application_id = 200              AND xh.application_id = 200              AND xh.ledger_id = asp.set_of_books_id              AND xh.ae_header_id = xl.ae_header_id              AND asp.org_id = ac.org_id              AND xl.accounting_class_code IN ( 'CASH_CLEARING', 'CASH', 'FUTURE_DATED_PMT' )              AND decode(xe.event_type_code, 'PAYMENT CLEARED', xl.accounting_class_code, 'YES') != 'CASH'          GROUP BY              ac.org_id,              ac.check_id,              ac.check_date,              ac.check_number,              ac.amount,              xe.event_id,              xe.event_type_code          HAVING              abs(abs(SUM(nvl(entered_cr, 0)) - SUM(nvl(entered_dr, 0))) - abs(ac.amount)) > 1          UNION ALL          SELECT /*+ ordered use_nl(ac, aph, aphd, xh) */              ac.check_id          FROM              ctrl,              apps.ap_checks_all            ac,              apps.ap_payment_history_all   aph,              apps.ap_payment_hist_dists    aphd,              apps.xla_ae_headers           xh,              apps.ap_system_parameters_all asp          WHERE                  ac.amount <> 0              AND aph.check_id = ac.check_id              AND ac.check_id = ctrl.check_id              AND ac.void_date IS NULL              AND asp.org_id = ac.org_id              AND aphd.accounting_event_id = aph.accounting_event_id              AND aphd.accounting_event_id = xh.event_id              AND xh.application_id = 200              AND xh.upg_batch_id IS NULL              AND aphd.pay_dist_lookup_code IN ( 'CASH', 'FINAL PAYMENT ROUNDING' )              AND aph.transaction_type IN ( 'PAYMENT CREATED', 'REFUND RECORDED' )              AND aph.posted_flag = 'Y'          GROUP BY              ac.org_id,              ac.check_id,              ac.check_date,              ac.check_number,              ac.amount,              aph.accounting_event_id,              aph.transaction_type          HAVING              SUM(aphd.invoice_dist_base_amount) = 0      )  WHERE      ROWNUM < 11  ORDER BY      check_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

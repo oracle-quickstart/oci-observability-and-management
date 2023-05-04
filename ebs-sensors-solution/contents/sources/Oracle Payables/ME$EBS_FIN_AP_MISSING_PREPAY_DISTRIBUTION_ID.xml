@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Tax distributions missing PREPAY DISTRIBUTION ID values - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Tax distributions missing PREPAY DISTRIBUTION ID values - Weekly</DisplayName>
+    <Description><![CDATA[Tax distributions created during prepay application/unapplication with missing PREPAY_DISTRIBUTION_ID values]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_MISSING_PREPAY_DISTRIBUTION_ID' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'invoice_id:' || s.invoice_id key_data FROM (SELECT      invoice_id invoice_id  FROM      (          WITH invs AS (              SELECT /*+ materialize */ DISTINCT                  invoice_id              FROM                  apps.ap_invoice_distributions_all              WHERE                  accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )     SELECT 1 corruption_type,            aid_tax.invoice_id,            aid_tax.invoice_distribution_id,            aid_tax.parent_reversal_id,            null corr_prepay_dist_id,            null prepaytax_acctg_event_id,            null prepaytax_bc_event_id,            null prepay_acctg_event_id,            null prepay_bc_event_id     FROM invs,          apps.ap_invoices_all ai,          apps.ap_invoice_distributions_all aid_tax,          apps.ap_invoice_distributions_all aid_prepay     WHERE ai.invoice_id = invs.invoice_id     AND   aid_tax.charge_applicable_to_dist_id = aid_prepay.invoice_distribution_id     AND   aid_tax.invoice_id = aid_prepay.invoice_id     AND   ai.invoice_id = aid_tax.invoice_id     AND   ai.historical_flag = 'Y'     AND   aid_tax.prepay_distribution_id is null     AND   aid_prepay.line_type_lookup_code = 'PREPAY'     AND   aid_tax.line_type_lookup_code IN ('REC_TAX', 'NONREC_TAX')     AND   aid_tax.prepay_tax_parent_id is not null     AND   aid_tax.historical_flag = 'Y'     AND   EXISTS (             SELECT 1 FROM apps.ap_invoice_distributions_all aid_sub             WHERE aid_sub.invoice_id = ai.invoice_id             AND   nvl(aid_sub.historical_flag,'N') = 'N'             UNION ALL             SELECT 1             FROM apps.ap_invoice_distributions_all aid_sub,                  apps.xla_events xe_sub,                  apps.ap_accounting_events_all aae_sub             WHERE aid_sub.accounting_event_id = xe_sub.event_id             AND   xe_sub.event_id = aae_sub.accounting_event_id             AND   xe_sub.upg_batch_id = -9999             AND   aid_sub.invoice_id = ai.invoice_id             UNION ALL             SELECT 1 FROM apps.ap_invoice_payments_all aip_sub,                    apps.ap_payment_history_all aph_sub,                    apps.xla_events xe_sub,                    apps.ap_accounting_events_all aae_sub            WHERE aip_sub.invoice_id = ai.invoice_id            AND   aip_sub.check_id = aph_sub.check_id            AND   aph_sub.accounting_event_id = xe_sub.event_id            AND   xe_sub.application_id = 200            AND   xe_sub.event_id = aae_sub.accounting_event_id            AND   xe_sub.upg_batch_id = -9999            UNION ALL            SELECT 1            FROM apps.ap_invoice_distributions_all aid_sub,                 apps.xla_events xe_sub,                 apps.xla_ae_headers xah_sub            WHERE aid_sub.invoice_id = ai.invoice_id            AND   aid_sub.accounting_event_id = xe_sub.event_id            AND   xe_sub.application_id = 200            AND   xe_sub.event_id = xah_sub.event_id            AND   xah_sub.application_id = 200            AND   xah_sub.upg_batch_id  is null            UNION ALL            SELECT 1            FROM apps.ap_invoice_payments_all aip_sub,                 apps.ap_payment_history_all aph_sub,                 apps.xla_events xe_sub,                 apps.xla_ae_headers xah_sub            WHERE aip_sub.invoice_id = ai.invoice_id            AND   aip_sub.check_id = aph_sub.check_id            AND   aph_sub.accounting_event_id = xe_sub.event_id            AND   xe_sub.application_id = 200            AND   xe_sub.event_id = xah_sub.event_id            AND   xah_sub.application_id = 200            AND   xah_sub.upg_batch_id is null)     UNION ALL     SELECT 2,            aid_taxrev.invoice_id,            aid_taxrev.invoice_distribution_id,            aid_taxrev.parent_reversal_id,            aid_tax.prepay_distribution_id corr_prepay_dist_id,            aid_taxrev.accounting_event_id prepaytax_acctg_event_id,            aid_taxrev.bc_event_id prepaytax_bc_event_id,            aid_prepay.accounting_event_id prepay_acctg_event_id,            aid_prepay.bc_event_id prepay_bc_event_id     FROM invs,          apps.ap_invoice_distributions_all aid_taxrev,          apps.ap_invoice_distributions_all aid_tax,          apps.ap_invoice_distributions_all aid_prepay     WHERE aid_tax.invoice_id = invs.invoice_id     AND   aid_tax.invoice_id = aid_taxrev.invoice_id     AND   aid_tax.invoice_distribution_id = aid_taxrev.parent_reversal_id     AND   aid_prepay.invoice_id = aid_taxrev.invoice_id     AND   aid_prepay.invoice_distribution_id = aid_taxrev.charge_applicable_to_dist_id     AND   aid_taxrev.detail_tax_dist_id is not null     AND   nvl(aid_taxrev.historical_flag, 'N') = 'N'     AND   nvl(aid_tax.historical_flag, 'N') = 'Y'     AND   aid_prepay.line_type_lookup_code = 'PREPAY'     AND   aid_taxrev.line_type_lookup_code IN ('REC_TAX', 'NONREC_TAX')     AND   aid_taxrev.prepay_distribution_id is null                )            where  ROWNUM < 11  ORDER BY      invoice_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

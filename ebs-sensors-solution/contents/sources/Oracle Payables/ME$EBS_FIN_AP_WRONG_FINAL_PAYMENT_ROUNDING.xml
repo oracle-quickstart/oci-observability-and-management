@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Incorrect accounting of payments because of wrong final payment rounding - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Incorrect accounting of payments because of wrong final payment rounding - Weekly</DisplayName>
+    <Description><![CDATA[Incorrect accounting of payments because of wrong final payment rounding due to paid invoices with exchange rate variances]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_WRONG_FINAL_PAYMENT_ROUNDING' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id key_data FROM (SELECT      check_id check_id  FROM      (          WITH chks AS (              SELECT /*+ materialize */ DISTINCT                  ph.check_id              FROM                  apps.ap_payment_history_all ph              WHERE                  ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )  SELECT ac.check_id,            ac.check_number,            ac.org_id,            aid.invoice_distribution_id,            aph.accounting_date,            aph.accounting_event_id event_id,            aphdf.pay_dist_lookup_code,            aphdf.invoice_dist_base_amount fpr_base,            ac.vendor_id,            ac.currency_code,            ac.void_date,            ac.check_date,            ac.amount,            aph.payment_history_id,            aph.transaction_type,            (              SELECT sum(aphdf1.invoice_dist_base_amount)              FROM apps.ap_payment_hist_dists aphdf1              WHERE aphdf.invoice_distribution_id = aphdf1.invoice_distribution_id              AND   aphdf.accounting_event_id = aphdf1.accounting_event_id              AND   aphdf1.pay_dist_lookup_code LIKE '%EXCHANGE RATE VARIANCE'            ) aphd_erv_base,            aid1.base_amount aid_erv_base     FROM apps.ap_invoice_distributions_all aid,          apps.ap_invoice_distributions_all aid1,          apps.ap_invoice_payments_all aip,          apps.ap_payment_history_all aph,          apps.ap_payment_hist_dists aphdf,          apps.ap_checks_all ac,          chks     WHERE aph.check_id = ac.check_id     AND   NOT(aid1.line_type_lookup_code = 'TERV'     AND   aphdf.invoice_dist_base_amount = 0)     AND   ac.void_date is null     AND   aid.invoice_distribution_id = aid1.related_id     AND   aid1.line_type_lookup_code IN ('ERV', 'TERV')     AND   aid1.invoice_id = aid.invoice_id     AND   aph.transaction_type IN ('PAYMENT CREATED' , 'PAYMENT CANCELLED',             'PAYMENT ADJUSTED' , 'MANUAL PAYMENT ADJUSTED',             'UPGRADED MANUAL PMT ADJUSTED', 'REFUND RECORDED',             'REFUND ADJUSTED' , 'REFUND CANCELLED')     AND   aphdf.invoice_distribution_id = aid.invoice_distribution_id     AND   aphdf.accounting_event_id = aph.accounting_event_id     AND   aphdf.pay_dist_lookup_code = 'FINAL PAYMENT ROUNDING'     AND   aph.check_id = aip.check_id     AND   aip.invoice_id = aid.invoice_id     AND   EXISTS (             SELECT 1 FROM apps.ap_payment_hist_dists aphdf1             WHERE aphdf.invoice_distribution_id = aphdf1.invoice_distribution_id             AND   aphdf.accounting_event_id = aphdf1.accounting_event_id             AND   aphdf.invoice_payment_id = aip.invoice_payment_id             AND   aphdf1.pay_dist_lookup_code LIKE '%EXCHANGE RATE VARIANCE')               AND   aphdf.invoice_dist_base_amount <> aid.base_amount + (             SELECT nvl(sum(aid1.base_amount), 0)             FROM apps.ap_invoice_distributions_all aid1             WHERE aid1.line_type_lookup_code IN('ERV', 'TERV')             AND   aid1.invoice_id = aid.invoice_id             AND   aid1.related_id = aid.invoice_distribution_id) - ((                SELECT nvl(sum(aphd.invoice_dist_base_amount), 0)                FROM apps.ap_payment_hist_dists aphd,                     apps.ap_payment_history_all aph,                     apps.ap_invoice_payments_all aip                WHERE ((aphd.invoice_distribution_id = aid.invoice_distribution_id AND                        aphd.pay_dist_lookup_code IN ('CASH', 'DISCOUNT',                          'FINAL PAYMENT ROUNDING')) OR                       (aphd.pay_dist_lookup_code = 'AWT' AND                        aphd.awt_related_id = aid.invoice_distribution_id))                AND   aip.invoice_id = aid.invoice_id                AND   aip.check_id = aph.check_id                AND   aphd.payment_hist_dist_id <> aphdf.payment_hist_dist_id                AND   aip.invoice_payment_id = aphd.invoice_payment_id                AND   aph.payment_history_id = aphd.payment_history_id                AND   aph.transaction_type IN ('PAYMENT CREATED',                        'PAYMENT CANCELLED', 'PAYMENT ADJUSTED',                        'MANUAL PAYMENT ADJUSTED', 'UPGRADED MANUAL PMT ADJUSTED',                        'REFUND RECORDED', 'REFUND ADJUSTED',                        'REFUND CANCELLED')) - (                SELECT nvl(sum(apad.base_amount), 0)                FROM apps.ap_prepay_app_dists apad,                     apps.ap_prepay_history_all aph                WHERE ((apad.invoice_distribution_id = aid.invoice_distribution_id AND                        apad.prepay_dist_lookup_code IN('PREPAY APPL',                          'PREPAY APPL REC TAX', 'PREPAY APPL NONREC TAX')) OR                       (apad.awt_related_id = aid.invoice_distribution_id AND                        apad.prepay_dist_lookup_code = 'AWT'))                AND   aph.invoice_id = aid.invoice_id                AND   aph.prepay_history_id = apad.prepay_history_id))     AND   NOT EXISTS (             SELECT 1 FROM apps.ap_invoice_distributions_all aid2             WHERE aid2.invoice_id = aid1.invoice_id             AND   aid1.reversal_flag = 'Y'             AND   aid2.reversal_flag = 'Y'             AND   aid2.base_amount = -1* aid1.base_amount             AND   aid2.accounting_event_id = aid1.accounting_event_id             AND   (aid2.parent_reversal_id = aid1.invoice_distribution_id OR                    aid1.parent_reversal_id = aid2.invoice_distribution_id))     AND   ac.check_id = chks.check_id      )  WHERE      ROWNUM < 11  ORDER BY      check_id     ) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

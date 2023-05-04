@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO PO Approval failed with Error PO POAPPROVAL INIT1 GET PO ATTRIBUTES - Daily" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO PO Approval failed with Error PO POAPPROVAL INIT1 GET PO ATTRIBUTES - Daily</DisplayName>
+    <Description><![CDATA[PO Approval fails with:
+Error Message:ORA-06512: at line
+Error Stack: Wf_Engine_Util.Function_Call
+(PO_POAPPROVAL_INIT1.GET_PO_ATTRIBUTES, POAPPRV)]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_APPROVAL_INIT1_GET_PO_ATTRIBUTES' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'BEGINDATE:' || s.BEGINDATE || ', ORG_ID:' || s.ORG_ID || ', TYPECODE:' || s.TYPECODE || ', PONUM:' || s.PONUM || ', POSTATUS:' || s.POSTATUS || ', ERROR_MESSAGE_AND_ERROR_STACK:' || s.ERROR_MESSAGE_AND_ERROR_STACK key_data FROM (select  BEGINDATE BEGINDATE,  ORG_ID ORG_ID,  TYPECODE TYPECODE,  PONUM PONUM,  POSTATUS POSTATUS,  ERROR_MESSAGE_AND_ERROR_STACK ERROR_MESSAGE_AND_ERROR_STACK  FROM  (SELECT i.begin_date "BEGINDATE", i.user_key "PONUM", poh.org_id,   decode(poh.type_lookup_code, 'PLANNED','PA','CONTRACT','PA', 'BLANKET', 'PA', 'STANDARD', 'PO', 'PO') TYPECODE,  poh.authorization_status "POSTATUS",  /* "ac.name||' ('||ac.display_name||')' "ACTIVITY",  ias.activity_result_code "RESULT",  ias.error_name "ERROR_NAME", */  concat(concat('Error_Message: ', ias.ERROR_MESSAGE), concat('  Error_Stack: ', ias.ERROR_STACK)) ERROR_MESSAGE_AND_ERROR_STACK  FROM apps.wf_item_activity_statuses ias,  apps.wf_process_activities pa,  apps.wf_activities_vl ac,  apps.wf_activities ap,  apps.wf_items i,  apps.po_headers_all poh  WHERE ias.item_type = 'POAPPRV'  AND ias.activity_status = 'ERROR'  AND poh.wf_item_key = i.item_key  AND ias.process_activity = pa.instance_id  AND pa.activity_name = ac.name  AND pa.activity_item_type = ac.item_type  AND pa.process_name = ap.name  AND pa.process_item_type = ap.item_type  AND pa.process_version = ap.version  AND i.item_type = 'POAPPRV'  AND i.item_key = ias.item_key  AND i.begin_date >= ac.begin_date  AND i.begin_date < nvl(ac.end_date, i.begin_date+1)  AND ias.error_message like '%ORA-06512%'  AND ias.error_stack like '%Wf_Engine_Util.Function_Call(PO_POAPPROVAL_INIT1.GET_PO_ATTRIBUTES%POAPPRV%'  ORDER BY ias.begin_date desc, ias.execution_time)  where rownum < 1000  order by begindate desc) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

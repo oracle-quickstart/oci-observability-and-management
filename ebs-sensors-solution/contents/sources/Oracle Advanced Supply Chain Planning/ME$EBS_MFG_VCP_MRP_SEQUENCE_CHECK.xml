@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG VCP MRP Sequence Check detected sequence in need of maintenance - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG VCP MRP Sequence Check detected sequence in need of maintenance - Weekly</DisplayName>
+    <Description><![CDATA[Sequences reported by this SQL must have maintenance conducted to avoid errors in the future.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_VCP_MRP_SEQUENCE_CHECK' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'OWNER:' || s.OWNER || ', SEQUENCE_NAME:' || s.SEQUENCE_NAME || ', MAX_VALUE_ALLOWED:' || s.MAX_VALUE_ALLOWED || ', CURRENT_VALUE:' || s.CURRENT_VALUE || ', NUMBER_OF_VALUES_AVAILABLE:' || s.NUMBER_OF_VALUES_AVAILABLE key_data FROM (SELECT OWNER OWNER,  SEQUENCE_NAME SEQUENCE_NAME,  MAX_VALUE_ALLOWED MAX_VALUE_ALLOWED,  CURRENT_VALUE CURRENT_VALUE,  NUMBER_OF_VALUES_AVAILABLE NUMBER_OF_VALUES_AVAILABLE  from  (SELECT sequence_owner OWNER,  sequence_name SEQUENCE_NAME,  max_value MAX_VALUE_ALLOWED,  last_number CURRENT_VALUE,  (MAX_VALUE - LAST_NUMBER) NUMBER_OF_VALUES_AVAILABLE  FROM DBA_SEQUENCES  WHERE sequence_name IN ('MRP_GROSS_REQUIREMENTS_S','MRP_SCHEDULE_DATES_S','MRP_FULL_PEGGING_S', 'MRP_FORECAST_DATES_S','MRP_AVAILABLE_TO_PROMISE_S','MRP_EXCEPTION_DETAILS_S', 'CRP_RESOURCE_PLAN_S','CRP_RESOURCE_HOURS_S')  AND last_number > 1947483647)) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

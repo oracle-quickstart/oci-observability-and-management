@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Invoices which have not been encumbered because the encumbrance accounting hold was released - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Invoices which have not been encumbered because the encumbrance accounting hold was released - Weekly</DisplayName>
+    <Description><![CDATA[Checking for invoices where encumbrance accounting hold was released manually]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_INVOICES_NOT_ENCUMBERED' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'invoice_id:' || s.invoice_id key_data FROM (SELECT invoice_id invoice_id  FROM   (WITH invs AS (  SELECT /*+ materialize */ DISTINCT invoice_id FROM apps.ap_invoice_distributions_all WHERE accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )  )  SELECT ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  ai.invoice_amount,  aid.invoice_distribution_id,  aid.invoice_line_number,  aid.distribution_line_number,  aid.amount,  aid.base_amount,  aid.line_type_lookup_code,  aid.match_status_flag,  aid.bc_event_id,  aid.accounting_event_id,  aid.encumbered_flag,  aid.posted_flag,  ai.cancelled_date,  aid.org_id,  aid.set_of_books_id  FROM invs,  apps.ap_invoices_all ai,  apps.ap_invoice_distributions_all aid,  apps.po_distributions_all pod,  apps.po_line_locations_all pll,  apps.financials_system_params_all fsp  WHERE ai.invoice_id = invs.invoice_id  AND aid.invoice_id = ai.invoice_id  AND ai.org_id = fsp.org_id  AND fsp.purch_encumbrance_flag = 'Y'  AND aid.po_distribution_id = pod.po_distribution_id(+)  AND pod.line_location_id = pll.line_location_id(+)  AND aid.amount <> 0  AND aid.line_type_lookup_code <> 'REC_TAX'  AND (aid.po_distribution_id is null OR  nvl(pll.accrue_on_receipt_flag, 'N') = 'N')  AND aid.match_status_flag = 'A'  AND NOT EXISTS (  SELECT 1 FROM apps.xla_events xe  WHERE xe.event_id = aid.bc_event_id  AND xe.application_id = 200  AND xe.event_status_code = 'P'  AND xe.process_status_code = 'P')  AND NOT EXISTS (  SELECT 1 FROM apps.ap_encumbrance_lines_all ael  WHERE ael.invoice_distribution_id = aid.invoice_distribution_id  AND aid.encumbered_flag = 'Y')  AND EXISTS (  SELECT 1 FROM apps.ap_holds_all aha  WHERE aha.invoice_id = ai.invoice_id  AND aha.hold_lookup_code = 'Encumbrance Acctg Fail'  AND aha.release_lookup_code is not null  AND aha.release_lookup_code <> 'Encumbrance Acctg Ok'  UNION  SELECT 1  FROM apps.ap_holds_all aha,  apps.ap_hold_codes ahc  WHERE aha.invoice_id = ai.invoice_id  AND aha.hold_lookup_code = 'Encumbrance Acctg Fail'  AND aha.release_lookup_code is null  AND aha.hold_lookup_code = ahc.hold_lookup_code  AND ahc.postable_flag = 'Y')  )  where ROWNUM < 11  ORDER BY invoice_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

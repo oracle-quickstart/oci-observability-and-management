@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG INV Locator Onhand Quantity Does Not Match Locator Control - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG INV Locator Onhand Quantity Does Not Match Locator Control - Weekly</DisplayName>
+    <Description><![CDATA[Corrupt onhand quantity was found where the on-hand quantity does not match the locator control of the related item, subinventory and organization.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_INV_LOCATOR_MTL_ONHAND_CORRUPT' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'data_issue:' || s.data_issue || ', ORGANIZATION_ID:' || s.ORGANIZATION_ID || ', SUBINVENTORY_CODE:' || s.SUBINVENTORY_CODE || ', INVENTORY_ITEM_ID:' || s.INVENTORY_ITEM_ID || ', LOCATOR_ID:' || s.LOCATOR_ID || ', count:' || s.count key_data FROM (select message data_issue, ORGANIZATION_ID ORGANIZATION_ID, SUBINVENTORY_CODE SUBINVENTORY_CODE, INVENTORY_ITEM_ID INVENTORY_ITEM_ID, LOCATOR_ID LOCATOR_ID, count count   from (  /*SPLIT_HERE*/  select '#1: Bug 4264604: Datafix: subloc_moqmismatch.sql: Non-matching locators in the onhand quantity' message,  moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER, moqd.REVISION, moqd.LOCATOR_ID, count(*) count  from apps.MTL_ONHAND_QUANTITIES_DETAIL moqd  where moqd.LOCATOR_ID is not null  and not exists (select 1 from apps.MTL_ITEM_LOCATIONS mil  where mil.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and mil.SUBINVENTORY_CODE = moqd.SUBINVENTORY_CODE  and mil.INVENTORY_LOCATION_ID = moqd.LOCATOR_ID)  and exists (select 1 from apps.MTL_SECONDARY_INVENTORIES  where SECONDARY_INVENTORY_NAME = moqd.subinventory_code  and ORGANIZATION_ID = moqd.ORGANIZATION_ID  and LOCATOR_TYPE in (2, 3) )  and exists (select 1 from apps.MTL_PARAMETERS  where ORGANIZATION_ID = moqd.ORGANIZATION_ID  and STOCK_LOCATOR_CONTROL_CODE = 4  and NOT (WMS_ENABLED_FLAG = 'Y' OR PROCESS_ENABLED_FLAG = 'Y'))  and exists (select 1 from apps.MTL_SYSTEM_ITEMS msit  where msit.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msit.INVENTORY_ITEM_ID = moqd.INVENTORY_ITEM_ID  and msit.SERIAL_NUMBER_CONTROL_CODE in (1, 6) )  and rownum < 10  group by moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER, moqd.REVISION, moqd.LOCATOR_ID  UNION  select '#2: Bug 4264580: Datafix: subnoloc_moq_loc.sql: Organization locator control is None or Determined at subinventory level' message,  moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER, moqd.REVISION, moqd.LOCATOR_ID, count(*) count  from apps.MTL_ONHAND_QUANTITIES_DETAIL moqd  where LOCATOR_ID is not null  and exists (select 1 from apps.MTL_SECONDARY_INVENTORIES msi  where msi.SECONDARY_INVENTORY_NAME = moqd.SUBINVENTORY_CODE  and msi.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msi.LOCATOR_TYPE = 1)  and exists (select 1 from apps.MTL_PARAMETERS  where ORGANIZATION_ID = moqd.ORGANIZATION_ID  and STOCK_LOCATOR_CONTROL_CODE in (1, 4)  and NOT (WMS_ENABLED_FLAG = 'Y' OR PROCESS_ENABLED_FLAG = 'Y'))  and exists (select 1 from apps.MTL_SYSTEM_ITEMS msit  where msit.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msit.INVENTORY_ITEM_ID = moqd.INVENTORY_ITEM_ID  and msit.SERIAL_NUMBER_CONTROL_CODE in (1, 6) )  and rownum < 10  group by moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOCATOR_ID, moqd.LOT_NUMBER, moqd.REVISION  UNION  select '#3a: Bug 4264563: Datafix: subloc_moqdnoloc.sql: Onhand records with Null Locator when Subinventory is locator controlled' message,  moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER, moqd.REVISION, moqd.LOCATOR_ID, count(*) count   from apps.MTL_ONHAND_QUANTITIES_DETAIL moqd  where LOCATOR_ID is null  and exists (select 1 from apps.MTL_SECONDARY_INVENTORIES msi  where msi.SECONDARY_INVENTORY_NAME = moqd.SUBINVENTORY_CODE  and msi.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msi.LOCATOR_TYPE in (2,3) )  and exists (select 1 from apps.MTL_PARAMETERS  where ORGANIZATION_ID = moqd.ORGANIZATION_ID  and STOCK_LOCATOR_CONTROL_CODE = 4  and NOT (WMS_ENABLED_FLAG = 'Y' OR PROCESS_ENABLED_FLAG = 'Y'))  and exists (select 1 from apps.MTL_SYSTEM_ITEMS msit  where msit.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msit.INVENTORY_ITEM_ID = moqd.INVENTORY_ITEM_ID  and msit.SERIAL_NUMBER_CONTROL_CODE in (1, 6) )  and rownum < 10  group by moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER, moqd.REVISION, moqd.LOCATOR_ID  UNION  SELECT  '#3b: Bug 4264563: Datafix: subloc_moqdnoloc_itm.sql: Onhand records with Null Locator when when the locator control is enabled' message,  moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER, moqd.REVISION, moqd.LOCATOR_ID, count(*) count   from apps.MTL_ONHAND_QUANTITIES_DETAIL moqd  where LOCATOR_ID is null  AND PLANNING_ORGANIZATION_ID = ORGANIZATION_ID  AND OWNING_ORGANIZATION_ID = ORGANIZATION_ID  AND PLANNING_TP_TYPE = 2  AND OWNING_TP_TYPE = 2  AND NVL(SECONDARY_TRANSACTION_QUANTITY,0) = 0  and exists (select 1 from apps.MTL_SECONDARY_INVENTORIES msi  where msi.SECONDARY_INVENTORY_NAME = moqd.SUBINVENTORY_CODE  and msi.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msi.LOCATOR_TYPE = 5 )  and exists (select 1 from apps.MTL_PARAMETERS  where ORGANIZATION_ID = moqd.ORGANIZATION_ID  and STOCK_LOCATOR_CONTROL_CODE = 4  AND NOT (WMS_ENABLED_FLAG = 'Y' OR PROCESS_ENABLED_FLAG = 'Y'))  and exists (select 1 from apps.MTL_SYSTEM_ITEMS msit  where msit.ORGANIZATION_ID = moqd.ORGANIZATION_ID  and msit.INVENTORY_ITEM_ID = moqd.INVENTORY_ITEM_ID  and msit.SERIAL_NUMBER_CONTROL_CODE in (1, 6)  and msit.LOCATION_CONTROL_CODE in (2,3) )  and rownum < 10  group by moqd.ORGANIZATION_ID, moqd.SUBINVENTORY_CODE, moqd.INVENTORY_ITEM_ID, moqd.LOT_NUMBER,moqd.REVISION,moqd.LOCATOR_ID  /*SPLIT_HERE*/  )) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

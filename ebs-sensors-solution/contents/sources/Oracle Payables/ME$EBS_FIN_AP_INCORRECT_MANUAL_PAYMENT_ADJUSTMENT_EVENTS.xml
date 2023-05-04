@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Incorrect manual payment adjustment events - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Incorrect manual payment adjustment events - Weekly</DisplayName>
+    <Description><![CDATA[Incorrect manual payment adjustment events resulting from reversing invoices in a payment to do a manual payment adjustment but not adding in invoices]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_INCORRECT_MANUAL_PAYMENT_ADJUSTMENT_EVENTS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id key_data FROM (SELECT      check_id check_id  FROM      (          WITH chks AS (              SELECT /*+ materialize */ DISTINCT                  ph.check_id              FROM                  apps.ap_payment_history_all ph              WHERE                  ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )          SELECT              ac.check_id,              ac.check_number,              ac.check_date,              ac.amount,              ac.vendor_id,              ac.status_lookup_code,              ac.org_id,              ac.cleared_amount,              ac.cleared_date,              pay_v.accounting_event_id,              CASE ac.status_lookup_code                  WHEN 'VOIDED'                  THEN                      'No manual action required'                  WHEN 'RECONCILED'              THEN                      'UNCLEAR Check, VOID Check'                  WHEN 'RECONCILED UNACCOUNTED'  THEN                      'UNCLEAR Check, VOID Check'                  WHEN 'CLEARED BUT UNACCOUNTED' THEN                      'UNCLEAR Check, VOID Check'                  WHEN 'CLEARED'                 THEN                      'UNCLEAR Check, VOID Check'                  WHEN 'NEGOTIABLE'              THEN                      'VOID Check'              END "Pre-Fix Actions"          FROM              apps.ap_checks_all ac,              (                  SELECT /*+ leading(chks) */                      aph.check_id,                      aph.accounting_event_id                  FROM                      chks,                      apps.ap_payment_history_all  aph,                      apps.ap_invoice_payments_all aip                  WHERE                          aph.check_id = chks.check_id                      AND aph.check_id = aip.check_id                      AND aph.accounting_event_id = aip.accounting_event_id                      AND aph.transaction_type IN ( 'MANUAL PAYMENT ADJUSTED', 'REFUND ADJUSTED' )                      AND NOT EXISTS (                          SELECT                              1                          FROM                              apps.ap_invoice_payments_all aip2                          WHERE                                  aip2.accounting_event_id = aph.accounting_event_id                              AND aip2.check_id = aph.check_id                              AND ( aip2.reversal_flag <> 'Y'                                    OR aip2.reversal_inv_pmt_id IS NULL )                      )                  GROUP BY                      aph.check_id,                      aph.accounting_event_id                  HAVING                      SUM(aip.amount) <> 0              )             pay_v          WHERE              ac.check_id = pay_v.check_id      )  WHERE      ROWNUM < 11  ORDER BY      check_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

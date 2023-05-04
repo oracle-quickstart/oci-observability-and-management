@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO Requisition with Blankets that are approaching total agreed amount - Daily" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO Requisition with Blankets that are approaching total agreed amount - Daily</DisplayName>
+    <Description><![CDATA[Requisitions with amounts that might EXCEED the total on the blanket.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_REQS_WITH_BLANKETS_APPROACHING_MAX_TOTAL_RELEASED' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'req_number:' || s.req_number || ', Source_Doc_Number:' || s.Source_Doc_Number || ', Source_Doc_Amount_Limit:' || s.Source_Doc_Amount_Limit || ', blanket_released_amount:' || s.blanket_released_amount || ', Amount_Remaining_To_Release:' || s.Amount_Remaining_To_Release || ', Total_Requisition_Amount:' || s.Total_Requisition_Amount key_data FROM (SELECT req_number req_number,  Source_Doc_Number Source_Doc_Number,  Source_Doc_Amount_Limit Source_Doc_Amount_Limit,  blanket_released_amount blanket_released_amount,  Amount_Remaining_To_Release Amount_Remaining_To_Release,  Total_Requisition_Amount Total_Requisition_Amount  from  (  SELECT prha.segment1 req_number  , BLRL.SEGMENT1 Source_Doc_Number  , blrl.amount_limit Source_Doc_Amount_Limit  , BLRL.blanket_released_amount  , blrl.amount_limit - BLRL.blanket_released_amount Amount_Remaining_To_Release  , SUM(prla.unit_price * prla.quantity ) Total_Requisition_Amount  FROM apps.po_requisition_headers prha  , apps.po_requisition_lines prla  , (SELECT  poh.po_header_id, poh.segment1,poh.amount_limit,  nvl ( sum ( decode ( PLL2.quantity, NULL , ( PLL2.amount-  nvl(PLL2.amount_cancelled,0) ),  ( ( PLL2.quantity - nvl(PLL2.quantity_cancelled,0)  )* PLL2.price_override ) ) ), 0 ) blanket_released_amount  FROM  apps.PO_LINE_LOCATIONS PLL2, apps.PO_RELEASES_all POR2, apps.po_headers POH  WHERE  PLL2.po_release_id = POR2.po_release_id  AND POR2.po_header_id = POH.po_header_id  AND nvl(POR2.approved_flag, 'N') = 'Y'  AND POH.amount_limit is Not Null  group by poh.po_header_id, poh.segment1, poh.amount_limit ) BLRL  WHERE prha.requisition_header_id = prla.requisition_header_id  AND prla.line_location_id IS NULL   AND nvl(prla.closed_code, 'OPEN') <> 'FINALLY CLOSED'  AND nvl(prla.cancel_flag, 'N') <> 'Y'  and prla.blanket_po_header_id = blrl.po_header_id  and prla.creation_Date > sysdate - 360  GROUP BY prha.segment1  ,prha.authorization_status  ,prla.document_type_code  , BLRL.SEGMENT1  , blrl.amount_limit  , BLRL.blanket_released_amount  , blrl.amount_limit - BLRL.blanket_released_amount  HAVING nvl(blrl.amount_limit - BLRL.blanket_released_amount,0) < SUM(prla.unit_price * prla.quantity ) + 500   union  SELECT prha.segment1 req_number  , GLOBAL_REL.SEGMENT1 Source_Doc_Number  , GLOBAL_REL.amount_limit Source_Doc_Amount_Limit  , GLOBAL_REL.blanket_released_amount  , GLOBAL_REL.amount_limit - GLOBAL_REL.blanket_released_amount Amount_Remaining_To_Release  , SUM(prla.unit_price * prla.quantity ) Total_Requisition_Amount  FROM apps.po_requisition_headers prha  , apps.po_requisition_lines prla  , (SELECT  poh.po_header_id, poh.segment1,poh.amount_limit,  nvl ( sum ( decode ( PLL2.quantity, NULL , ( PLL2.amount-  nvl(PLL2.amount_cancelled,0) ),  ( ( PLL2.quantity - nvl(PLL2.quantity_cancelled,0)  )* PLL2.price_override ) ) ), 0 ) blanket_released_amount  FROM  apps.PO_LINE_LOCATIONS PLL2,  apps.PO_LINES POL,  apps.po_headers POH,  apps.po_headers STD  WHERE 1=1  AND POL.FROM_HEADER_ID (+) = POH.PO_HEADER_ID  AND PLL2.PO_LINE_ID (+) = POL.PO_LINE_ID  and std.po_header_id (+) = pol.po_header_id  and std.authorization_status (+) = 'APPROVED'  AND POH.amount_limit is Not Null  group by poh.po_header_id, poh.segment1, poh.amount_limit) GLOBAL_REL  WHERE prha.requisition_header_id = prla.requisition_header_id  AND prla.line_location_id IS NULL  AND nvl(prla.closed_code, 'OPEN') <> 'FINALLY CLOSED'  AND nvl(prla.cancel_flag, 'N') <> 'Y'  and prla.blanket_po_header_id = GLOBAL_REL.po_header_id  and prla.creation_Date > sysdate - 360  GROUP BY prha.segment1  ,prha.authorization_status  , prla.document_type_code  , GLOBAL_REL.SEGMENT1  , GLOBAL_REL.amount_limit  , GLOBAL_REL.blanket_released_amount  , GLOBAL_REL.amount_limit - GLOBAL_REL.blanket_released_amount  HAVING nvl(GLOBAL_REL.amount_limit - GLOBAL_REL.blanket_released_amount,0) < SUM(prla.unit_price * prla.quantity ) + 500  )  where rownum < 1000) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

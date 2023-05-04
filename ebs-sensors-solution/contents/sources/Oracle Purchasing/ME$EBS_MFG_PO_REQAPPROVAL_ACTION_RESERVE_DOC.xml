@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#low_severity_sensor</Name>
+<DisplayName>Low Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>LOW</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO REQ Approval Error When Using AME With Encumbrance - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO REQ Approval Error When Using AME With Encumbrance - Weekly</DisplayName>
+    <Description><![CDATA[When approving a Purchase Requisition using AME with encumbrance the following error occurs: Wf_Engine_Util.Function_Call(PO_REQAPPROVAL_ACTION.RESERVE_DOC]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_REQAPPROVAL_ACTION_RESERVE_DOC' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'Requisition_Number:' || s.Requisition_Number || ', Org_ID:' || s.Org_ID || ', Activity:' || s.Activity || ', Result:' || s.Result || ', ERROR_NAME:' || s.ERROR_NAME || ', ERROR_MESSAGE:' || s.ERROR_MESSAGE key_data FROM (select   segment1 Requisition_Number,  org_id Org_ID,  Activity Activity,  Result Result,  ERROR_NAME ERROR_NAME,  ERROR_MESSAGE ERROR_MESSAGE  from (  SELECT reqh.segment1 segment1,  reqh.org_id org_id,  ac.name||' ('||ac.display_name||')' Activity,  ias.activity_result_code Result,  ias.error_name ERROR_NAME,  ias.error_message ERROR_MESSAGE,  ias.error_stack ERROR_STACK  FROM   apps.po_requisition_headers_all reqh,  apps.wf_item_activity_statuses ias,  apps.wf_process_activities pa,  apps.wf_activities_vl ac,  apps.wf_activities ap,  apps.wf_items i,  dba_source als  WHERE ias.item_type like 'REQAPPRV'  AND ias.activity_status = 'ERROR'  AND ias.process_activity = pa.instance_id  AND pa.activity_name = ac.name  AND pa.activity_item_type = ac.item_type  AND pa.process_name = ap.name  AND pa.process_item_type = ap.item_type  AND pa.process_version = ap.version  AND i.item_type = 'REQAPPRV'  AND i.item_key = ias.item_key  AND i.item_key = reqh.wf_item_key  AND i.item_type = reqh.wf_item_type  AND i.begin_date >= ac.begin_date  AND i.begin_date < nvl(ac.end_date, i.begin_date+1)  AND ias.error_stack like '%Wf_Engine_Util.Function_Call(PO_REQAPPROVAL_ACTION.RESERVE_DOC%'  AND '12.1' = substr((SELECT max(release_name) FROM fnd_product_groups),1,4)  AND FND_IREP_LOADER_PRIVATE.compare_versions(substr(substr(als.text,regexp_instr(als.text,' *[0-9]',1,1,1)-1),1, instr(substr(als.text,regexp_instr(als.text,' *[0-9]',1,1,1)-1), ' ',1,1)-1),'120.41.12010000.3') = '<'  AND als.type = 'PACKAGE BODY'  AND als.name = 'POR_AME_REQ_WF_PVT'  AND als.text like '%$Header%'  ORDER BY ias.begin_date desc, ias.execution_time)) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#low_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

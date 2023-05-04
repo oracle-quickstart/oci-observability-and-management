@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN GL Child Overlapping in the Hierarchy of a Valueset - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN GL Child Overlapping in the Hierarchy of a Valueset - Weekly</DisplayName>
+    <Description><![CDATA[Overlapping segment values exists]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_GL_SUM_OVERLAP_CHILDREN_IN_HIERARCHY_LATEST' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'Segment_Name:' || s.Segment_Name || ', Segment_w_Overlapping_Children:' || s.Segment_w_Overlapping_Children || ', Overlapping_Child_Low_Value:' || s.Overlapping_Child_Low_Value || ', Overlapping_Child_High_Value:' || s.Overlapping_Child_High_Value || ', Overlapped_By_Child_Low_Value:' || s.Overlapped_By_Child_Low_Value || ', Overlapped_By_Child_High_Value:' || s.Overlapped_By_Child_High_Value key_data FROM (SELECT DISTINCT flexset.segment_name Segment_Name,  fvh1.parent_flex_value Segment_w_Overlapping_Children,  fvh1.child_flex_value_low Overlapping_Child_Low_Value,  fvh1.child_flex_value_high Overlapping_Child_High_Value,  fvh2.child_flex_value_low Overlapped_By_Child_Low_Value,  fvh2.child_flex_value_high Overlapped_By_Child_High_Value  FROM apps.fnd_flex_value_hierarchies fvh1,  apps.fnd_flex_value_hierarchies fvh2,  (SELECT idfs.segment_num,  idfs.flex_value_set_id,  idfs.application_column_name,  idfs.segment_name  FROM apps.gl_ledgers glsob,  apps.fnd_id_flex_segments idfs,  apps.fnd_flex_value_sets fvs  WHERE glsob.chart_of_accounts_id = idfs.id_flex_num  AND fvs.flex_value_set_id = idfs.flex_value_set_id  /* AND glsob.ledger_id = 1 */  AND idfs.application_id = 101  AND idfs.id_flex_code = 'GL#') flexset  WHERE fvh1.parent_flex_value = fvh2.parent_flex_value  AND fvh1.flex_value_set_id = flexset.flex_value_set_id  AND fvh1.rowid != fvh2.rowid  AND fvh1.flex_value_set_id = fvh2.flex_value_set_id  AND NVL(fvh2.CHILD_FLEX_VALUE_LOW,'X') <=  NVL(fvh1.CHILD_FLEX_VALUE_HIGH,'X')  AND NVL(fvh2.CHILD_FLEX_VALUE_HIGH,'X') >=  NVL(fvh1.CHILD_FLEX_VALUE_LOW,'X')  and rownum < 2  ORDER BY flexset.segment_name) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

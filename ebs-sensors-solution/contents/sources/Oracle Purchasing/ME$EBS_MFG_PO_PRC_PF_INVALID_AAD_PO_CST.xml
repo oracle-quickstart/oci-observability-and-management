@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO Found Invalid AAD for Purchasing or Cost Management - Daily" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO Found Invalid AAD for Purchasing or Cost Management - Daily</DisplayName>
+    <Description><![CDATA[Found Invalid AAD for Purchasing or Cost Management that could cause Create Accounting failure for PO receiving accounting and/or Encumbrance accounting]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_PRC_PF_INVALID_AAD_PO_CST' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'object_name:' || s.object_name || ', object_type:' || s.object_type || ', status:' || s.status || ', ledger_name:' || s.ledger_name || ', compile_status:' || s.compile_status || ', application:' || s.application key_data FROM (SELECT o.object_name object_name,      o.object_type object_type,      o.status status,      a.ledger_name ledger_name,      a.compile_status_code compile_status,      a.application_name application    FROM all_objects o,      (SELECT gll.LEDGER_ID,        gll.NAME ledger_name,        xamr.ACCTG_METHOD_RULE_ID,        xamr.APPLICATION_ID,        xamr.APPLICATION_NAME,        xamr.PRODUCT_RULE_CODE,        xamr.PRODUCT_RULE_NAME AAD,        xamr.PRODUCT_RULE_TYPE_DSP owner,        'XLA_'        ||LPAD(xpr.application_id ,5 ,0)        || '_AAD_'        ||xpr.product_rule_type_code        || '_'        ||LPAD(xpr.product_rule_hash_id,6 ,0)        || '%' package_name,        xamr.ACCOUNTING_METHOD_CODE,        xamr.ACCOUNTING_METHOD_TYPE_CODE,        xamr.AMB_CONTEXT_CODE,        xamr.AMB_CONTEXT_NAME,        xamr.PRODUCT_RULE_TYPE_CODE,        xamr.PRODUCT_RULE_DESC,        xamr.START_DATE_ACTIVE,        xamr.END_DATE_ACTIVE,        xamr.CREATION_DATE,        xamr.CREATED_BY,        xamr.LAST_UPDATE_DATE,        xpr.compile_status_code      FROM apps.xla_product_rules_vl xpr,        apps.xla_acctg_method_rules_fvl xamr,        apps.gl_ledgers gll      WHERE xpr.PRODUCT_RULE_CODE     = xamr.PRODUCT_RULE_CODE      AND xamr.ACCOUNTING_METHOD_CODE = gll.SLA_ACCOUNTING_METHOD_CODE      AND xpr.APPLICATION_ID          = xamr.APPLICATION_ID      AND xpr.AMB_CONTEXT_CODE        = xamr.AMB_CONTEXT_CODE      AND xamr.AMB_CONTEXT_CODE       = 'DEFAULT'      AND xpr.APPLICATION_ID         IN (201,707)      AND xpr.compile_status_code    IN ('N', 'E', 'R', 'I')      ) a    WHERE o.object_name LIKE a.package_name  and rownum < 1000  ) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

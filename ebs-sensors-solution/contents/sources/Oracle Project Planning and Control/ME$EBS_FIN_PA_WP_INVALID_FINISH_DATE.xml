@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN PA Expenditure Items Exist with Expenditure Item Dates After the Task Finish Dates - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN PA Expenditure Items Exist with Expenditure Item Dates After the Task Finish Dates - Weekly</DisplayName>
+    <Description><![CDATA[Due to mismatch in task and transaction dates, Errors "PA_EI_INVALID_DATES" or "PA_SI_INVALID_FINISH_DATE" can occur when publishing the workplan.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_PA_WP_INVALID_FINISH_DATE' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'expenditure_item_date:' || s.expenditure_item_date || ', invoice_num:' || s.invoice_num || ', project_number:' || s.project_number || ', task_number:' || s.task_number || ', scheduled_finish_date:' || s.scheduled_finish_date || ', actual_finish_date:' || s.actual_finish_date key_data FROM (SELECT DISTINCT         expenditure_item_date expenditure_item_date,         invoice_num invoice_num,         segment1 project_number,         element_number task_number,         scheduled_finish_date scheduled_finish_date,         actual_finish_date actual_finish_date  FROM (    SELECT ei.expenditure_item_date,           to_char(null) invoice_num,           p.segment1 ,           pe.element_number,            pevs.scheduled_finish_date,           pevs.actual_finish_date ,           pevs.estimated_finish_date    FROM apps.pa_expenditure_items_all ei,         apps.pa_projects_all p ,         apps.pa_proj_elements pe ,         apps.pa_proj_element_versions pev ,         apps.pa_proj_elem_ver_schedule pevs    WHERE p.project_id = pe.project_id    AND   ei.project_id = pe.project_id    AND   ei.task_id = pe.proj_element_id    AND   pe.proj_element_id = pev.proj_element_id    AND   pev.element_version_id = pevs.element_version_id    AND   (pevs.scheduled_finish_date < ei.expenditure_item_date OR           pevs.actual_finish_date < ei.expenditure_item_date OR           pevs.estimated_finish_date < ei.expenditure_item_date )    AND   ei.creation_date >= sysdate - 7    UNION    SELECT ap.expenditure_item_date,           aph.invoice_num ,           p.segment1 ,           pe.element_number,           pevs.scheduled_finish_date,           pevs.actual_finish_date ,           pevs.estimated_finish_date    FROM apps.ap_invoice_distributions_all ap ,         apps.pa_projects_all p ,         apps.pa_proj_elements pe ,         apps.pa_proj_element_versions pev ,         apps.pa_proj_elem_ver_schedule pevs ,         apps.ap_invoices_all aph    WHERE p.project_id = pe.project_id    AND   aph.invoice_id = ap.invoice_id    AND   ap.project_id = pe.project_id    AND   ap.task_id = pe.proj_element_id    AND   pe.proj_element_id = pev.proj_element_id    AND   pev.element_version_id = pevs.element_version_id    AND   (pevs.scheduled_finish_date < ap.expenditure_item_date OR           pevs.actual_finish_date < ap.expenditure_item_date OR           pevs.estimated_finish_date < ap.expenditure_item_date )    AND   ap.creation_date >= sysdate - 7    )  WHERE rownum <= 6  ) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

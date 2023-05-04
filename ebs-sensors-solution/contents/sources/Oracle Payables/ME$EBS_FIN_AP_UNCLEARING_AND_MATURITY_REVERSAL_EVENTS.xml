@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Unclearing and maturity reversal events not getting accounted for voided payments - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Unclearing and maturity reversal events not getting accounted for voided payments - Weekly</DisplayName>
+    <Description><![CDATA[Unclearing and maturity reversal events not getting accounted for voided payments]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_UNCLEARING_AND_MATURITY_REVERSAL_EVENTS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id key_data FROM (            SELECT      check_id check_id  FROM      (          WITH chks AS (              SELECT /*+ materialize */ DISTINCT                  ph.check_id              FROM                  apps.ap_payment_history_all ph              WHERE                  ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )     SELECT ac.check_id,            ac.check_number,            ac.org_id,            ac.amount,            ac.check_date,            ac.currency_code,            ac.cleared_date,            ac.cleared_amount,            ac.void_date     FROM chks,          apps.ap_checks_all ac,          apps.ap_system_parameters_all asp,          apps.ap_payment_history_all aph,          apps.xla_events xe     WHERE ac.check_id = chks.check_id     AND   aph.check_id = ac.check_id     AND   aph.accounting_event_id = xe.event_id     AND   ac.void_date is not null     AND   aph.org_id = asp.org_id     AND   nvl(asp.when_to_account_pmt,'ALWAYS') <> 'CLEARING ONLY'     AND   ac.status_lookup_code = 'VOIDED'     AND   nvl(aph.posted_flag, 'N') = 'Y'     AND   nvl(xe.event_status_code, 'U') = 'P'     AND   nvl(xe.process_status_code, 'U') = 'P'     AND   xe.application_id = 200     AND   aph.transaction_type IN ('PAYMENT CANCELLED', 'REFUND CANCELLED')     AND   EXISTS (             SELECT 'unaccounted non-cancelled event'             FROM apps.ap_payment_history_all aph1,                  apps.xla_events xe1             WHERE aph1.check_id = ac.check_id             AND   aph1.transaction_type NOT IN ('PAYMENT CANCELLED',                     'REFUND CANCELLED')             AND   aph1.accounting_event_id = xe1.event_id             AND   xe1.event_status_code IN ('U', 'I', 'R')             AND   xe1.application_id = 200)     UNION ALL     SELECT ac.check_id,            ac.check_number,            ac.org_id,            ac.amount,            ac.check_date,            ac.currency_code,            ac.cleared_date,            ac.cleared_amount,            ac.void_date     FROM chks,          apps.ap_checks_all ac,          apps.ap_system_parameters_all asp,          apps.ap_payment_history_all aph,          apps.xla_events xe     WHERE ac.check_id = chks.check_id     AND   aph.check_id = ac.check_id     AND   aph.accounting_event_id = xe.event_id     AND   ac.void_date is null     AND   aph.org_id = asp.org_id     AND   nvl(asp.when_to_account_pmt,'ALWAYS') = 'CLEARING ONLY'     AND   xe.event_status_code = 'U'     AND   xe.application_id = 200     AND   aph.transaction_type in ('PAYMENT CREATED', 'REFUND RECORDED',             'PAYMENT MATURITY', 'PAYMENT MATURITY REVERSAL',             'MANUAL PAYMENT ADJUSTED', 'PAYMENT ADJUSTED',             'REFUND ADJUSTED', 'PAYMENT MATURITY ADJUSTED')     UNION ALL     SELECT ac.check_id,            ac.check_number,            ac.org_id,            ac.amount,            ac.check_date,            ac.currency_code,            ac.cleared_date,            ac.cleared_amount,            ac.void_date     FROM chks,          apps.ap_checks_all ac,          apps.ap_payment_history_all aph,          apps.xla_events xe,          apps.ap_system_parameters_all asp     WHERE ac.check_id = chks.check_id     AND   aph.check_id = ac.check_id     AND   aph.accounting_event_id = xe.event_id     AND   ac.void_date is not null     AND   aph.org_id = asp.org_id     AND   nvl(asp.when_to_account_pmt,'ALWAYS') = 'CLEARING ONLY'     AND   xe.event_status_code = 'U'     AND   xe.application_id = 200     AND   NOT EXISTS (             SELECT 1             FROM apps.ap_payment_history_all h2,                  apps.xla_events e2             WHERE h2.check_id = ac.check_id             AND   h2.transaction_type = 'PAYMENT CLEARING'             AND   h2.payment_history_id = aph.rev_pmt_hist_id             AND   e2.application_id = 200             AND   e2.event_status_code = 'P'             AND   h2.accounting_event_id = e2.event_id )     AND   NOT EXISTS (            SELECT 1 FROM apps.xla_events e4            WHERE e4.entity_id = xe.entity_id            AND   e4.application_id = 200            AND   e4.event_status_code = 'P'            AND   e4.event_type_code not like '%CLEAR%')      )  WHERE      ROWNUM < 11  ORDER BY      check_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

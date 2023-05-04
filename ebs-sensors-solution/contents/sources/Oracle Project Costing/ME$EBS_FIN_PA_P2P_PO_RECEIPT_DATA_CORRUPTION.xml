@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN PA PO receipts are not interfaced to projects due to data corruption - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN PA PO receipts are not interfaced to projects due to data corruption - Weekly</DisplayName>
+    <Description><![CDATA[There are some PO receipts which are not yet interfaced to Projects Costing and some PO receipts which are having wrong pa_addition_flag value.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_PA_P2P_PO_RECEIPT_DATA_CORRUPTION' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'project_number:' || s.project_number || ', expenditure_type:' || s.expenditure_type || ', po_number:' || s.po_number || ', receipt_number:' || s.receipt_number || ', project_status:' || s.project_status || ', rej_reason:' || s.rej_reason key_data FROM (SELECT project_number project_number,  expenditure_type expenditure_type,  po_number po_number,  receipt_number receipt_number,  project_status project_status,  rej_reason rej_reason  FROM (  SELECT p.segment1 project_number,  pod.expenditure_type expenditure_type,  poh.segment1 po_number,  rsh.receipt_num receipt_number,  p.project_status_code project_status,  'Case 4:: Eligible PO Receipts interfaced to Projects but with '||  'wrong pa_addition_flag value' AS rej_reason  FROM apps.rcv_transactions rtxn,  apps.rcv_shipment_headers rsh,  apps.po_distributions_all pod,  apps.rcv_receiving_sub_ledger rsub,  apps.pa_projects_all p,  apps.pa_tasks t,  apps.po_headers_all poh  WHERE (rtxn.destination_type_code = 'EXPENSE' OR  (rtxn.destination_type_code = 'RECEIVING' AND  rtxn.transaction_type IN ('RETURN TO VENDOR', 'RETURN TO RECEIVING')))  AND rtxn.po_distribution_id = pod.po_distribution_id  AND rsub.code_combination_id = pod.code_combination_id  AND rsub.rcv_transaction_id = rtxn.transaction_id  AND rsh.shipment_header_id = rtxn.shipment_header_id  AND poh.po_header_id = pod.po_header_id  AND pod.project_id > 0  AND pod.project_id = p.project_id  AND pod.task_id = t.task_id  AND p.project_id = t.project_id  AND pod.accrue_on_receipt_flag = 'Y'  AND nvl(rsub.pa_addition_flag,'N') <> 'Y'  AND rsub.actual_flag = 'A'  AND rsub.accounting_line_type = 'Charge'  AND poh.org_id = pod.org_id  AND EXISTS (  SELECT 'X'   FROM apps.pa_expenditure_items_all ei  WHERE ei.document_distribution_id = rtxn.transaction_id  AND ei.document_header_id = pod.po_header_id  AND ei.document_line_number = pod.po_distribution_id  AND ei.project_id = pod.project_id  AND ei.task_id = pod.task_id  AND ei.transaction_source LIKE 'PO%')  AND trunc(rsub.creation_date) >= sysdate - 7  AND rownum < 2  UNION  SELECT p.segment1 project_number,  pod.expenditure_type expenditure_type,  poh.segment1 po_number,  rsh.receipt_num receipt_number,  p.project_status_code project_status,  'Case 7 : Eligible PO Receipts not interfaced to Projects '||  'having wrong pa_addition_flag value' AS rej_reason  FROM apps.rcv_receiving_sub_ledger rsub,  apps.rcv_Transactions rtxn,  apps.po_distributions_all pod,  apps.rcv_shipment_headers rsh,  apps.po_headers_all poh,  apps.pa_projects_all p  WHERE (rtxn.destination_type_code = 'EXPENSE' OR  (rtxn.destination_type_code = 'RECEIVING' AND  rtxn.transaction_type IN ('RETURN TO VENDOR','RETURN TO RECEIVING')))  AND poh.po_header_id = pod.po_header_id  AND rtxn.po_distribution_id = pod.po_distribution_id  AND rsub.code_combination_id = pod.code_combination_id  AND rsub.rcv_transaction_id = rtxn.transaction_id  AND rsh.shipment_header_id = rtxn.shipment_header_id  AND p.project_id = pod.project_id  AND pod.project_id > 0  AND pod.accrue_on_receipt_flag = 'Y'  AND nvl(rsub.pa_addition_flag, 'Y') <> 'N'  AND rsub.actual_flag = 'A'  AND rsub.accounting_line_type = 'Charge'  AND pod.org_id = poh.org_id  AND pod.org_id = p.org_id  AND (pa_nl_installed.is_nl_installed = 'N' OR  (pa_nl_installed.is_nl_installed = 'Y' AND  NOT EXISTS (  SELECT 'X'  FROM apps.mtl_system_items si,  apps.po_lines_all pol  WHERE pol.po_line_id = pod.po_line_id  AND si.inventory_item_id = pol.item_id  AND si.comms_nl_trackable_flag = 'Y'  AND (si.organization_id = pod.org_id OR  si.organization_id IN (  SELECT nvl(ship_to_organization_id,-9999)  FROM apps.po_line_locations_all pll  WHERE pll.po_header_id = pod.po_header_id  AND pll.po_line_id = pod.po_line_id)))))  AND NOT EXISTS (  SELECT 'X' FROM apps.pa_expenditure_items_all ei  WHERE ei.document_distribution_id = rsub.rcv_transaction_id  AND ei.document_header_id = to_number(rsub.reference2)  AND ei.document_line_number = to_number(rsub.reference3)  AND ei.project_id = pod.project_id  AND ei.task_id = pod.task_id  AND ei.transaction_source like 'PO%')  AND NOT EXISTS (  SELECT 1 FROM apps.ap_invoice_distributions_all apd  WHERE nvl(apd.historical_flag,'N') <> 'Y'  AND apd.po_distribution_id = pod.po_distribution_id  AND apd.line_type_lookup_code IN ('ACCRUAL','NONREC_TAX')  AND apd.pa_addition_flag = 'Y'  AND apd.project_id > 0)  AND trunc(rsub.creation_date) >= sysdate - 7  AND rownum < 2  UNION  SELECT p.segment1 project_number,  ei.expenditure_type expenditure_type,  poh.segment1 po_number,  rsh.receipt_num receipt_number,  p.project_status_code project_status,  'Case 12 : PO Receipt Return Transactions that got interfaced '||  'to projects, with incorrect amounts' AS rej_reason  FROM apps.pa_expenditure_items_all ei,  apps.rcv_receiving_sub_ledger rsub,  apps.rcv_transactions rtxn,  apps.rcv_shipment_headers rsh,  apps.pa_projects_all p,  apps.pa_tasks t,  apps.po_headers_all poh,  apps.po_lines_all pol,  apps.po_distributions_all pod  WHERE ei.project_id = p.project_id  AND ei.task_id = t.task_id  AND ei.project_id = t.project_id  AND ei.document_header_id = poh.po_header_id  AND ei.adjusted_expenditure_item_id is null  AND nvl(ei.net_zero_adjustment_flag,'N') = 'N'  AND ei.document_distribution_id = rsub.rcv_transaction_id  AND to_char(ei.document_line_number) = rsub.reference3  AND nvl(rsub.pa_addition_flag,'N') = 'Y'  AND rsub.rcv_transaction_id = rtxn.Transaction_id  AND rtxn.shipment_header_id = rsh.shipment_header_id  AND rsub.reference3 = TO_CHAR(pod.po_distribution_id)  AND pod.po_line_id = pol.po_line_id  AND ei.org_id = pod.org_id  AND pod.org_id = poh.org_id  AND ((ei.Transaction_Source = 'PO RECEIPT NRTAX' AND  ((ei.document_distribution_type = 'RETURN TO RECEIVING' AND  nvl(rsub.accounted_nr_tax,0) <> -1* ei.acct_raw_cost) OR  (ei.document_distribution_type = 'CORRECT' AND  nvl(rsub.accounted_nr_tax,0) <> ei.acct_raw_cost) OR  (ei.document_distribution_type = 'DELIVER' AND  nvl(rsub.accounted_nr_tax,0) <> ei.acct_raw_cost))) OR  (ei.Transaction_Source = 'PO RECEIPT' AND  ((ei.document_distribution_type = 'RETURN TO RECEIVING' AND  decode(nvl(rsub.entered_dr,0),  0, -rsub.entered_cr + nvl(rsub.entered_nr_tax,0),  rsub.entered_dr - nvl(rsub.entered_nr_tax,0)) <> ei.denom_raw_cost) OR  (ei.document_distribution_type = 'CORRECT' AND  decode(nvl(rsub.entered_dr,0),  0, -rsub.entered_cr+nvl(rsub.entered_nr_tax,0),  rsub.entered_dr - nvl(rsub.entered_nr_tax,0)) <> ei.denom_raw_cost) OR  (ei.document_distribution_type = 'DELIVER' AND  decode(nvl(rsub.entered_dr,0),  0, -rsub.entered_cr+nvl(rsub.entered_nr_tax,0),  rsub.entered_dr - nvl(rsub.entered_nr_tax,0)) <> ei.denom_raw_cost))))  AND trunc(rsub.creation_date) >= sysdate - 7  AND rownum <= 5  )) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

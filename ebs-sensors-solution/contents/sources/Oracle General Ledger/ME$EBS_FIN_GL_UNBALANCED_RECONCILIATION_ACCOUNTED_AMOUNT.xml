@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#low_severity_sensor</Name>
+<DisplayName>Low Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>LOW</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN GL GL Reconciliation Unbalanced Accounted Amounts - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN GL GL Reconciliation Unbalanced Accounted Amounts - Weekly</DisplayName>
+    <Description><![CDATA[GL Reconciliation was performed. The reconciliation seems to be unbalanced or missing journal lines were spotted in the problematic reconciliation.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_GL_UNBALANCED_RECONCILIATION_ACCOUNTED_AMOUNT' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'ledger_name:' || s.ledger_name || ', ledger_id:' || s.ledger_id || ', Sum_CR:' || s.Sum_CR || ', Sum_DR:' || s.Sum_DR || ', Reconcilation_identifier:' || s.Reconcilation_identifier key_data FROM (Select  a.ledger_id ledger_id,  a.ledger_name ledger_name,  a.Sum_CR Sum_CR,  a.Sum_DR Sum_DR,  a.Reconcilation_identifier Reconcilation_identifier  from  ((SELECT l.ledger_id ledger_id,  le.Name ledger_name,  SUM(nvl(entered_cr, 0))Sum_CR,  SUM(nvl(entered_dr, 0)) Sum_DR,  jgzz_recon_id Reconcilation_identifier  FROM apps.gl_je_lines l,  apps.gl_je_lines_recon r,  apps.gl_ledgers le  WHERE l.je_header_id = r.je_header_id  AND l.je_line_num = r.je_line_num  AND le.ledger_id = l.Ledger_id  AND jgzz_recon_status = 'R'  GROUP BY r.jgzz_recon_id,l.ledger_id, le.Name  HAVING SUM(nvl(entered_cr, 0))<> SUM(nvl(entered_dr, 0)))  UNION  (SELECT l.ledger_id ledger_id,  le.Name ledger_name,  jgzz_recon_id Reconcilation_identifier,  SUM(nvl(accounted_cr, 0))Sum_CR,  SUM(nvl(accounted_dr, 0)) Sum_DR  FROM apps.gl_je_lines l,  apps.gl_je_lines_recon r,  apps.gl_ledgers le  WHERE l.je_header_id = r.je_header_id  AND l.je_line_num = r.je_line_num  AND le.ledger_id = l.Ledger_id  AND jgzz_recon_status = 'R'  GROUP BY r.jgzz_recon_id,l.ledger_id, le.Name  HAVING SUM(nvl(accounted_cr, 0))<> SUM(nvl(accounted_dr, 0)))) a  where rownum < 2) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#low_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

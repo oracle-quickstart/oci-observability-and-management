@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO Approved Requisition is associated to Blanket or Contract Agreement that is not Approved - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO Approved Requisition is associated to Blanket or Contract Agreement that is not Approved - Weekly</DisplayName>
+    <Description><![CDATA[Approved Requisition(s) is associated to a Blanket or Contract Agreement(s) that is not Approved.  This will prevent Autocreate of the requisition.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_AUTOCREATE_SOURCING_DOC_CHECKS_SUMMARY_CHILD01_A' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'IssueDesc:' || s.IssueDesc || ', PoNumber:' || s.PoNumber || ', PoHeader_ReqHeader_Reqline_Id:' || s.PoHeader_ReqHeader_Reqline_Id || ', OrgId:' || s.OrgId || ', ReqNumber:' || s.ReqNumber || ', ReqLineNum:' || s.ReqLineNum key_data FROM (SELECT IssueDesc IssueDesc, PoNumber PoNumber, PoHeader_ReqHeader_Reqline_Id PoHeader_ReqHeader_Reqline_Id, OrgId OrgId, ReqNumber ReqNumber, ReqLineNum ReqLineNum  from  (SELECT distinct 'Approved Requisition is associated to Blanket or Contract Agreement that is not Approved' IssueDesc,  poh.segment1 PoNumber,   concat(concat(concat(concat(TO_CHAR(prla.blanket_po_header_id),' / '), TO_CHAR(prha.requisition_header_id)),' / '), TO_CHAR(prla.requisition_line_id)) PoHeader_ReqHeader_Reqline_Id,   prha.org_id OrgId, prha.segment1 ReqNumber, prla.line_num ReqLineNum  FROM apps.po_requisition_headers_all prha , apps.po_requisition_lines_all prla , apps.po_headers_all poh , apps.po_lines_all pol  WHERE prha.requisition_header_id = prla.requisition_header_id and poh.po_header_id = prla.blanket_po_header_id /* link to blanket po header */  and pol.po_header_id (+) = poh.po_header_id /* link to get blanket lines outer join for contracts */  AND prha.authorization_status = 'APPROVED' /* only approved reqs */  AND prla.line_location_id IS NULL /* not put on po release or std po yet */  AND nvl(prla.closed_code, 'OPEN') <> 'FINALLY CLOSED' /* NOT CLOSED */  AND nvl(prla.cancel_flag, 'N') <> 'Y' /* NOT CANCELLED */  and prla.blanket_po_header_id is not null /* get only sourced reqs */  and ( poh.authorization_status <> 'APPROVED' /* check for not approved header */  )  order by TO_NUMBER(REGEXP_SUBSTR(PoHeader_ReqHeader_Reqline_Id, '(\d\d+)',1,1)) desc  )  where rownum < 1000) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

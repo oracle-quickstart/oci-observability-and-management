@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN GL Balances do not match posted journals for previous period - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN GL Balances do not match posted journals for previous period - Weekly</DisplayName>
+    <Description><![CDATA[Balance corruption - The sum of posted transactions in gl_je_lines is not the same as the balance stored in gl_balance]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_GL_BAL_JOURN_PREV' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'ccid:' || s.ccid || ', period_name:' || s.period_name || ', currency_code:' || s.currency_code || ', ledger_id:' || s.ledger_id key_data FROM (select A.ledger_id ledger_id,  A.code_combination_id ccid,  A.period_name period_name,  A.currency_code currency_code  from  (  SELECT T.ledger_id,  T.code_combination_id code_combination_id,  T.period_name period_name,  T.currency_code currency_code,  SUM(NVL(T.BALANCES_CR, 0)) BALANCES_CR,  SUM(NVL(T.balances_dr, 0)) balances_dr,  SUM(NVL(T.lines_cr, 0)) lines_cr,  SUM(NVL(T.lines_dr, 0)) lines_dr  FROM  (SELECT led.ledger_id,  l.code_combination_id code_combination_id,  h.period_name period_name,  led.currency_code currency_code,  0 BALANCES_CR,  0 balances_dr,  SUM(NVL(l.accounted_cr, 0)) lines_cr,  SUM(NVL(l.accounted_dr, 0)) lines_dr  FROM apps.gl_je_headers h ,  apps.gl_je_lines l ,  apps.GL_CODE_COMBINATIONS_KFV CC ,  apps.GL_LEDGERS LED,  apps.GL_DATE_PERIOD_MAP gpm  WHERE h.period_name =gpm.period_name  AND to_date(gpm.accounting_date, 'DD-MON-YY')= to_date(sysdate-30, 'DD-MON-YY')  AND gpm.period_set_name =led.period_set_name  AND led.complete_flag ='Y'  AND led.FIRST_LEDGER_PERIOD_NAME IS NOT NULL  AND l.code_combination_id = CC.CODE_COMBINATION_ID  AND h.ledger_id =led.ledger_id  AND h.je_header_id = l.je_header_id  AND h.currency_code != 'STAT'  AND H.STATUS = 'P'  AND H.ACTUAL_FLAG ='A'  GROUP BY led.ledger_id,  l.code_combination_id,  h.period_name,  led.currency_code  UNION ALL  SELECT led.ledger_id,  b.code_combination_id code_combination_id,  b.period_name period_name,  b.currency_code currency_code,  NVL(B.PERIOD_NET_CR, 0) BALANCES_CR,  NVL(b.period_net_dr, 0) balances_dr,  0 lines_cr,  0 lines_dr  FROM apps.GL_BALANCES B,  apps.GL_CODE_COMBINATIONS_KFV CC ,  apps.GL_LEDGERS LED,  apps.GL_DATE_PERIOD_MAP gpm  WHERE b.period_name =gpm.period_name  AND to_date(gpm.accounting_date, 'DD-MON-YY')= to_date(sysdate-30, 'DD-MON-YY')  AND gpm.period_set_name =led.period_set_name  AND led.complete_flag ='Y'  AND led.FIRST_LEDGER_PERIOD_NAME IS NOT NULL  AND b.ledger_id = led.ledger_id  AND b.actual_flag = 'A'  AND b.currency_code != 'STAT'  AND b.currency_code = led.CURRENCY_CODE  AND b.translated_flag IS NULL  AND b.template_id IS NULL  AND CC.CODE_COMBINATION_ID =B.CODE_COMBINATION_ID  AND (NVL(B.PERIOD_NET_CR, 0) <>0  OR NVL(B.PERIOD_NET_DR, 0) <>0)  ) T  GROUP BY T.ledger_id,  T.code_combination_id,  T.period_name ,  T.currency_code  HAVING SUM(NVL(T.balances_cr,0)) <> SUM(NVL(T.lines_cr,0))  OR SUM(NVL(T.balances_dr,0)) <> SUM(NVL(T.lines_dr,0))  ) A WHERE rownum < 2) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

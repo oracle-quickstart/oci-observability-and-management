@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#low_severity_sensor</Name>
+<DisplayName>Low Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>LOW</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: ATG WF Workflow Background Process is scheduled for deferred activities for all item types - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: ATG WF Workflow Background Process is scheduled for deferred activities for all item types - Weekly</DisplayName>
+    <Description><![CDATA[Workflow Background Process is scheduled for deferred activities for all item types]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_ATG_WF_BACKGROUND_PROCESS_DEFERRED1' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'issue_message:' || s.issue_message key_data FROM (select msg issue_message from (  select 'WF Background Engine not scheduled for ALL deferred activities' msg from dual  where not exists   (      select p.USER_CONCURRENT_PROGRAM_NAME PROGRAM_NAME, r.ARGUMENT_TEXT ARGUMENTS, r.RESUBMIT_INTERVAL EVERY, r.RESUBMIT_INTERVAL_UNIT_CODE SO_OFTEN  FROM apps.fnd_concurrent_requests r, apps.FND_CONCURRENT_PROGRAMS_TL p, apps.fnd_concurrent_programs c   WHERE r.CONCURRENT_PROGRAM_ID = p.CONCURRENT_PROGRAM_ID  and p.CONCURRENT_PROGRAM_ID = c.CONCURRENT_PROGRAM_ID   and c.CONCURRENT_PROGRAM_NAME = 'FNDWFBG'   AND p.language = 'US'   and r.ACTUAL_COMPLETION_DATE is null and r.PHASE_CODE in ('P','R')  and substr(r.ARGUMENT_TEXT,0,instr(r.ARGUMENT_TEXT,',')-1) is NULL  and upper(TRIM(substr(r.ARGUMENT_TEXT,instr(r.ARGUMENT_TEXT,',',1,3)+1,(instr(r.ARGUMENT_TEXT,',',1,4)-1)-(instr(r.ARGUMENT_TEXT,',',1,3))))) in ('YES','Y')  and rownum < 2  ))) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#low_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

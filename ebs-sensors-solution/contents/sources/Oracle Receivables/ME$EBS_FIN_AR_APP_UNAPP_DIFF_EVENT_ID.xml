@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AR Receipts have inconsistent EVENT ID in APP and UNAPP Rows - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AR Receipts have inconsistent EVENT ID in APP and UNAPP Rows - Weekly</DisplayName>
+    <Description><![CDATA[Receipts have inconsistent EVENT_ID in APP and UNAPP Rows in AR_RECEIVABLE_APPLICATIONS_ALL.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AR_APP_UNAPP_DIFF_EVENT_ID' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'CASH_RECEIPT_ID:' || s.CASH_RECEIPT_ID || ', APP_EVENT_ID:' || s.APP_EVENT_ID || ', UNAPP_EVENT_ID:' || s.UNAPP_EVENT_ID || ', UNAPP_GL_POSTED_DATE:' || s.UNAPP_GL_POSTED_DATE || ', USER_NAME:' || s.USER_NAME || ', RESP_ID:' || s.RESP_ID key_data FROM (select cash_receipt_id CASH_RECEIPT_ID,          app_event_id APP_EVENT_ID,         unapp_event_id UNAPP_EVENT_ID,          unapp_gl_posted_date UNAPP_GL_POSTED_DATE,         user_name USER_NAME,         resp_id RESP_ID  from  (  select distinct ra.cash_receipt_id CASH_RECEIPT_ID,          ra.event_id APP_EVENT_ID,         ra_unapp.event_id UNAPP_EVENT_ID,          ra_unapp.gl_posted_date UNAPP_GL_POSTED_DATE,         users.user_name USER_NAME,  	(  	SELECT min(responsibility_id)  	FROM apps.fnd_responsibility resp  	WHERE application_id = 222          ) resp_id    from apps.ar_receivable_applications_all ra_unapp,         apps.ar_receivable_applications_all ra,         apps.ar_distributions_all ard_unapp,          apps.fnd_user users   where ra.created_by = users.user_id      and ra_unapp.status = 'UNAPP'     and ra_unapp.cash_receipt_id = ra.cash_receipt_id     and ra.status <> 'UNAPP'     and ra_unapp.event_id <> ra.event_id     and ra_unapp.gl_date = ra.gl_date     and ra.posting_control_id <> -3     and ra_unapp.posting_control_id = -3     and ra_unapp.receivable_application_id = ard_unapp.source_id     and ard_unapp.source_table = 'RA'     and ard_unapp.source_id_secondary = ra.receivable_application_id     and ra.gl_date between sysdate-30 and sysdate+30      and rownum <= 5  )) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

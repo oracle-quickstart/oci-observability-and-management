@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#low_severity_sensor</Name>
+<DisplayName>Low Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>LOW</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO Items in search results show the wrong old or blank category value - Daily" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO Items in search results show the wrong old or blank category value - Daily</DisplayName>
+    <Description><![CDATA[Items in search results show a category value that is not the currently mapped shopping category for the item.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_IP_ITEMS_CATEGORY_MAPPING_MISMATCH' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'Last_Update_Date:' || s.Last_Update_Date || ', Operating_Unit_Id:' || s.Operating_Unit_Id || ', Inv_Item_Number:' || s.Inv_Item_Number || ', iProc_Item_Description:' || s.iProc_Item_Description || ', Expected_iProc_Category_Name:' || s.Expected_iProc_Category_Name || ', Actual_iProc_Category_Name:' || s.Actual_iProc_Category_Name key_data FROM (select last_update_date Last_Update_Date, org_id Operating_Unit_Id, Inv_Item_Number Inv_Item_Number, iProc_Item_Description iProc_Item_Description, Expected_iProc_Category_Name Expected_iProc_Category_Name, Actual_iProc_Category_Name Actual_iProc_Category_Name  FROM  (select distinct mck.category_id, mck.segment1, mck.segment2,   ctxh.ip_category_name Actual_iProc_Category_Name, icxmapping.category_name Expected_iProc_Category_Name,   ctxh.ip_category_id Actual_iProc_Category_Id, icxmapping.rt_category_id Expected_iProc_Category_Id,   icxmapping.language,   ctxh.inventory_item_id, ctxh.org_id, ctxh.description iProc_Item_Description, msib.description Inv_Item_description, msib.segment1 Inv_Item_Number,  ctxh.last_update_date         from apps.mtl_categories_kfv mck,              apps.mtl_category_set_valid_cats mcsvc,              apps.icx_por_category_data_sources purchmapping,              apps.icx_cat_categories_tl icxmapping,              apps.icx_cat_items_ctx_hdrs_tlp ctxh,              (select distinct category_set_id, structure_id from apps.mtl_default_sets_view where functional_area_id = 2) mtdsv,              apps.mtl_system_items_b msib        where msib.organization_id(+) = ctxh.org_id          and msib.inventory_item_id(+) = ctxh.inventory_item_id          and mck.structure_id = mtdsv.structure_id          and mcsvc.category_set_id = mtdsv.category_set_id          and mcsvc.category_id = mck.category_id          and purchmapping.external_source_key = to_char(mck.category_id)          and purchmapping.external_source = 'Oracle'          and icxmapping.key = purchmapping.category_key          and icxmapping.type = 2          and ctxh.po_category_id = mck.category_id          and ctxh.source_type = 'MASTER_ITEM'          and ctxh.language = icxmapping.language          and (ctxh.ip_category_id <> icxmapping.rt_category_id or    ctxh.ip_category_name <> icxmapping.category_name)  order by ctxh.last_update_date, ctxh.org_id, msib.segment1) ItemsWithWrongCategory  where rownum <= 5) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#low_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

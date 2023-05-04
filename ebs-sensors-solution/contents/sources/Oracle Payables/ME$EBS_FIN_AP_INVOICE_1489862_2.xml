@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Invoice matching related issue - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Invoice matching related issue - Weekly</DisplayName>
+    <Description><![CDATA[Checking for various invoice matching related issues.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_INVOICE_1489862_2' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'invoice_id:' || s.invoice_id key_data FROM (SELECT      invoice_id invoice_id  FROM      (          WITH invs AS (              SELECT /*+ materialize */ DISTINCT                  invoice_id              FROM                  apps.ap_invoice_distributions_all              WHERE                  accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )          SELECT /*+ ordered */              aid.invoice_id          FROM              invs,              apps.ap_invoice_lines_all         ail,              apps.ap_invoice_distributions_all aid,              apps.po_line_locations_all        pll          WHERE                  ail.invoice_id = aid.invoice_id              AND ail.line_number = aid.invoice_line_number              AND ail.po_line_location_id IS NOT NULL              AND ail.po_line_location_id = pll.line_location_id              AND aid.dist_match_type IN ( 'ITEM_TO_PO', 'ITEM_TO_SERVICE_PO' )              AND ail.rcv_transaction_id IS NULL              AND aid.rcv_transaction_id IS NULL              AND aid.line_type_lookup_code IN ( 'ITEM', 'ACCRUAL' )              AND ( nvl(ail.unit_meas_lookup_code, - 1) <> nvl(pll.unit_meas_lookup_code, - 1)                    OR nvl(aid.matched_uom_lookup_code, - 1) <> nvl(pll.unit_meas_lookup_code, - 1)                    OR nvl(ail.unit_meas_lookup_code, - 1) <> nvl(aid.matched_uom_lookup_code, - 1) )              AND ail.invoice_id = invs.invoice_id          UNION ALL          SELECT /*+ ordered */              ail.invoice_id          FROM              invs,              apps.ap_invoice_lines_all         ail,              apps.ap_invoice_distributions_all aid          WHERE              ail.po_line_location_id IS NOT NULL              AND nvl(ail.discarded_flag, 'N') <> 'Y'              AND nvl(ail.cancelled_flag, 'N') <> 'Y'              AND ail.line_type_lookup_code IN ( 'ITEM', 'ACCRUAL' )              AND ail.match_type NOT IN ( 'PRICE_CORRECTION', 'QTY_CORRECTION' )              AND aid.invoice_id = ail.invoice_id              AND aid.invoice_line_number = ail.line_number              AND ail.invoice_id = invs.invoice_id          GROUP BY              ail.invoice_id,              ail.org_id,              ail.line_number,              ail.po_line_location_id,              ail.po_distribution_id,              ail.amount,              ail.quantity_invoiced          HAVING nvl(ail.quantity_invoiced, 0) <> SUM(nvl(aid.quantity_invoiced, 0))                 AND ail.amount = SUM(aid.amount)          UNION ALL          SELECT /*+ ordered */              ail.invoice_id          FROM              invs,              apps.ap_invoice_lines_all         ail,              apps.ap_invoice_distributions_all aid          WHERE                  ail.invoice_id = aid.invoice_id              AND ail.line_number = aid.invoice_line_number              AND ail.po_line_location_id IS NOT NULL              AND aid.po_distribution_id IS NOT NULL              AND nvl(ail.historical_flag, 'N') <> 'Y'              AND nvl(aid.historical_flag, 'N') <> 'Y'              AND ( ail.line_type_lookup_code IN ( 'ITEM', 'PREPAY', 'RETAINAGE RELEASE', 'RETROITEM' )                    OR ( ail.line_type_lookup_code IN ( 'FREIGHT', 'MISCELLANEOUS' )                         AND nvl(ail.match_type, 'NOT_MATCHED') = 'OTHER_TO_RECEIPT' ) )              AND ( aid.rcv_transaction_id IS NULL                    AND ail.rcv_transaction_id IS NOT NULL                    OR ail.rcv_transaction_id IS NULL                    AND aid.rcv_transaction_id IS NOT NULL )              AND ail.invoice_id = invs.invoice_id      )  WHERE      ROWNUM < 11  ORDER BY      invoice_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

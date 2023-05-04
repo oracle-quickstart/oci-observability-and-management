@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN FCA Missing Legal Reporting Status on transactions - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN FCA Missing Legal Reporting Status on transactions - Weekly</DisplayName>
+    <Description><![CDATA[Missing Legal reporting status for the ones which have the setup at Tax level with Tax Reporting Type Code = "REPORTING_STATUS_TRACKING".]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_FCA_JE_TAX_LEVEL_SETUP_MISSING' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'DEFAULT_TAXATION_COUNTRY:' || s.DEFAULT_TAXATION_COUNTRY || ', trx_id:' || s.trx_id || ', tax_rate_id:' || s.tax_rate_id || ', legal_reporting_status:' || s.legal_reporting_status || ', LEGAL_REPORTING_STATUS_DEF_VAL:' || s.LEGAL_REPORTING_STATUS_DEF_VAL key_data FROM (select zxdet.DEFAULT_TAXATION_COUNTRY DEFAULT_TAXATION_COUNTRY,  zxlines.trx_id trx_id,  zxlines.tax_rate_id tax_rate_id,  zxlines.legal_reporting_status legal_reporting_status,  zxtaxes.LEGAL_REPORTING_STATUS_DEF_VAL LEGAL_REPORTING_STATUS_DEF_VAL  from apps.zx_lines zxlines, apps.zx_lines_det_factors zxdet, apps.zx_rates_b zxrates, apps.zx_taxes_b zxtaxes  where zxlines.legal_reporting_status is null  and zxlines.tax_rate_id = zxrates.tax_rate_id  AND zxrates.tax = zxtaxes.tax  and zxlines.tax_id = zxtaxes.tax_id  and zxlines.application_id = zxdet.application_id  and zxlines.application_id in (200,222)  AND zxlines.TRX_LINE_ID = zxdet.TRX_LINE_ID  and zxlines.trx_id = zxdet.trx_id  and zxtaxes.LEGAL_REPORTING_STATUS_DEF_VAL='000000000000000'  and (zxdet.default_taxation_country in ('BE', 'CH', 'CZ', 'DE', 'DK','ES', 'EX', 'FI', 'FR', 'GR','HU', 'IL', 'IT', 'NL', 'NO', 'PL', 'PT', 'SE', 'TR', 'RU','SK', 'UA', 'RO', 'KZ', 'HR','SI', 'BG', 'RS' ,'AE')  or zxdet.default_taxation_country is null)  And exists (select 1 FROM fnd_product_installations WHERE application_id in (7002, 7003) and status='I')  And rownum<21) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

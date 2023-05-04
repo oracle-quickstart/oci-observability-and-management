@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN FCA HQ Establishment Registration Number populated with NULL or incorrect value on Tax Lines - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN FCA HQ Establishment Registration Number populated with NULL or incorrect value on Tax Lines - Weekly</DisplayName>
+    <Description><![CDATA[HQ Establishment Registration Number populated with NULL or incorrect value on Tax Lines which will cause issues in EMEA VAT Reporting.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_FCA_JE_INCORRECT_HQ_REG' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'application_id:' || s.application_id || ', trx_id:' || s.trx_id || ', trx_date:' || s.trx_date || ', legal_entity_id:' || s.legal_entity_id || ', hq_estb_reg_number:' || s.hq_estb_reg_number || ', hq_estb_party_tax_prof_id:' || s.hq_estb_party_tax_prof_id key_data FROM (SELECT DISTINCT zl.application_id application_id,  zl.trx_id trx_id,  zl.trx_date trx_date,  zl.legal_entity_id legal_entity_id,  zl.HQ_ESTB_REG_NUMBER hq_estb_reg_number,  zl.HQ_ESTB_PARTY_TAX_PROF_ID hq_estb_party_tax_prof_id  FROM apps.ZX_LINES ZL,  apps.XLE_ETB_PROFILES ETB,  apps.ZX_PARTY_TAX_PROFILE PTP  WHERE zl.application_id IN (200,222)  AND zl.entity_code IN ('AP_INVOICES','TRANSACTIONS')  AND zl.tax_rate_id IS NOT NULL  AND ETB.legal_entity_id = zl.legal_entity_id  AND ETB.MAIN_ESTABLISHMENT_FLAG = 'Y'  AND zl.trx_date BETWEEN NVL(etb.main_effective_from, zl.trx_date)  AND NVL(etb.main_effective_to, zl.trx_date)  AND PTP.PARTY_ID = ETB.PARTY_ID  AND PTP.PARTY_TYPE_CODE = 'LEGAL_ESTABLISHMENT'  AND EXISTS  ( SELECT 1  FROM apps.ZX_REGISTRATIONS REG  WHERE REG.PARTY_TAX_PROFILE_ID = PTP.PARTY_TAX_PROFILE_ID  AND ZL.tax_regime_code = reg.tax_regime_code  AND ( NVL(zl.HQ_ESTB_REG_NUMBER,CHR(0)) <> NVL(REG.REGISTRATION_NUMBER, CHR(0))  OR NVL(zl.HQ_ESTB_PARTY_TAX_PROF_ID,-1) <> REG.PARTY_TAX_PROFILE_ID  )  AND NVL(reg.tax, zl.tax) = zl.tax  AND NVL(reg.tax_jurisdiction_code, NVL(zl.tax_jurisdiction_code, CHR(0))) = NVL(zl.tax_jurisdiction_code, CHR(0))  AND zl.trx_date BETWEEN reg.effective_from AND NVL(reg.effective_to, zl.trx_date)  )  And exists (select 1 FROM apps.fnd_product_installations WHERE application_id in (7002, 7003) and status='I')  and rownum<21) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

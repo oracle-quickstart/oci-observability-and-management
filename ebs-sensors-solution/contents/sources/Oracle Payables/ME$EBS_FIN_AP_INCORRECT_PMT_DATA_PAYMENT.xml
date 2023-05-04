@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Payment with incorrect data in payment schedules or payment fields - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Payment with incorrect data in payment schedules or payment fields - Weekly</DisplayName>
+    <Description><![CDATA[Identified check(s) with incorrect payment or invoice data.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_INCORRECT_PMT_DATA_PAYMENT' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id || ', org_id:' || s.org_id key_data FROM (SELECT      ac.check_id check_id,      ac.org_id   org_id  FROM      (          SELECT DISTINCT              ph.check_id          FROM              apps.ap_payment_history_all ph          WHERE              ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )      )                             chks,      apps.ap_checks_all                 ac,      apps.iby_docs_payable_all          idp,      apps.fnd_currencies                fc,      apps.ap_payment_schedules_all      ps,      apps.ap_invoices_all               ai,      apps.ce_gl_accounts_ccid           cegl,      apps.ap_payment_history_all        aph,      apps.ap_inv_selection_criteria_all aisc  WHERE          ac.check_id = chks.check_id      AND ac.status_lookup_code NOT IN ( 'OVERFLOW', 'SET UP', 'SPOILED', 'VOIDED' )      AND idp.calling_app_doc_unique_ref1 = aisc.checkrun_id      AND idp.calling_app_doc_unique_ref2 = ai.invoice_id      AND idp.calling_app_doc_unique_ref3 = ps.payment_num      AND idp.completed_pmts_group_id = ac.completed_pmts_group_id      AND idp.org_type = 'OPERATING_UNIT'      AND ac.payment_id = idp.payment_id      AND idp.payment_currency_code = fc.currency_code      AND ps.invoice_id (+) = ai.invoice_id      AND ac.ce_bank_acct_use_id = cegl.bank_acct_use_id      AND aph.check_id = ac.check_id      AND aph.transaction_type IN ( 'PAYMENT CREATED', 'REFUND RECORDED' )      AND NOT EXISTS (          SELECT              1          FROM              apps.ap_invoice_payments_all p          WHERE                  p.check_id = ac.check_id              AND idp.calling_app_doc_unique_ref2 = p.invoice_id              AND idp.calling_app_doc_unique_ref3 = p.payment_num      )      AND ROWNUM < 11  ORDER BY      check_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

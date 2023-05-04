@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Invoice with incorrect data in payment schedules or payment fields - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Invoice with incorrect data in payment schedules or payment fields - Weekly</DisplayName>
+    <Description><![CDATA[Identified invoice(s) with incorrect payment or invoice data.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_INCORRECT_PMT_DATA_INVOICE' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'invoice_id:' || s.invoice_id || ', org_id:' || s.org_id key_data FROM (SELECT  invoice_id invoice_id,  org_id org_id  FROM  (  WITH invs AS (  SELECT /*+ materialize */ DISTINCT  invoice_id  FROM  apps.ap_invoice_distributions_all  WHERE  accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )  )  /*SPLIT_HERE*/  SELECT  ap.invoice_id,  ap.org_id  FROM  (  SELECT  'Incorrect Amt Paid' reason,  ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  ai.org_id,  ai.invoice_amount,  ai.amount_paid,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(aid.amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_distributions_all aid,  apps.ap_invoice_lines_all ail  WHERE  ail.invoice_id = ai.invoice_id  AND aid.invoice_id = ai.invoice_id  AND ail.line_number = aid.invoice_line_number  AND aid.prepay_distribution_id IS NOT NULL  AND nvl(ail.invoice_includes_prepay_flag, 'N') <> 'Y'  ) prepay_amt,  (  SELECT  SUM(aip.amount)  FROM  apps.ap_invoice_payments_all aip  WHERE  aip.invoice_id = ai.invoice_id  ) pay_amt  FROM  invs,  apps.ap_invoices_all ai  WHERE  ai.validation_request_id IS NULL  AND ai.cancelled_date IS NULL  AND ai.invoice_id = invs.invoice_id  ) ap  WHERE  ( nvl(ap.pay_amt, 0) - nvl(ap.prepay_amt, 0) ) <> nvl(ap.amount_paid, 0)  UNION ALL  SELECT  ap.invoice_id,  ap.org_id  FROM  (  SELECT /*+ ordered use_nl(ai) */  'Incorrect Amt Remaining' reason,  ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  ai.org_id,  ai.invoice_amount,  ai.amount_paid,  nvl(ai.discount_amount_taken, 0) disc_amt,  nvl(ai.payment_cross_rate, 1) payment_cross_rate,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(ail.amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_lines_all ail  WHERE  ail.invoice_id = ai.invoice_id  AND ail.line_type_lookup_code = 'AWT'  ) awt_amt,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(ail.retained_amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_lines_all ail  WHERE  ail.invoice_id = ai.invoice_id  AND nvl(ai.net_of_retainage_flag, 'N') <> 'Y'  ) retained_amt,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(aid.amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_distributions_all aid,  apps.ap_invoice_lines_all ail  WHERE  ail.invoice_id = ai.invoice_id  AND aid.invoice_id = ai.invoice_id  AND ail.line_number = aid.invoice_line_number  AND aid.prepay_distribution_id IS NOT NULL  AND nvl(ail.invoice_includes_prepay_flag, 'N') <> 'Y'  ) prepay_amt,  (  SELECT  SUM(aip.amount)  FROM  apps.ap_invoice_payments_all aip  WHERE  aip.invoice_id = ai.invoice_id  ) pay_amt,  (  SELECT /*+ no_unnest */  SUM(nvl(amount_remaining, 0))  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  ) amount_remain  FROM  invs,  apps.ap_invoices_all ai  WHERE  ai.validation_request_id IS NULL  AND ai.cancelled_date IS NULL  AND ai.invoice_id = invs.invoice_id  ) ap  WHERE  ( ( ( ap.invoice_amount * ap.payment_cross_rate ) - disc_amt + nvl(ap.awt_amt, 0) + nvl(ap.retained_amt, 0) ) - ( nvl(ap.  pay_amt, 0) - nvl(ap.prepay_amt, 0) ) ) <> ap.amount_remain  UNION ALL  SELECT  ai.invoice_id,  ai.org_id  FROM  invs,  apps.ap_invoices_all ai,  apps.ap_payment_schedules_all ap  WHERE  ap.amount_remaining IS NULL  AND ap.invoice_id = ai.invoice_id  AND ap.checkrun_id IS NULL  AND ai.invoice_id = invs.invoice_id  UNION ALL  SELECT /*+ no_query_transformation */  ap.invoice_id,  ap.org_id  FROM  (  SELECT /*+ ordered use_nl(ai, aps1) */  'Fully paid but Payment_status_flag not Y' reason,  ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  ai.org_id,  ai.invoice_amount,  ai.amount_paid,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(aid.amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_distributions_all aid,  apps.ap_invoice_lines_all ail  WHERE  ail.invoice_id = ai.invoice_id  AND aid.invoice_id = ai.invoice_id  AND ail.line_number = aid.invoice_line_number  AND aid.prepay_distribution_id IS NOT NULL  AND nvl(ail.invoice_includes_prepay_flag, 'N') <> 'Y'  ) prepay_amt,  (  SELECT  SUM(aip.amount)  FROM  apps.ap_invoice_payments_all aip  WHERE  aip.invoice_id = ai.invoice_id  ) pay_amt,  (  SELECT  SUM(aps.amount_remaining)  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  ) amount_remain  FROM  invs,  apps.ap_invoices_all ai,  apps.ap_payment_schedules_all aps1  WHERE  ai.invoice_id = invs.invoice_id  AND aps1.invoice_id = ai.invoice_id  AND ( ai.payment_status_flag <> 'Y'  OR aps1.payment_status_flag <> 'Y' )  AND ai.cancelled_date IS NULL  AND ai.validation_request_id IS NULL  AND aps1.checkrun_id IS NULL  ) ap  WHERE  nvl(ap.pay_amt, 0) - nvl(ap.prepay_amt, 0) = nvl(ap.amount_paid, 0)  AND ap.amount_paid <> 0  AND ap.amount_remain = 0  UNION ALL  SELECT  ap.invoice_id,  ap.org_id  FROM  (  SELECT  'Inv unpaid but Payment_status_flag not N' reason,  ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  ai.org_id,  ai.invoice_amount,  ai.amount_paid  FROM  invs,  apps.ap_invoices_all ai,  apps.ap_payment_schedules_all aps  WHERE  ai.invoice_id = aps.invoice_id  AND ( nvl(ai.payment_status_flag, 'N') <> 'N'  OR nvl(aps.payment_status_flag, 'N') <> 'N' )  AND ai.cancelled_date IS NULL  AND aps.amount_remaining <> 0  AND ai.validation_request_id IS NULL  AND aps.checkrun_id IS NULL  AND ai.invoice_id = invs.invoice_id  ) ap  WHERE  nvl(ap.amount_paid, 0) = 0  UNION ALL  SELECT  ai.invoice_id,  ap.org_id  FROM  invs,  apps.ap_invoices_all ai,  apps.ap_payment_schedules_all ap  WHERE  ( ap.payment_status_flag IS NULL  OR ai.payment_status_flag IS NULL )  AND ai.validation_request_id IS NULL  AND ap.invoice_id = ai.invoice_id  AND ap.checkrun_id IS NULL  AND ai.invoice_id = invs.invoice_id  UNION ALL  SELECT  ap.invoice_id,  ap.org_id  FROM  (  SELECT  'Wrong pay status flag for partial paid invoices' reason,  ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  ai.org_id,  ai.invoice_amount,  ai.amount_paid,  nvl(ai.discount_amount_taken, 0) disc_amt,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(aid.amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_distributions_all aid,  apps.ap_invoice_lines_all ail  WHERE  ail.invoice_id = ai.invoice_id  AND aid.invoice_id = ai.invoice_id  AND ail.line_number = aid.invoice_line_number  AND aid.prepay_distribution_id IS NOT NULL  AND nvl(ail.invoice_includes_prepay_flag, 'N') <> 'Y'  ) prepay_amt,  (  SELECT  SUM(aip.amount)  FROM  apps.ap_invoice_payments_all aip  WHERE  aip.invoice_id = ai.invoice_id  ) pay_amt,  (  SELECT  SUM(aps.amount_remaining)  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  ) amount_remain  FROM  invs,  apps.ap_invoices_all ai  WHERE  ai.payment_status_flag IN ( 'N', 'Y' )  AND ai.cancelled_date IS NULL  AND ai.validation_request_id IS NULL  AND ai.invoice_id = invs.invoice_id  ) ap  WHERE  nvl(ap.amount_remain, 0) <> 0  AND nvl(ap.amount_paid, 0) <> 0  AND ( nvl(ap.prepay_amt, 0) <> 0  OR nvl(ap.pay_amt, 0) <> 0 )  UNION ALL  SELECT  ap.invoice_id,  ap.org_id  FROM  (  SELECT  'Incorrect pay status flag for partial paid invoices' reason,  ai.invoice_id,  ai.invoice_num,  ai.invoice_date,  aps.org_id,  aps.payment_num,  aps.amount_remaining,  aps.gross_amount,  aps.payment_status_flag,  (  SELECT  apps.ap_utilities_pkg.ap_round_currency(SUM(aid.amount) * nvl(ai.payment_cross_rate, 1), ai.payment_currency_code)  FROM  apps.ap_invoice_distributions_all aid  WHERE  aid.invoice_id = ai.invoice_id  AND aid.line_type_lookup_code = 'AWT'  AND aid.awt_invoice_payment_id IS NULL  ) inv_awt_amt,  (  SELECT  SUM(aps.gross_amount)  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  ) tot_gross_amt  FROM  invs,  apps.ap_invoices_all ai,  apps.ap_payment_schedules_all aps  WHERE  ai.invoice_id = aps.invoice_id  AND aps.amount_remaining <> 0  AND ai.cancelled_date IS NULL  AND ai.validation_request_id IS NULL  AND aps.checkrun_id IS NULL  AND nvl(ai.historical_flag, 'N') <> 'Y'  AND ai.invoice_id = invs.invoice_id  ) ap  WHERE  ap.gross_amount <> 0  AND ap.tot_gross_amt <> 0  AND ap.payment_status_flag <> decode(nvl(ap.amount_remaining, 0), 0, 'Y',(ap.gross_amount +(nvl(ap.inv_awt_amt, 0) * nvl(  ap.gross_amount, 0) / nvl(ap.tot_gross_amt, 1))), 'N', 'P')  UNION ALL  SELECT  ai.invoice_id,  ai.org_id  FROM  invs,  apps.ap_invoices_all ai  WHERE  ai.cancelled_date IS NOT NULL  AND ( nvl(ai.amount_paid, 0) <> 0  OR EXISTS (  SELECT  1  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  AND amount_remaining <> 0  ) )  AND ai.validation_request_id IS NULL  AND ai.invoice_id = invs.invoice_id  UNION ALL  SELECT  ai.invoice_id,  ai.org_id  FROM  invs,  apps.ap_invoices ai  WHERE  ai.invoice_id = invs.invoice_id  AND ( ( ai.pay_curr_invoice_amount <> apps.ap_utilities_pkg.ap_round_currency((ai.invoice_amount -(  CASE  WHEN nvl(ai.net_of_retainage_flag, 'N') = 'N' THEN  nvl(abs(apps.ap_invoices_utility_pkg.get_retained_total(ai.invoice_id, ai.org_id)), 0)  ELSE  0  END  )) * ai.payment_cross_rate, ai.payment_currency_code) )  OR ( ai.pay_curr_invoice_amount <> (  SELECT  SUM(aps.gross_amount)  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  ) ) )  AND ai.historical_flag IS NULL  AND EXISTS (  SELECT  1  FROM  apps.ap_payment_schedules_all aps  WHERE  aps.invoice_id = ai.invoice_id  HAVING  COUNT(aps.invoice_id) = 1  )  AND ai.cancelled_date IS NULL  AND ai.validation_request_id IS NULL  /*SPLIT_HERE*/  )  WHERE  ROWNUM < 11  ORDER BY  invoice_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

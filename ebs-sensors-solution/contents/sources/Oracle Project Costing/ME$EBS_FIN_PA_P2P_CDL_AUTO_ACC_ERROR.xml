@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN PA CDL lines rejected in Accounting with Original transaction not accounted error - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN PA CDL lines rejected in Accounting with Original transaction not accounted error - Weekly</DisplayName>
+    <Description><![CDATA[Distribution Lines getting rejected in Accounting with error : Original transaction not accounted in final mode.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_PA_P2P_CDL_AUTO_ACC_ERROR' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'expenditure_type:' || s.expenditure_type || ', expenditure_item_date:' || s.expenditure_item_date || ', project_status_code:' || s.project_status_code || ', project_number:' || s.project_number || ', rejection_reason:' || s.rejection_reason key_data FROM (SELECT project_number project_number,         expenditure_type expenditure_type,         expenditure_item_date expenditure_item_date,         project_status_code project_status_code,         rej_reason rejection_reason  FROM (  SELECT p.segment1 AS project_number,         p.Project_status_code,         cdl.expenditure_item_id,         ei.expenditure_item_date,         cdl.line_num,         cdl.project_id,         ei.org_id,         ei.expenditure_type,         ei.denom_raw_cost,         cdl2.System_Reference1,         cdl2.System_Reference2,         cdl2.System_Reference3,         cdl2.System_Reference4,         cdl2.System_Reference5,         cdl2.Transfer_Status_Code,         ei.transaction_source txn_src,         'Case 13:Distribution Lines getting rejected in Accounting with '||           'error : Original transaction not accounted in final mode' AS rej_reason    FROM apps.pa_cost_distribution_lines_all cdl2,         apps.pa_expenditure_items_all ei,         apps.pa_cost_distribution_lines_all cdl ,         apps.pa_projects_all p,         apps.pa_project_types_all pt    WHERE cdl.expenditure_item_id = ei.expenditure_item_id    AND   ei.cost_dist_rejection_code is null    AND   ei.system_linkage_function = 'VI'    AND   ei.transaction_source IN ('AP DISCOUNTS','PO RECEIPT')    AND   cdl.transfer_status_code IN ('R','P','A')    AND   (cdl.system_reference4 is null OR           cdl.system_reference5 is null )    AND   cdl.Project_id = p.project_id    AND   ei.Project_Id = p.project_Id    AND   ei.org_id = cdl.org_id    AND   p.project_Type = pt.project_type    AND   cdl2.expenditure_item_id =            decode(ei.adjusted_expenditure_item_id,              null, decode(ei.transferred_from_exp_item_id,                      null, ei.expenditure_item_id,                      decode(cdl.line_num,                        1, ei.transferred_from_exp_item_id,                        ei.expenditure_item_id)),              ei.adjusted_expenditure_item_id)    AND   cdl2.line_num = (            SELECT max(cdl3.line_num) FROM apps.pa_cost_distribution_lines_all cdl3            WHERE cdl3.expenditure_item_id = cdl2.expenditure_item_id            AND   (cdl3.system_reference4 is not null OR                   (cdl3.system_reference5 is not null AND                    cdl3.LINE_TYPE = 'R')))  AND   trunc(ei.creation_date) >= sysdate-7  AND   rownum < 5)) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

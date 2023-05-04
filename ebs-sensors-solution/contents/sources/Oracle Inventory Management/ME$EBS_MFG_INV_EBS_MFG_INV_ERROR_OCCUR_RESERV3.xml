@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG INV Stuck transactions with orphaned reservations - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG INV Stuck transactions with orphaned reservations - Weekly</DisplayName>
+    <Description><![CDATA[The material sourcing process failed to create picking suggestions for line, An error occurred while relieving reservations, Error code: INV_RSV_RLF_FAILED]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_INV_EBS_MFG_INV_ERROR_OCCUR_RESERV3' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'EXPLANATION:' || s.EXPLANATION || ', LINE_NUMBER:' || s.LINE_NUMBER || ', ORDER_NUMBER:' || s.ORDER_NUMBER || ', MR_RESERVATION_ID_A:' || s.MR_RESERVATION_ID_A || ', MR_ORGANIZATION_ID_A:' || s.MR_ORGANIZATION_ID_A || ', MR_INVENTORY_ITEM_ID_A:' || s.MR_INVENTORY_ITEM_ID_A key_data FROM (select EXPLANATION EXPLANATION, LINE_NUMBER LINE_NUMBER, ORDER_NUMBER ORDER_NUMBER, MR_RESERVATION_ID_A MR_RESERVATION_ID_A, MR_ORGANIZATION_ID_A MR_ORGANIZATION_ID_A, MR_INVENTORY_ITEM_ID_A MR_INVENTORY_ITEM_ID_A  from  (select explanation explanation,  (SELECT line_number from apps.oe_order_lines_all ool where ool.line_id= OOLA_Line_ID_A) LINE_NUMBER,  (SELECT order_number from apps.oe_order_headers_all ooh where ooh.header_id= OOLA_Header_ID_A) ORDER_NUMBER,  MR_Reservation_ID_A MR_Reservation_ID_A,  MR_Organization_ID_A MR_Organization_ID_A,  MR_Inventory_Item_ID_A MR_Inventory_Item_ID_A  from (  select 'a. Extraneous reservations but order line canceled' explanation,  l.line_id OOLA_Line_ID_A,  l.header_id OOLA_Header_ID_A,  m.reservation_id MR_Reservation_ID_A,  m.organization_id MR_Organization_ID_A,  m.inventory_item_id MR_Inventory_Item_ID_A,  m.primary_reservation_quantity MR_Primary_Res_Qty_A  from  apps.oe_order_lines_all l,  apps.mtl_reservations m  where m.demand_source_line_id = l.line_id  and m.demand_source_type_id in (2,8)  and m.primary_reservation_quantity > 0  and nvl(l.cancelled_flag,'N')='Y'  and l.cancelled_quantity is not null  and not exists  (select null  from apps.mtl_transactions_interface mti  where mti.trx_source_line_id = l.line_id  and mti.source_header_id = l.header_id  and mti.source_code = 'ORDER ENTRY'  and rownum < 10)  UNION  select 'b. Extraneous reservations but order line has been closed or delivery detail is canceled' explanation,  l.line_id OOLA_Line_ID_B,  l.header_id OOLA_Header_ID_B,  m.reservation_id MR_Reservation_ID_B,  m.organization_id MR_Organization_ID_B,  m.inventory_item_id MR_Inventory_Item_ID_B,  m.primary_reservation_quantity MR_Primary_Res_Qty_B  from  apps.oe_order_lines_all l,  apps.mtl_reservations m  where m.demand_source_line_id = l.line_id  and m.demand_source_type_id in (2,8)  and m.primary_reservation_quantity > 0  and nvl(l.open_flag,'Y')='N'  and not exists (  select null  from apps.mtl_transactions_interface mti  where mti.trx_source_line_id = l.line_id  and mti.source_header_id = l.header_id  and mti.source_code = 'ORDER ENTRY'  )  and not exists (  select null  from apps.wsh_delivery_details wdd  where wdd.source_line_id = l.line_id  and wdd.source_code ='OE'  and wdd.inv_interfaced_flag in ('N','P')  and wdd.released_status <> 'D'  and rownum < 10  )  UNION  select 'c. Extraneous reservations but order line is deleted' explanation,  m.demand_source_line_id MR_Demand_Source_Line_ID_C,  m.demand_source_header_id MR_Demand_Source_Header_ID_C,  m.reservation_id MR_Reservation_ID_C,  m.organization_id MR_Organization_ID_C,  m.inventory_item_id MR_Inventory_Item_ID_C,  m.primary_reservation_quantity MR_Primary_Res_Qty_C  from  apps.mtl_sales_orders mso,  apps.mtl_reservations m  where m.demand_source_header_id = mso.sales_order_id  and m.demand_source_type_id in (2,8)  and not exists (  select null  from apps.oe_order_lines_all l  where l.line_id = m.demand_source_line_id  and rownum < 10  ))  )) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

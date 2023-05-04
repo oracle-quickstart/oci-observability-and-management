@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG INV Orphan move orders exist and need to be cleared - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG INV Orphan move orders exist and need to be cleared - Weekly</DisplayName>
+    <Description><![CDATA[Orphan move orders exist which can cause transactions errors like An Error Occurred While Relieving Reservations or Negative Balances Not Allowed.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_INV_ORPHAN_MOVE_ORDER_LINES' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'explanation:' || s.explanation || ', MMTT_Trx_Source_Line_ID:' || s.MMTT_Trx_Source_Line_ID || ', MMTT_Transaction_Source_ID_A:' || s.MMTT_Transaction_Source_ID_A || ', MMTT_Transaction_Temp_ID_A:' || s.MMTT_Transaction_Temp_ID_A || ', MMTT_Move_Order_Header_ID_A:' || s.MMTT_Move_Order_Header_ID_A || ', MMTT_Move_Order_Line_ID_A:' || s.MMTT_Move_Order_Line_ID_A key_data FROM (select explanation explanation,   MMTT_Trx_Source_Line_ID MMTT_Trx_Source_Line_ID,  MMTT_Transaction_Source_ID_A MMTT_Transaction_Source_ID_A,  MMTT_Transaction_Temp_ID_A MMTT_Transaction_Temp_ID_A,  MMTT_Move_Order_Header_ID_A MMTT_Move_Order_Header_ID_A,  MMTT_Move_Order_Line_ID_A MMTT_Move_Order_Line_ID_A  from (  select 'a. Orphan move order allocations' explanation,   mmtt.trx_source_line_id MMTT_Trx_Source_Line_ID,  mmtt.transaction_source_id MMTT_Transaction_Source_ID_A,  mmtt.transaction_temp_id MMTT_Transaction_Temp_ID_A,  mmtt.move_order_header_id MMTT_Move_Order_Header_ID_A,  mmtt.move_order_line_id MMTT_Move_Order_Line_ID_A,  mmtt.organization_id MMTT_Organization_ID_A,  mmtt.inventory_item_id MMTT_Inventory_Item_ID_A,  mmtt.transaction_type_id MMTT_Transaction_Type_ID_A,  mmtt.primary_quantity MMTT_Primary_Quantity_A  from apps.mtl_material_transactions_temp mmtt  where mmtt.move_order_line_id is not null  and not exists (  select null  from apps.mtl_txn_request_lines mtrl  where mtrl.line_id = mmtt.move_order_line_id  and rownum < 10  )  UNION   select 'b. Move order allocations for closed move order lines' explanation,   mtrl.txn_source_line_id MTRL_Source_Line_ID_B,  mtrl.txn_source_id MTRL_Source_ID_B,  mmtt.transaction_temp_id MTRL_Transaction_Temp_ID_B,  mtrl.header_id MTRL_Header_ID_B,  mtrl.line_id MTRL_Line_ID_B,  mmtt.organization_id MMTT_Organization_ID_B,  mmtt.inventory_item_id MMTT_Inventory_Item_ID_B,  mmtt.transaction_type_id MMTT_Transaction_Type_ID_B,  mmtt.primary_quantity MMTT_Primary_Quantity_B  from apps.mtl_txn_request_lines mtrl, apps.mtl_material_transactions_temp mmtt  where mmtt.move_order_line_id = mtrl.line_id  and mtrl.line_status = 5  and rownum < 10  UNION   select 'c. Sales order move order allocations with no pending shipping' explanation,   mtrl.txn_source_line_id MTRL_Source_Line_ID_C,  mtrl.txn_source_id MTRL_Source_ID_C,  mmtt.transaction_temp_id MMTT_Transaction_Temp_ID_C,  mtrl.header_id MTRL_Header_ID_C,  mtrl.line_id MTRL_Line_ID_C,  mmtt.organization_id MMTT_Organization_ID_C,  mmtt.inventory_item_id MMTT_Inventory_Item_ID_C,  mmtt.transaction_type_id MMTT_Transaction_Type_ID_C,  mmtt.primary_quantity MMTT_Primary_Quantity_C  from apps.mtl_txn_request_headers mtrh, apps.mtl_txn_request_lines mtrl, apps.mtl_material_transactions_temp mmtt  where mmtt.move_order_line_id is not null  and mmtt.move_order_line_id = mtrl.line_id  and mtrl.line_status = 7  and mtrl.header_id = mtrh.header_id  and mtrh.move_order_type = 3  and not exists (  select null  from apps.wsh_delivery_details wdd  where wdd.move_order_line_id = mtrl.line_id  and wdd.released_status = 'S'  and rownum < 10  )  UNION   select 'd. Open sales order move order lines with no pending shipping' explanation,   mtrl.txn_source_line_id MTRL_Source_Line_ID_D,  mtrl.txn_source_id MTRL_Source_ID_D,  to_number('') transaction_temp_id,  mtrl.header_id MTRL_Header_ID_D,  mtrl.line_id MTRL_Line_ID_D,  mtrl.organization_id MTRL_Organization_ID_D,  mtrl.inventory_item_id MTRL_Inventory_Item_ID_D,  to_number('') transaction_type_id,  mtrl.primary_quantity MTRL_Primary_Quantity_D  from apps.mtl_txn_request_headers mtrh, apps.mtl_txn_request_lines mtrl  where mtrl.line_status = 7  and mtrl.header_id = mtrh.header_id  and mtrh.move_order_type = 3  and not exists (  select null  from apps.wsh_delivery_details wdd  where wdd.move_order_line_id = mtrl.line_id  and wdd.released_status = 'S'  and rownum < 10  )  )  order by 2,6) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

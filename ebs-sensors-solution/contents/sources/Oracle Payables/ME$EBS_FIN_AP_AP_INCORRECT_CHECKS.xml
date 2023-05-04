@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Checks with no corresponding invoice payment records - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Checks with no corresponding invoice payment records - Weekly</DisplayName>
+    <Description><![CDATA[1. Detects the checks which are not paying any invoice and have a complementary check with same check number]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_AP_INCORRECT_CHECKS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id key_data FROM (SELECT      check_id check_id  FROM      (          WITH chks AS (              SELECT /*+ materialize */ DISTINCT                  ph.check_id              FROM                  apps.ap_payment_history_all ph              WHERE                  ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )  SELECT ac.check_id,            ac.check_number,            ac.org_id,            ac.checkrun_name,            ac.payment_type_flag,            ac.amount,            ac.currency_code,            ac.exchange_rate_type,            ac.exchange_date,            ac.exchange_rate,            ac.check_date,            ac.base_amount     FROM  chks,          apps.ap_checks_all ac,          apps.ap_payment_history_all aph     WHERE ac.check_id = chks.check_id     AND   ac.check_id = aph.check_id     AND   aph.posted_flag != 'Y'     AND   ac.payment_type_flag != 'A'     AND   ac. status_lookup_code <> 'VOIDED'     AND   NOT EXISTS (             SELECT 1 FROM apps.ap_invoice_payments_all aip             WHERE aip.check_id = ac.check_id)     AND   NOT EXISTS (             SELECT 1             FROM apps.ap_checks_all ac1,                  apps.ap_payment_history_all aph1             WHERE ac1.check_id = ac.check_id             AND   ac1.payment_id is null             AND   ac1.status_lookup_code NOT IN ('OVERFLOW','SET UP','SPOILED')             AND   ac1.check_id = aph1.check_id             AND   nvl(aph1.historical_flag,'N') != 'Y'             AND   aph1.posted_flag != 'Y'             AND   NOT EXISTS (                     SELECT 1 FROM apps.ap_invoice_payments_all aip                     WHERE aip.check_id = ac.check_id)             AND   EXISTS (                     SELECT 1                     FROM apps.ap_invoice_payments_all aip2,                          ap_checks_all ac2                     WHERE aip2.check_id = ac2.check_id                     AND   ac1.org_id = ac2.org_id                     AND   ac1.check_number = ac2.check_number                     AND   ((ac1.vendor_id = ac2.vendor_id AND                             ac1.vendor_site_id = ac2.vendor_site_id) OR                            ac1.payment_document_id =ac2.payment_document_id)))      )  WHERE      ROWNUM < 11  ORDER BY      check_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

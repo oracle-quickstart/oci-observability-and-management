@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN PA create Accounting Fails for Revenue Category - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN PA create Accounting Fails for Revenue Category - Weekly</DisplayName>
+    <Description><![CDATA[PRC: Create Accounting is failing with below error message as well.
+
+"The entered amount and accounted amount for line XX are not on the same side.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_PA_PA_REV_INCORRECT_REVTRANS_AMOUNT' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'PROJECT_ID:' || s.PROJECT_ID || ', DRAFT_REVENUE_NUM:' || s.DRAFT_REVENUE_NUM || ', LINE_NUM:' || s.LINE_NUM || ', UBR_DR:' || s.UBR_DR || ', UER_CR:' || s.UER_CR key_data FROM (SELECT PROJECT_ID PROJECT_ID,                  DRAFT_REVENUE_NUM DRAFT_REVENUE_NUM,                  LINE_NUM LINE_NUM,                  REVTRANS_UBR_DR UBR_DR,                  REVTRANS_UER_CR UER_CR  FROM (SELECT PDR.PROJECT_ID,                                PDR.DRAFT_REVENUE_NUM,   			     PDRI.LINE_NUM,                               PDR.REVTRANS_UBR_DR,   			     PDR.REVTRANS_UER_CR                   FROM apps.PA_DRAFT_REVENUES_ALL PDR,   		              apps.PA_DRAFT_REVENUE_ITEMS PDRI                 WHERE PDR.PROJECT_ID = PDRI.PROJECT_ID                       AND PDR.DRAFT_REVENUE_NUM = PDRI.DRAFT_REVENUE_NUM                       AND PDR.EVENT_ID IN (SELECT EVENT_ID   		                                                    FROM apps.XLA_EVENTS                                                                    WHERE EVENT_STATUS_CODE = 'U'                                                                          AND PROCESS_STATUS_CODE = 'I'                                                                         AND APPLICATION_ID = 275)                        AND EXISTS (SELECT 1   		                                FROM apps.PA_DRAFT_REVENUE_ITEMS                                               WHERE PROJECT_ID = PDR.PROJECT_ID                                                     AND DRAFT_REVENUE_NUM = PDR.DRAFT_REVENUE_NUM                                               HAVING SIGN(SUM(AMOUNT)) <>                                                               SIGN(SUM(REVTRANS_AMOUNT)))                    AND PDRI.AMOUNT < 0  		 AND PDRI.CREATION_DATE > SYSDATE -7  		 AND ROWNUM <=5)) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

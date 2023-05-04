@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: MFG PO Purchase Orders with invalid encumbrance amount - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: MFG PO Purchase Orders with invalid encumbrance amount - Weekly</DisplayName>
+    <Description><![CDATA[There exist open standard PO with invalid encumbrance amount]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_MFG_PO_PRC_PF_INVALID_PO_ENCUMBRANCE' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'org_id:' || s.org_id || ', document_type:' || s.document_type || ', document_number:' || s.document_number || ', po_header_id:' || s.po_header_id key_data FROM (SELECT org_id org_id,    doc_type document_type,    doc_number document_number,    po_header_id po_header_id  FROM    (  SELECT h.org_id org_id,      'PO' doc_type,      h.segment1 doc_number,      h.po_header_id po_header_id,      'OPEN_QTY_NOT_JAI',      ROW_NUMBER() OVER (ORDER BY h.po_header_id desc) rno        FROM apps.po_headers_all h,      apps.po_lines_all l,      apps.po_line_locations_all s,      apps.po_distributions_all d,      apps.gl_ledgers g,      apps.fnd_currencies c,      apps.financials_system_params_all fsp,      apps.hr_operating_units hr    WHERE s.line_location_id                 = d.line_location_id    AND l.po_line_id                         = s.po_line_id    AND h.po_header_id                       = d.po_header_id    AND d.set_of_books_id                    = g.ledger_id    AND g.currency_code                      = c.currency_code    AND fsp.org_id                           = hr.organization_id    AND fsp.org_id                           = h.org_id    AND NVL(fsp.purch_encumbrance_flag,'N')  = 'Y'    AND l.matching_basis                     = 'QUANTITY'    AND NVL(d.encumbered_flag, 'N')          = 'Y'    AND NVL(s.approved_flag, 'N') = 'Y'    AND NVL(s.cancel_flag, 'N')              = 'N'    AND NVL(s.closed_code, 'OPEN')          <> 'FINALLY CLOSED'    AND NVL(d.prevent_encumbrance_flag, 'N') = 'N'    AND d.budget_account_id                 IS NOT NULL    AND NVL(s.shipment_type,'BLANKET')       = 'STANDARD'    AND (g.currency_code                    <> 'INR'    OR NOT EXISTS      (SELECT 1      FROM apps.ad_events e,        apps.ad_event_versions v      WHERE e.event_id = v.event_id      AND e.owner      = 'JA'      AND e.event_name = 'JAI_EXISTENCE_OF_TABLES'      AND v.status     = 'COMPLETED'      ))    AND ABS((ROUND(NVL(d.encumbered_amount, 0), c.precision) - ROUND( ROUND((s.price_override * d.quantity_ordered + NVL(d.nonrecoverable_tax, 0)),c.precision) * NVL(d.rate, 1), c.precision))) > .2    UNION    SELECT h.org_id org_id,      'PO' doc_type,      h.segment1 doc_number,      h.po_header_id po_header_id,      'OPEN_AMT_NOT_JAI',      ROW_NUMBER() OVER (ORDER BY h.po_header_id desc) rno    FROM apps.po_headers_all h,      apps.po_lines_all l,      apps.po_line_locations_all s,      apps.po_distributions_all d,      apps.gl_ledgers g,      apps.fnd_currencies c,      apps.financials_system_params_all fsp,      apps.hr_operating_units hr    WHERE s.line_location_id                 = d.line_location_id    AND l.po_line_id                         = s.po_line_id    AND h.po_header_id                       = d.po_header_id    AND d.set_of_books_id                    = g.ledger_id    AND g.currency_code                      = c.currency_code    AND fsp.org_id                           = hr.organization_id    AND fsp.org_id                           = h.org_id    AND NVL(fsp.purch_encumbrance_flag,'N')  = 'Y'    AND l.matching_basis                     = 'AMOUNT'    AND NVL(d.encumbered_flag, 'N')          = 'Y'    AND NVL(s.approved_flag, 'N') = 'Y'    AND NVL(s.cancel_flag, 'N')              = 'N'    AND NVL(s.closed_code, 'OPEN')          <> 'FINALLY CLOSED'    AND NVL(d.prevent_encumbrance_flag, 'N') = 'N'    AND d.budget_account_id                 IS NOT NULL    AND NVL(s.shipment_type,'BLANKET')       = 'STANDARD'    AND (g.currency_code                    <> 'INR'    OR NOT EXISTS      (SELECT 1      FROM apps.ad_events e,        apps.ad_event_versions v      WHERE e.event_id = v.event_id      AND e.owner      = 'JA'      AND e.event_name = 'JAI_EXISTENCE_OF_TABLES'      AND v.status     = 'COMPLETED'      ))    AND ABS((ROUND(NVL(d.encumbered_amount, 0), c.precision) - ROUND( ROUND((d.amount_ordered + NVL(d.nonrecoverable_tax, 0)), c.precision) * NVL(d.rate, 1),c.precision))) > .2    UNION    SELECT h.org_id org_id,      'PO' doc_type,      h.segment1 doc_number,      h.po_header_id po_header_id,      'CANCEL_QTY_NOT_JAI',      ROW_NUMBER() OVER (ORDER BY h.po_header_id desc) rno    FROM apps.po_headers_all h,      apps.po_lines_all l,      apps.po_line_locations_all s,      apps.po_distributions_all d,      apps.gl_ledgers g,      apps.fnd_currencies c,      apps.financials_system_params_all fsp,      apps.hr_operating_units hr    WHERE s.line_location_id                = d.line_location_id    AND l.po_line_id                        = s.po_line_id    AND h.po_header_id                      = d.po_header_id    AND d.set_of_books_id                   = g.ledger_id    AND g.currency_code                     = c.currency_code    AND fsp.org_id                          = hr.organization_id    AND fsp.org_id                          = h.org_id    AND NVL(fsp.purch_encumbrance_flag,'N') = 'Y'    AND l.matching_basis                    = 'QUANTITY'    AND NVL(s.Approved_Flag,'N')            = 'Y'    AND NVL(s.Cancel_Flag,'N')              = 'Y'    AND NVL(s.Closed_Code,'OPEN')          <> 'FINALLY CLOSED'    AND NVL(d.Prevent_Encumbrance_Flag,'N') = 'N'    AND d.Budget_Account_id                IS NOT NULL    AND (g.currency_code                   <> 'INR'    OR NOT EXISTS      (SELECT 1      FROM apps.ad_events e,        apps.ad_event_versions v      WHERE e.event_id = v.event_id      AND e.owner      = 'JA'      AND e.event_name = 'JAI_EXISTENCE_OF_TABLES'      AND v.status     = 'COMPLETED'      ))    AND ABS((ROUND(NVL(d.encumbered_amount, 0), c.precision) - ROUND( LEAST(d.quantity_ordered,DECODE(d.accrue_on_receipt_flag,'Y',NVL(d.quantity_delivered,0), (NVL(d.quantity_ordered,0) - NVL(d.quantity_cancelled,0)) ) )*(s.price_override + (NVL(d.nonrecoverable_tax,0) /DECODE (d.Quantity_Ordered,0,1,d.Quantity_Ordered))),c.precision))) > .2    UNION    SELECT h.org_id org_id,      'PO' doc_type,      h.segment1 doc_number,      h.po_header_id po_header_id,      'CANCEL_AMT_NOT_JAI',      ROW_NUMBER() OVER (ORDER BY h.po_header_id desc) rno    FROM apps.po_headers_all h,      apps.po_lines_all l,      apps.po_line_locations_all s,      apps.po_distributions_all d,      apps.gl_ledgers g,      apps.fnd_currencies c,      apps.financials_system_params_all fsp,      apps.hr_operating_units hr    WHERE s.line_location_id                = d.line_location_id    AND l.po_line_id                        = s.po_line_id    AND h.po_header_id                      = d.po_header_id    AND d.set_of_books_id                   = g.ledger_id    AND g.currency_code                     = c.currency_code    AND fsp.org_id                          = hr.organization_id    AND fsp.org_id                          = h.org_id    AND NVL(fsp.purch_encumbrance_flag,'N') = 'Y'    AND l.matching_basis                    = 'AMOUNT'    AND NVL(s.Approved_Flag,'N')            = 'Y'    AND NVL(s.Cancel_Flag,'N')              = 'Y'    AND NVL(s.Closed_Code,'OPEN')          <> 'FINALLY CLOSED'    AND NVL(d.Prevent_Encumbrance_Flag,'N') = 'N'    AND d.Budget_Account_id                IS NOT NULL    AND (g.currency_code                   <> 'INR'    OR NOT EXISTS      (SELECT 1      FROM apps.ad_events e,        apps.ad_event_versions v      WHERE e.event_id = v.event_id      AND e.owner      = 'JA'      AND e.event_name = 'JAI_EXISTENCE_OF_TABLES'      AND v.status     = 'COMPLETED'      ))    AND ABS((ROUND(NVL(d.encumbered_amount, 0), c.precision) - ROUND( LEAST(d.amount_Ordered,DECODE(d.accrue_on_receipt_flag,'Y',NVL(d.amount_delivered,0), (NVL(d.amount_Ordered,0) - NVL(d.amount_cancelled,0)) ) )*(1 + (NVL(d.nonrecoverable_tax,0) / DECODE(d.amount_Ordered,0,1,d.amount_ordered))),c.precision))) > .2    UNION    SELECT h.org_id org_id,      'PO' doc_type,      h.segment1 doc_number,      h.po_header_id po_header_id,      'FINAL_CLOSED_QTY_NOT_JAI',      ROW_NUMBER() OVER (ORDER BY h.po_header_id desc) rno    FROM apps.po_headers_all h,      apps.po_lines_all l,      apps.po_line_locations_all s,      apps.po_distributions_all d,      apps.gl_ledgers g,      apps.fnd_currencies c,      apps.financials_system_params_all fsp,      apps.hr_operating_units hr    WHERE s.line_location_id                = d.line_location_id    AND l.po_line_id                        = s.po_line_id    AND h.po_header_id                      = d.po_header_id    AND d.set_of_books_id                   = g.ledger_id    AND g.currency_code                     = c.currency_code    AND fsp.org_id                          = hr.organization_id    AND fsp.org_id                          = h.org_id    AND NVL(fsp.purch_encumbrance_flag,'N') = 'Y'    AND l.matching_basis                    = 'QUANTITY'    AND NVL(s.Approved_Flag,'N')            = 'Y'    AND NVL(s.Closed_Code,'OPEN')           = 'FINALLY CLOSED'    AND NVL(d.Prevent_Encumbrance_Flag,'N') = 'N'    AND 0                                   =      (SELECT        (SELECT NVL(amount_reversed,0)        FROM apps.po_distributions_all d1        WHERE d1.po_distribution_id = d.po_distribution_id        )      FROM        ( SELECT 0 amount_reversed FROM dual        )      )    AND d.Budget_Account_id IS NOT NULL    AND (g.currency_code    <> 'INR'    OR NOT EXISTS      (SELECT 1      FROM apps.ad_events e,        apps.ad_event_versions v      WHERE e.event_id = v.event_id      AND e.owner      = 'JA'      AND e.event_name = 'JAI_EXISTENCE_OF_TABLES'      AND v.status     = 'COMPLETED'      ))    AND ABS((ROUND(NVL(d.encumbered_amount, 0), c.precision) - ROUND( LEAST(d.quantity_ordered,DECODE(d.accrue_on_receipt_flag,'Y',NVL(d.quantity_delivered,0), (NVL(d.quantity_ordered,0) - NVL(d.quantity_cancelled,0)) ) )*(s.price_override + (NVL(d.nonrecoverable_tax,0) /DECODE (d.Quantity_Ordered,0,1,d.Quantity_Ordered))),c.precision))) > .2    UNION    SELECT h.org_id org_id,      'PO' doc_type,      h.segment1 doc_number,      h.po_header_id po_header_id,      'FINAL_CLOSED_AMT_NOT_JAI',      ROW_NUMBER() OVER (ORDER BY h.po_header_id desc) rno    FROM apps.po_headers_all h,      apps.po_lines_all l,      apps.po_line_locations_all s,      apps.po_distributions_all d,      apps.gl_ledgers g,      apps.fnd_currencies c,      apps.financials_system_params_all fsp,      apps.hr_operating_units hr    WHERE s.line_location_id                = d.line_location_id    AND l.po_line_id                        = s.po_line_id    AND h.po_header_id                      = d.po_header_id    AND d.set_of_books_id                   = g.ledger_id    AND g.currency_code                     = c.currency_code    AND fsp.org_id                          = hr.organization_id    AND fsp.org_id                          = h.org_id    AND NVL(fsp.purch_encumbrance_flag,'N') = 'Y'    AND l.matching_basis                    = 'AMOUNT'    AND NVL(s.Approved_Flag,'N')            = 'Y'    AND NVL(s.Closed_Code,'OPEN')           = 'FINALLY CLOSED'    AND NVL(d.Prevent_Encumbrance_Flag,'N') = 'N'    AND 0                                   =      (SELECT        (SELECT NVL(amount_reversed,0)        FROM apps.po_distributions_all d1        WHERE d1.po_distribution_id = d.po_distribution_id        )      FROM        ( SELECT 0 amount_reversed FROM dual        )      )    AND d.Budget_Account_id IS NOT NULL    AND (g.currency_code    <> 'INR'    OR NOT EXISTS      (SELECT 1      FROM apps.ad_events e,        apps.ad_event_versions v      WHERE e.event_id = v.event_id      AND e.owner      = 'JA'      AND e.event_name = 'JAI_EXISTENCE_OF_TABLES'      AND v.status     = 'COMPLETED'      ))    AND ABS((ROUND(NVL(d.encumbered_amount, 0), c.precision) - ROUND( LEAST(d.amount_Ordered,DECODE(d.accrue_on_receipt_flag,'Y',NVL(d.amount_delivered,0), (NVL(d.amount_Ordered,0) - NVL(d.amount_cancelled,0)) ) )*(1 + (NVL(d.nonrecoverable_tax,0) / DECODE(d.amount_Ordered,0,1,d.amount_ordered))),c.precision))) > .2  order by po_header_id desc  )  where rno < 3  and rownum < 1000  order by po_header_id desc) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

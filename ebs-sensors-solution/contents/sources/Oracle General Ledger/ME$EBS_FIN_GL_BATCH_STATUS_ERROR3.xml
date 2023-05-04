@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#low_severity_sensor</Name>
+<DisplayName>Low Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>LOW</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN GL Posting program is failing for several batches with Error3 - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN GL Posting program is failing for several batches with Error3 - Weekly</DisplayName>
+    <Description><![CDATA[Identified journals with incorrect batch status(E) where all journal lines posted successfully(Line Status = P).]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_GL_BATCH_STATUS_ERROR3' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'ledger_id:' || s.ledger_id || ', batch_name:' || s.batch_name || ', header_name:' || s.header_name || ', batch_status:' || s.batch_status || ', header_status:' || s.header_status || ', line_status:' || s.line_status key_data FROM (SELECT  ledger_id ledger_id,  batch_name batch_name,  header_name header_name,  batch_status batch_status,  header_status header_status,  line_status line_status  FROM  (  SELECT DISTINCT  ledger_id ledger_id,  b_name batch_name,  h_name header_name,  b_status batch_status,  h_status header_status,  l_status line_status  FROM  (  WITH ledger AS (  SELECT UNIQUE  gpm.period_name,  gps.closing_status,  led.ledger_id  FROM  apps.gl_ledgers led,  apps.gl_date_period_map gpm,  apps.gl_period_statuses gps  WHERE  EXTRACT(YEAR FROM gpm.accounting_date) = EXTRACT(YEAR FROM SYSDATE)  AND  gpm.period_set_name = led.period_set_name  AND  gpm.period_type = led.accounted_period_type  AND  led.complete_flag = 'Y'  AND  led.first_ledger_period_name IS NOT NULL  AND  gps.ledger_id = led.ledger_id  AND  gpm.period_name = gps.period_name  AND  gps.application_id = 101  AND  gps.closing_status IN (  'C','O','P','F'  )  ) SELECT  jel.ledger_id ledger_id,  jeb.name b_name,  jeh.name h_name,  jeb.status b_status,  jeh.status h_status,  jel.status l_status  FROM  apps.gl_je_lines jel,  apps.gl_je_headers jeh,  apps.gl_je_batches jeb,  ledger led  WHERE  jeh.ledger_id = led.ledger_id  AND  jeh.je_header_id = jel.je_header_id  AND  jeb.je_batch_id = jeh.je_batch_id  AND  jel.period_name = led.period_name  AND  jeh.status = 'P'  AND  jel.status = 'P'  AND  jeb.status = 'E'  )  )  where rownum<1000) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#low_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

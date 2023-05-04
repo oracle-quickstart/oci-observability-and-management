@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN FCA OFFSET TAX RATE CODE is wrongly populated in ZX Lines - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN FCA OFFSET TAX RATE CODE is wrongly populated in ZX Lines - Weekly</DisplayName>
+    <Description><![CDATA[ZX_LINES.OFFSET_TAX_RATE_CODE was getting populated on upgraded tax lines even if supplier site had offset tax calculation disabled causing issues in EMEA]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_FCA_JE_AP_40_INCORRECT_OFFSET_TAX_AP' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'application_id:' || s.application_id || ', legal_entity_id:' || s.legal_entity_id || ', set_of_books_id:' || s.set_of_books_id || ', invoice_date:' || s.invoice_date || ', invoice_id:' || s.invoice_id key_data FROM (SELECT DISTINCT INV.APPLICATION_ID application_id,INV.LEGAL_ENTITY_ID legal_entity_id,INV.SET_OF_BOOKS_ID set_of_books_id,  INV.INVOICE_DATE invoice_date,INV.INVOICE_ID invoice_id  FROM apps.AP_INVOICES_ALL INV,apps.AP_SUPPLIER_SITES_ALL APSUP,  (  SELECT DISTINCT d.invoice_id FROM apps.ap_invoice_distributions_all d ) invs WHERE INV.VENDOR_SITE_ID = APSUP.VENDOR_SITE_ID  AND NVL(APSUP.OFFSET_TAX_FLAG,'Y') = 'N'  AND INV.HISTORICAL_FLAG = 'Y'  AND INV.INVOICE_ID = invs.invoice_id  AND EXISTS  (SELECT 1  FROM apps.ZX_LINES ZX  WHERE ZX.APPLICATION_ID = INV.APPLICATION_ID  AND ZX.LEGAL_ENTITY_ID = INV.LEGAL_ENTITY_ID  AND ZX.LEDGER_ID = INV.SET_OF_BOOKS_ID  AND ZX.TRX_DATE = INV.INVOICE_DATE  AND ZX.ENTITY_CODE = 'AP_INVOICES'  AND ZX.EVENT_CLASS_CODE IN ('STANDARD INVOICES', 'PREPAYMENT INVOICES', 'EXPENSE REPORTS')  AND ZX.TRX_ID = INV.INVOICE_ID  AND ZX.RECORD_TYPE_CODE = 'MIGRATED'  AND NVL(ZX.OFFSET_FLAG,'Y') = 'N'  AND ZX.OFFSET_TAX_RATE_CODE IS NOT NULL  )  And exists (select 1 FROM apps.fnd_product_installations WHERE application_id in (7002, 7003) and status='I')  And rownum<21) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

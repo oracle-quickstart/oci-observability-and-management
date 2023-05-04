@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Tax distribution to always remain in an Unaccounted state - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Tax distribution to always remain in an Unaccounted state - Weekly</DisplayName>
+    <Description><![CDATA[This causes the tax distribution to always remain in an Unaccounted state, and cause problems with period closure.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_TAX_DISTR_UNACCOUNTED' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'invoice_id:' || s.invoice_id key_data FROM (SELECT      invoice_id invoice_id  FROM      (          WITH invs AS (              SELECT /*+ materialize */ DISTINCT                  invoice_id              FROM                  apps.ap_invoice_distributions_all              WHERE                  accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )     SELECT /*+ ordered use_nl(ai, aidp, aidt) */            ai.invoice_id,            ai.invoice_num,            ai.org_id,            ai.invoice_date,            aidt.line_type_lookup_code   tax_line_type,            aidt.invoice_distribution_id tax_distribution_id,            aidt.reversal_flag           tax_reversal_flag,            aidt.parent_reversal_id      tax_parent_reversal_id,            aidt.accounting_event_id     tax_acct_event_id,            aidt.posted_flag             tax_posted_flag,            aidt.match_status_flag       tax_match_status_flag,            aidt.detail_tax_dist_id      detail_tax_dist_id,            decode(sign(aidp.amount),              -1, 'PREPAYMENT APPLICATION',              1, 'PREPAYMENT UNAPPLICATION',              0, 'ZERO')               category,            aidp.line_type_lookup_code     prepay_line_type,            aidp.invoice_distribution_id   prepay_app_distribution_id,            aidp.reversal_flag             prepay_reversal_flag,            aidp.parent_reversal_id        prepay_parent_reversal_id,            aidp.invoice_line_number       prepay_invoice_line_no,            aidp.distribution_line_number  prepay_dist_line_no,            aidp.accounting_event_id       prepay_acct_event_id,            aidp.posted_flag               prepay_posted_flag,            aidp.match_status_flag         prepay_match_status_flag,            ai.set_of_books_id     FROM  invs,          apps.ap_invoices_all ai,          apps.ap_invoice_distributions_all aidt,          apps.ap_invoice_distributions_all aidp     WHERE aidt.invoice_id = aidp.invoice_id     AND   aidt.charge_applicable_to_dist_id = aidp.invoice_distribution_id     AND   aidp.prepay_distribution_id is not null     AND   aidp.line_type_lookup_code = 'PREPAY'     AND   aidt.line_type_lookup_code LIKE '%TAX%'     AND   aidp.accounting_event_id is not null     AND   aidt.accounting_event_id is null     AND   aidt.posted_flag <> 'Y'     AND   ai.invoice_id = aidt.invoice_id     AND   ai.invoice_id = invs.invoice_id                )                where  ROWNUM < 11  ORDER BY      invoice_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN GL Missing S rows in GL BC PERIOD MAP Table - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN GL Missing S rows in GL BC PERIOD MAP Table - Weekly</DisplayName>
+    <Description><![CDATA[Special S rows are not inserted in gl_bc_period_map table for non federal customers resulting in inaccurate calculation of funds available]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_GL_BC_PERIOD_MAP_S_ROWS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'period_name:' || s.period_name || ', ledger_id:' || s.ledger_id || ', name:' || s.name || ', s_rows:' || s.s_rows key_data FROM (select ledger_id ledger_id ,  period_name period_name,  name name, s_rows s_rows from  (  WITH ledger AS  (SELECT UNIQUE gpm.period_name,  gps.closing_status,  led.*  FROM apps.gl_ledgers led,  apps.GL_DATE_PERIOD_MAP gpm,  apps.gl_period_statuses gps  WHERE extract(YEAR FROM gpm.accounting_date)= extract(YEAR FROM sysdate )  AND gpm.period_set_name =led.period_set_name  AND gpm.period_type =led.accounted_period_type  AND led.complete_flag ='Y'  AND led.FIRST_LEDGER_PERIOD_NAME IS NOT NULL  AND led.enable_budgetary_control_flag='Y'  AND gps.ledger_id =led.ledger_id  AND gpm.period_name =gps.period_name  AND gps.application_id =101  AND gps.closing_status IN ('C', 'O','P','F')  )  SELECT DISTINCT led.ledger_id, led.period_name, led.name ,'No S Rows exists in gl_bc_period_map Table' s_rows  FROM apps.gl_period_statuses gps2,  apps.gl_period_statuses gps1,  ledger led  WHERE gps1.ledger_id = led.ledger_id  AND gps1.application_id = 101  AND gps1.closing_status != 'N'  AND gps2.ledger_id = led.ledger_id  AND gps2.application_id = 101  AND gps2.period_year = gps1.period_year  AND gps2.period_num =  (SELECT MIN( gps.period_num )  FROM apps.gl_period_statuses gps  WHERE gps.ledger_id = led.ledger_id  AND gps.application_id = 101  AND gps.period_year = gps2.period_year  )  AND NOT EXISTS  (SELECT '1'  FROM apps.gl_bc_period_map gbpm  WHERE gbpm.ledger_id = led.ledger_id  AND gbpm.actual_flag = 'A'  AND gbpm.boundary_code = 'S'  AND gbpm.transaction_period_name = gps1.period_name  ) and rownum <2 )) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

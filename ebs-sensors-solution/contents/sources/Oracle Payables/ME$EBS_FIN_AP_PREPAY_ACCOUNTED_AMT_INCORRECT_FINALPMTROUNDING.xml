@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN AP Incorrect Accounting of Prepay Applied due to prior unapplied prepay or cancelled payment - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN AP Incorrect Accounting of Prepay Applied due to prior unapplied prepay or cancelled payment - Weekly</DisplayName>
+    <Description><![CDATA[If a prepay is applied/unapplied and then applied again for the full amount, when recreating the Prepay Apply,  the second prepay apply has net 0 amount.]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_AP_PREPAY_ACCOUNTED_AMT_INCORRECT_FINALPMTROUNDING' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'invoice_id:' || s.invoice_id key_data FROM (SELECT      ai.invoice_id invoice_id  FROM      apps.ap_prepay_history_all        apph,      (          SELECT              apad.prepay_app_distribution_id,              SUM(apad.amount)      sum_app_dists_amt,              SUM(apad.base_amount) sum_app_dists_base_amt          FROM              apps.ap_prepay_app_dists   apad,              apps.ap_prepay_history_all apph          WHERE                  apph.transaction_type <> 'PREPAYMENT APPLICATION ADJ'              AND apph.prepay_history_id = apad.prepay_history_id              AND apad.prepay_dist_lookup_code IN ( 'PREPAY APPL', 'PREPAY APPL NONREC TAX', 'PREPAY APPL REC TAX', 'FINAL PAYMENT ROUNDING' )          GROUP BY              apad.prepay_app_distribution_id      )                            apad_amts,      apps.ap_invoice_distributions_all aidp,      apps.ap_invoices_all              ai,      apps.ap_system_parameters_all     asp,      apps.financials_system_params_all fsp,      (          SELECT DISTINCT              invoice_id          FROM              apps.ap_invoice_distributions_all          WHERE              accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )      )                            invs  WHERE          apph.transaction_type <> 'PREPAYMENT APPLICATION ADJ'      AND aidp.invoice_id = apph.invoice_id      AND apph.accounting_event_id = aidp.accounting_event_id      AND aidp.line_type_lookup_code IN ( 'PREPAY', 'REC_TAX', 'NONREC_TAX' )      AND aidp.prepay_distribution_id IS NOT NULL      AND nvl(aidp.reversal_flag, 'N') <> 'Y'      AND aidp.invoice_id = ai.invoice_id      AND fsp.org_id = aidp.org_id      AND asp.org_id = aidp.org_id      AND ( aidp.posted_flag = 'Y'            OR ( aidp.match_status_flag IN ( 'A', 'T' )                 AND nvl(fsp.purch_encumbrance_flag, 'N') = 'N' )            OR ( aidp.match_status_flag = 'A'                 AND nvl(fsp.purch_encumbrance_flag, 'N') = 'Y' ) )      AND aidp.accounting_event_id IS NOT NULL      AND EXISTS (          SELECT              1          FROM              apps.ap_invoice_distributions_all aidp2          WHERE                  aidp2.invoice_id = ai.invoice_id              AND aidp2.prepay_distribution_id IS NOT NULL              AND aidp2.line_type_lookup_code = 'PREPAY'              AND aidp2.reversal_flag = 'Y'              AND aidp2.parent_reversal_id IS NOT NULL          UNION          SELECT              1          FROM              apps.ap_invoice_payments_all aip,              apps.ap_checks_all           ac          WHERE                  aip.invoice_id = ai.invoice_id              AND aip.check_id = ac.check_id              AND ac.status_lookup_code = 'VOIDED'              AND ac.void_date IS NOT NULL      )      AND apad_amts.prepay_app_distribution_id = aidp.invoice_distribution_id      AND ( aidp.amount <> apad_amts.sum_app_dists_amt            OR ( ai.invoice_currency_code <> asp.base_currency_code                 AND abs(aidp.base_amount - apad_amts.sum_app_dists_base_amt) >= 2 ) )      AND ai.invoice_id = invs.invoice_id      AND ROWNUM < 11  ORDER BY      invoice_id) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>

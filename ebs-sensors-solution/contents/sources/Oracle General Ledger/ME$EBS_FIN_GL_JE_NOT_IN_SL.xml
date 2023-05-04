@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LoganContent oms_version="2.50.2.0.0" name="content_ocid1.tenancy.oc1..aaaaaaaa5s2vdjjrydixjulorcwozffbpna37w5a35p3jhgpyshlkmio6oiq_1650039506307" content_version="2.50.2.0.0" xmlns="http://www.oracle.com/DataCenter/LogAnalyticsStd">
+    <Field oms_version="2.50.2.0.0">
+        <DisplayName>sensor</DisplayName>
+        <FieldType>1</FieldType>
+        <IsSystem>0</IsSystem>
+        <IsPrimary>1</IsPrimary>
+        <DataType>STRING</DataType>
+        <IsMetricKeyEligible>0</IsMetricKeyEligible>
+        <IsMetricValueEligible>0</IsMetricValueEligible>
+        <FacetEligible>1</FacetEligible>
+        <RangeFacetEligible>0</RangeFacetEligible>
+        <TableEligible>1</TableEligible>
+        <FacetPriority>1</FacetPriority>
+        <Summarizable>1</Summarizable>
+        <HighCardinality>1</HighCardinality>
+        <LargeData>0</LargeData>
+        <MultiValued>0</MultiValued>
+        <SMAEnabledSetting>0</SMAEnabledSetting>
+    </Field>
+    
+    <Tag>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
+<IsSystem>0</IsSystem>
+<ProblemPriority>MEDIUM</ProblemPriority>
+</Tag>
+    <Source name="EBS Sensor: FIN GL Primary and secondary balances do not reconcile - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <SourceType>database_sql</SourceType>
+    <TargetTypes>
+        <TargetType>omc_oracle_db_instance</TargetType>
+        <TargetType>omc_oracle_pdb</TargetType>
+    </TargetTypes>
+    <DisplayName>EBS Sensor: FIN GL Primary and secondary balances do not reconcile - Weekly</DisplayName>
+    <Description><![CDATA[Primary and secondary balances do not reconcile]]></Description>
+    <IsSystem>0</IsSystem>
+    <IsSecureContent>1</IsSecureContent>
+    <Patterns>
+        <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
+        <SQLQuery>
+            <![CDATA[select 'ME$EBS_FIN_GL_JE_NOT_IN_SL' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'j_name:' || s.j_name || ', Source:' || s.Source || ', Category:' || s.Category || ', Posted_Date:' || s.Posted_Date || ', Ledger_Name:' || s.Ledger_Name || ', Currency:' || s.Currency key_data FROM (select  a.j_name j_name,  a.Source Source,  a.Category Category,  a.Posted_Date Posted_Date,  a.ledger_name Ledger_Name,  a.CURRENCY Currency  from (  WITH ledger_a AS  (SELECT gpm.period_name,  gps.closing_status,  led.*  FROM apps.gl_ledgers led,  apps.GL_DATE_PERIOD_MAP gpm,  apps.gl_period_statuses gps  WHERE to_date(gpm.accounting_date, 'DD-MON-YY')= to_date(sysdate , 'DD-MON-YY')  AND gpm.period_set_name =led.period_set_name  AND gpm.period_type =led.accounted_period_type  AND led.complete_flag ='Y'  AND led.FIRST_LEDGER_PERIOD_NAME IS NOT NULL  AND gps.ledger_id =led.ledger_id  AND gpm.period_name =gps.period_name  AND gps.application_id =101  AND gps.closing_status IN ('C', 'O','P')  ) ,  relationship AS  (SELECT SOURCE_LEDGER_ID,  glr.target_ledger_id,  gir.je_rule_set_id,  gir.je_source_name,  gir.je_category_name,  gir.user_updatable_flag USER_UPDATABLE_FLAG,  gir.include_flag INCLUDE_FLAG  FROM apps.gl_je_inclusion_rules gir,  apps.gl_ledger_relationships glr  WHERE relationship_enabled_flag ='Y'  AND relationship_type_code <> 'NONE'  AND relationship_type_code <> 'BALANCE'  AND glr.application_id = 101  AND glr.gl_je_conversion_set_id =gir.je_rule_set_id  )  SELECT gh.name j_name,  gh.je_source Source,  gh.je_category Category,  gh.Posted_Date Posted_Date,  led1.name ledger_name,  gh.currency_code CURRENCY  FROM gl_je_headers gh,  ledger_a led1  WHERE gh.ledger_id = led1.ledger_id  AND gh.period_name = led1.period_name  AND gh.status = 'P'  AND gh.actual_flag ='A'  AND NOT EXISTS  (SELECT 1  FROM gl_je_headers h,  relationship glr  WHERE h.ledger_id = glr.target_ledger_id  AND glr.source_ledger_id = led1.ledger_id  AND h.parent_je_header_id=gh.je_header_id  )  AND EXISTS  (SELECT 1  FROM relationship glr  WHERE glr.source_ledger_id = led1.ledger_id  AND glr.include_flag ='Y'  AND DECODE(glr.je_source_name,'Other',gh.je_source,glr.je_source_name) =gh.je_source  AND DECODE(glr.je_category_name,'Other',gh.je_category,glr.je_category_name)=gh.je_category  )  AND NOT EXISTS  (SELECT 1  FROM relationship glr  WHERE glr.source_ledger_id = gh.ledger_id  AND glr.include_flag ='N'  AND glr.je_source_name =gh.je_source  AND DECODE(glr.je_category_name,'Other',gh.je_category,glr.je_category_name)=gh.je_category  )  ) a WHERE rownum < 2) s]]>
+        </SQLQuery>
+        <IsInclude>1</IsInclude>
+            <InUse>1</InUse>
+            <DBQueryFieldList>
+                <DBPatternSeqField>entrytime</DBPatternSeqField>
+                <DBPatternField>
+                    <DBQueryColName>sensor</DBQueryColName>
+                    <FieldName>udfs1</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                    <DBQueryColName>entrytime</DBQueryColName>
+                    <FieldName>time</FieldName>
+                </DBPatternField>
+                <DBPatternField>
+                                        <DBQueryColName>key_data</DBQueryColName>
+                                        <FieldName>data</FieldName>
+                                   </DBPatternField>
+            </DBQueryFieldList>
+            <IsSystem>0</IsSystem>
+            <IsEnabled>1</IsEnabled>
+            </DBPattern>
+    </Patterns>
+        <TagConditions>
+            <TagCondition operator="CONTAINS_REGEX" field="udfs1" alertRuleVisible="0">
+                <ConditionValues>
+                    <ConditionValue>%</ConditionValue>
+                </ConditionValues>
+                <ConditionTags tagField="mtag">
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
+                </ConditionTags>
+                <IsSystem>0</IsSystem>
+                <IsEnabled>1</IsEnabled>
+            </TagCondition>
+        </TagConditions>
+        <IsHidden>0</IsHidden>
+        <IsSMAEnabled>0</IsSMAEnabled>
+    </Source>
+    <FieldNameMaps>
+        <FieldNameMap>
+            <Name>udfs1</Name>
+            <DisplayName>sensor</DisplayName>
+        </FieldNameMap>
+        
+    </FieldNameMaps>
+</LoganContent>
