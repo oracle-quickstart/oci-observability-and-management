@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_MFG_OM_DUPLICATED_DROPSHIP_SOURCES_DETAILS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'drop_ship_source_id:' || s.drop_ship_source_id || ', header_id:' || s.header_id || ', line_id:' || s.line_id key_data FROM (select drop_ship_source_id drop_ship_source_id,  header_id header_id,  line_id line_id  from  (SELECT drop_ship_source_id,  header_id,  line_id,  TO_DATE (sysdate-7, 'DD-MON-YYYY') startdate  FROM apps.oe_drop_ship_sources ods1  WHERE ods1.last_update_date between sysdate-30 and sysdate  and drop_ship_source_id in (  SELECT ods.DROP_SHIP_SOURCE_ID  FROM OE_DROP_SHIP_SOURCES ods  GROUP BY ods.DROP_SHIP_SOURCE_ID  HAVING count(*) > 1))) s]]>
+            <![CDATA[select 'ME$EBS_MFG_OM_DUPLICATED_DROPSHIP_SOURCES_DETAILS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'drop_ship_source_id:' || s.drop_ship_source_id || ', header_id:' || s.header_id || ', line_id:' || s.line_id key_data FROM (select drop_ship_source_id drop_ship_source_id,  header_id header_id,  line_id line_id  from  (SELECT drop_ship_source_id,  header_id,  line_id,  TO_DATE (sysdate-7, 'DD-MON-YYYY') startdate  FROM apps.oe_drop_ship_sources ods1  WHERE ods1.last_update_date between sysdate-30 and sysdate  and drop_ship_source_id in (  SELECT ods.DROP_SHIP_SOURCE_ID  FROM apps.OE_DROP_SHIP_SOURCES ods  GROUP BY ods.DROP_SHIP_SOURCE_ID  HAVING count(*) > 1))) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>

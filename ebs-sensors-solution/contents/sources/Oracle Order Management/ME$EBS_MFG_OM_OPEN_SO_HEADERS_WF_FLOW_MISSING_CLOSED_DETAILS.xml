@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_MFG_OM_OPEN_SO_HEADERS_WF_FLOW_MISSING_CLOSED_DETAILS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'header_id:' || s.header_id key_data FROM (select header_id header_id  from  (SELECT h.header_id,  TO_DATE (sysdate-7, 'DD-MON-YYYY') startdate  FROM apps.oe_order_headers_all h, apps.hr_operating_units hou  WHERE h.org_id = hou.organization_id  AND h.open_flag = 'Y'  AND h.last_update_date between sysdate-30 and sysdate  AND nvl(h.cancelled_flag, 'N') = 'N'  AND not exists (select 'WF is pending' from wf_items wi  where to_number(wi.item_key) = h.header_id  and wi.item_type = 'OEOH'  and wi.END_DATE is null)  AND nvl(h.transaction_phase_code, 'F') = 'F')) s]]>
+            <![CDATA[select 'ME$EBS_MFG_OM_OPEN_SO_HEADERS_WF_FLOW_MISSING_CLOSED_DETAILS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'header_id:' || s.header_id key_data FROM (select header_id header_id  from  (SELECT h.header_id,  TO_DATE (sysdate-7, 'DD-MON-YYYY') startdate  FROM apps.oe_order_headers_all h, apps.hr_operating_units hou  WHERE h.org_id = hou.organization_id  AND h.open_flag = 'Y'  AND h.last_update_date between sysdate-30 and sysdate  AND nvl(h.cancelled_flag, 'N') = 'N'  AND not exists (select 'WF is pending' from apps.wf_items wi  where to_number(wi.item_key) = h.header_id  and wi.item_type = 'OEOH'  and wi.END_DATE is null)  AND nvl(h.transaction_phase_code, 'F') = 'F')) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>

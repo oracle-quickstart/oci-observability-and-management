@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_HCM_PAY_DATA_CORRUPTION_PAY_RUN_RESULTS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'ELEMENT_ENTRY_ID:' || s.ELEMENT_ENTRY_ID key_data FROM (select ELEMENT_ENTRY_ID ELEMENT_ENTRY_ID from apps.pay_run_results  where ELEMENT_ENTRY_ID<>SOURCE_ID  and ENTRY_TYPE='E'  and rownum<100  and exists (select 1 from FND_PRODUCT_INSTALLATIONS where APPLICATION_ID = 801 and status='I')  AND exists (select 1 from pay_payroll_actions where action_type = 'L' and effective_date >= to_date('01-JAN-2015','DD-MON-YYYY'))  order by 1  ) s]]>
+            <![CDATA[select 'ME$EBS_HCM_PAY_DATA_CORRUPTION_PAY_RUN_RESULTS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'ELEMENT_ENTRY_ID:' || s.ELEMENT_ENTRY_ID key_data FROM (select ELEMENT_ENTRY_ID ELEMENT_ENTRY_ID from apps.pay_run_results  where ELEMENT_ENTRY_ID<>SOURCE_ID  and ENTRY_TYPE='E'  and rownum<100  and exists (select 1 from apps.FND_PRODUCT_INSTALLATIONS where APPLICATION_ID = 801 and status='I')  AND exists (select 1 from apps.pay_payroll_actions where action_type = 'L' and effective_date >= to_date('01-JAN-2015','DD-MON-YYYY'))  order by 1) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>
