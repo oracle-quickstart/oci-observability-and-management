@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>
+        <MultiValued>0</MultiValued>gra
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     
@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_FIN_PA_WP_PATASK_MIS_SHARE_VERD' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'project_id:' || s.project_id || ', project_number:' || s.project_number key_data FROM (SELECT DISTINCT         p.project_id project_id,         p.segment1 project_number  FROM apps.pa_projects_all p,       apps.pa_proj_elements pe  WHERE p.project_id = pe.project_id  AND   p.structure_sharing_code = 'SHARE_FULL'  AND   pa_workplan_attr_utils.check_wp_versioning_enabled(p.project_id) = 'N'  AND   pe.object_type = 'PA_TASKS'  AND   pe.link_task_flag = 'N'  AND   pe.proj_element_id NOT IN (          SELECT t.task_id FROM apps.pa_tasks t          WHERE t.project_id = pe.project_id)  AND   pe.last_update_date >= SYSDATE - 7  AND   rownum <= 6) s]]>
+            <![CDATA[select 'ME$EBS_FIN_PA_WP_PATASK_MIS_SHARE_VERD' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'project_number:' || s.project_number || ', project_id:' || s.project_id key_data FROM (SELECT DISTINCT         p.project_id project_id,         p.segment1 project_number  FROM apps.pa_projects_all p,       apps.pa_proj_elements pe  WHERE p.project_id = pe.project_id  AND   p.structure_sharing_code = 'SHARE_FULL'  AND   apps.pa_workplan_attr_utils.check_wp_versioning_enabled(p.project_id) = 'N'  AND   pe.object_type = 'PA_TASKS'  AND   pe.link_task_flag = 'N'  AND   pe.proj_element_id NOT IN (          SELECT t.task_id FROM apps.pa_tasks t          WHERE t.project_id = pe.project_id)  AND   pe.last_update_date >= SYSDATE - 7  AND   rownum <= 6) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>

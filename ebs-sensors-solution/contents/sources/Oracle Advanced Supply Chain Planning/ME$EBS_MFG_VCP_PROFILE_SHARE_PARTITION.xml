@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>
+        <MultiValued>0</MultiValued>gra
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     
@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_MFG_VCP_PROFILE_SHARE_PARTITION' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'value:' || s.value key_data FROM (select value value from  (SELECT FND_PROFILE.VALUE('MSC_SHARE_PARTITIONS') Value FROM DUAL  WHERE FND_PROFILE.VALUE('MSC_SHARE_PARTITIONS') = 'Y')) s]]>
+            <![CDATA[select 'ME$EBS_MFG_VCP_PROFILE_SHARE_PARTITION' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'value:' || s.value key_data FROM (select value value from  (SELECT apps.FND_PROFILE.VALUE('MSC_SHARE_PARTITIONS') Value FROM DUAL  WHERE apps.FND_PROFILE.VALUE('MSC_SHARE_PARTITIONS') = 'Y')) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>

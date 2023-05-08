@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>
+        <MultiValued>0</MultiValued>gra
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     
@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_HCM_PAY_PURGEABLE_OBSOLETE_WORKFLOW' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'Purgeable_Count:' || s.Purgeable_Count key_data FROM (select Purgeable_Count Purgeable_Count from (  select wf_purge.getpurgeablecount('HXCEMP') Purgeable_Count from dual  where wf_purge.getpurgeablecount('HXCEMP')>1000)) s]]>
+            <![CDATA[select 'ME$EBS_HCM_PAY_PURGEABLE_OBSOLETE_WORKFLOW' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'Purgeable_Count:' || s.Purgeable_Count key_data FROM (select Purgeable_Count Purgeable_Count from (  select apps.wf_purge.getpurgeablecount('HXCEMP') Purgeable_Count from dual  where apps.wf_purge.getpurgeablecount('HXCEMP')>1000)) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>

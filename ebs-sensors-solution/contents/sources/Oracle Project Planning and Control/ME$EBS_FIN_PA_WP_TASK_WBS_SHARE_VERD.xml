@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>
+        <MultiValued>0</MultiValued>gra
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     
@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_FIN_PA_WP_TASK_WBS_SHARE_VERD' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'project_id:' || s.project_id || ', Project_Number:' || s.Project_Number key_data FROM (SELECT DISTINCT         p.project_id project_id,         p.segment1 Project_Number  FROM apps.pa_projects_all p,       apps.pa_tasks pt,       apps.pa_proj_elements pe,       apps.pa_proj_element_versions pev,       apps.pa_proj_elem_ver_structure pevs  WHERE p.project_id = pt.project_id  AND   pt.project_id = pe.project_id  AND   pe.project_id = pev.project_id  AND   pev.project_id = pevs.project_id  AND   pt.task_id = pe.proj_element_id  AND   pe.proj_element_id = pev.proj_element_id  AND   pe.object_type = 'PA_TASKS'  AND   pev.object_type = 'PA_TASKS'  AND   nvl(pe.link_task_flag, 'N') = 'N'  AND   pev.financial_task_flag = 'Y'  AND   pev.parent_structure_version_id = pevs.element_version_id  AND   pevs.element_version_id =          pa_project_structure_utils.get_latest_fin_struc_ver_id(p.project_id)  AND   pt.wbs_level <> pev.wbs_level  AND   p.structure_sharing_code = 'SHARE_FULL'  AND   pa_proj_task_struc_pub.is_wp_versioning_enabled(p.project_id) = 'N'  AND   pt.creation_date >= SYSDATE - 7  AND   rownum <= 6  ) s]]>
+            <![CDATA[select 'ME$EBS_FIN_PA_WP_TASK_WBS_SHARE_VERD' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'project_id:' || s.project_id || ', Project_Number:' || s.Project_Number key_data FROM (SELECT DISTINCT         p.project_id project_id,         p.segment1 Project_Number  FROM apps.pa_projects_all p,       apps.pa_tasks pt,       apps.pa_proj_elements pe,       apps.pa_proj_element_versions pev,       apps.pa_proj_elem_ver_structure pevs  WHERE p.project_id = pt.project_id  AND   pt.project_id = pe.project_id  AND   pe.project_id = pev.project_id  AND   pev.project_id = pevs.project_id  AND   pt.task_id = pe.proj_element_id  AND   pe.proj_element_id = pev.proj_element_id  AND   pe.object_type = 'PA_TASKS'  AND   pev.object_type = 'PA_TASKS'  AND   nvl(pe.link_task_flag, 'N') = 'N'  AND   pev.financial_task_flag = 'Y'  AND   pev.parent_structure_version_id = pevs.element_version_id  AND   pevs.element_version_id =          apps.pa_project_structure_utils.get_latest_fin_struc_ver_id(p.project_id)  AND   pt.wbs_level <> pev.wbs_level  AND   p.structure_sharing_code = 'SHARE_FULL'  AND   apps.pa_proj_task_struc_pub.is_wp_versioning_enabled(p.project_id) = 'N'  AND   pt.creation_date >= SYSDATE - 7  AND   rownum <= 6) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>

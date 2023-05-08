@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>
+        <MultiValued>0</MultiValued>gra
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     

@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>
+        <MultiValued>0</MultiValued>gra
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     
@@ -38,7 +38,7 @@
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_HCM_PAY_BAL_INVALID' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'business_group_id:' || s.business_group_id || ', bg_name:' || s.bg_name || ', legislation_code:' || s.legislation_code key_data FROM (select business_group_id business_group_id,  name bg_name,  legislation_code legislation_code  from  (  select pbg.business_group_id business_group_id,  pbg.name,pbg.legislation_code legislation_code,   count(1) Invalid_count  from apps.pay_defined_balances pdb,  apps.pay_balance_types pbt,  apps.pay_balance_dimensions pbd,  apps.per_business_groups pbg,  apps.hr_lookups hl,  apps.pay_balance_validation pbv  where pdb.balance_type_id = pbt.balance_type_id  and pdb.balance_dimension_id = pbd.balance_dimension_id  and pdb.save_run_balance = 'Y'  and ((pdb.legislation_code = pbg.legislation_code)  or (pdb.business_group_id = pbg.business_group_id))  and hl.lookup_type(+) = 'RUN_BALANCE_STATUS'  and hl.lookup_code(+) = pbv.run_balance_status  and pbv.defined_balance_id (+) = pdb.defined_balance_id  and pbv.business_group_id = nvl(pdb.business_group_id, pbg.business_group_id)  and hl.lookup_code = 'I' and pbv.run_balance_status <> 'V'  and NVL(pbg.date_to,fnd_date.canonical_to_date('4712/12/31')) >= SYSDATE  group by pbg.business_group_id,pbg.name,pbg.legislation_code  having count(1)>10  order by pbg.business_group_id  )  where rownum<100  order by 1) s]]>
+            <![CDATA[select 'ME$EBS_HCM_PAY_BAL_INVALID' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'business_group_id:' || s.business_group_id || ', bg_name:' || s.bg_name || ', legislation_code:' || s.legislation_code key_data FROM (select business_group_id business_group_id,  name bg_name,  legislation_code legislation_code  from  (  select pbg.business_group_id business_group_id,  pbg.name,pbg.legislation_code legislation_code,   count(1) Invalid_count  from apps.pay_defined_balances pdb,  apps.pay_balance_types pbt,  apps.pay_balance_dimensions pbd,  apps.per_business_groups pbg,  apps.hr_lookups hl,  apps.pay_balance_validation pbv  where pdb.balance_type_id = pbt.balance_type_id  and pdb.balance_dimension_id = pbd.balance_dimension_id  and pdb.save_run_balance = 'Y'  and ((pdb.legislation_code = pbg.legislation_code)  or (pdb.business_group_id = pbg.business_group_id))  and hl.lookup_type(+) = 'RUN_BALANCE_STATUS'  and hl.lookup_code(+) = pbv.run_balance_status  and pbv.defined_balance_id (+) = pdb.defined_balance_id  and pbv.business_group_id = nvl(pdb.business_group_id, pbg.business_group_id)  and hl.lookup_code = 'I' and pbv.run_balance_status <> 'V'  and NVL(pbg.date_to,apps.fnd_date.canonical_to_date('4712/12/31')) >= SYSDATE  group by pbg.business_group_id,pbg.name,pbg.legislation_code  having count(1)>10  order by pbg.business_group_id  )  where rownum<100  order by 1) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>
