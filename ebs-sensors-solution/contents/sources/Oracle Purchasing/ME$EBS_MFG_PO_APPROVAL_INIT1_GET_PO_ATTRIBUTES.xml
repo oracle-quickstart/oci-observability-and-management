@@ -15,7 +15,7 @@
         <Summarizable>1</Summarizable>
         <HighCardinality>1</HighCardinality>
         <LargeData>0</LargeData>
-        <MultiValued>0</MultiValued>gra
+        <MultiValued>0</MultiValued>
         <SMAEnabledSetting>0</SMAEnabledSetting>
     </Field>
     
@@ -57,7 +57,7 @@ Error Stack: Wf_Engine_Util.Function_Call
                 </DBPatternField>
                 <DBPatternField>
                                         <DBQueryColName>key_data</DBQueryColName>
-                                        <FieldName>data</FieldName>
+                                        <FieldName>probkey</FieldName>
                                    </DBPatternField>
             </DBQueryFieldList>
             <IsSystem>0</IsSystem>
