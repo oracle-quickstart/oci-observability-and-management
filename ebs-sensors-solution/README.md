@@ -21,7 +21,7 @@ As part of this deployment, a compute instance is created and Oracle Cloud Agent
 - Quota to create the following resources: 1 Compute instance,  1 dynamic group, 1 policy
 - Store EBS DB password in OCI Vault in base encoded form. 
 - Store schedule file in OCI Object Storage bucket. 
-- If use APPS user to monitor database, no additional step required. If you don't want to use APPS user, then you need to create database user with access to select from tables used in the sensors. Use USER_ACCESS_TABLES.md file.
+- If you use APPS user to monitor database, no additional step required. If you don't want to use APPS user, then you need to create database user with access to select from tables used in the sensors. Use USER_ACCESS_TABLES.md file.
 
 If you don't have the required permissions and quota, contact your tenancy administrator. See [Policy Reference](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Reference/policyreference.htm), [Service Limits](https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/servicelimits.htm), [Compartment Quotas](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcequotas.htm).
 

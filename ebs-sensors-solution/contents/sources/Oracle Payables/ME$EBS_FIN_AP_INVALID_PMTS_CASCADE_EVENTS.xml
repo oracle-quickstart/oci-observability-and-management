@@ -20,25 +20,25 @@
     </Field>
     
     <Tag>
-<Name>#low_severity_sensor</Name>
-<DisplayName>Low Severity Sensor</DisplayName>
+<Name>#medium_severity_sensor</Name>
+<DisplayName>Medium Severity Sensor</DisplayName>
 <IsSystem>0</IsSystem>
-<ProblemPriority>LOW</ProblemPriority>
+<ProblemPriority>MEDIUM</ProblemPriority>
 </Tag>
-    <Source name="EBS Sensor: HCM PAY OTL Purgeable Workflow count is more than 1000 - Monthly" oms_version="2.50.2.0.0" configWarningSettings="0">
+    <Source name="EBS Sensor: FIN AP Invalid Payment Cascade events without corresponding invoice distributions - Weekly" oms_version="2.50.2.0.0" configWarningSettings="0">
     <SourceType>database_sql</SourceType>
     <TargetTypes>
         <TargetType>omc_oracle_db_instance</TargetType>
         <TargetType>omc_oracle_pdb</TargetType>
     </TargetTypes>
-    <DisplayName>EBS Sensor: HCM PAY OTL Purgeable Workflow count is more than 1000 - Monthly</DisplayName>
-    <Description><![CDATA[Purgeable Workflow count is more than 1000. This can impact performance]]></Description>
+    <DisplayName>EBS Sensor: FIN AP Invalid Payment Cascade events without corresponding invoice distributions - Weekly</DisplayName>
+    <Description><![CDATA[Payment adjustment records in ap_payment_history_all table are stamped with an invoice_adjustment_event_id that does not exist in accounting_event_id colum]]></Description>
     <IsSystem>0</IsSystem>
     <IsSecureContent>1</IsSecureContent>
     <Patterns>
         <DBPattern dateTimeField="entrytime" dateTimeColumns="entrytime">
         <SQLQuery>
-            <![CDATA[select 'ME$EBS_HCM_PAY_PURGEABLE_OBSOLETE_WORKFLOW' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'Purgeable_Count:' || s.Purgeable_Count key_data FROM (select Purgeable_Count Purgeable_Count from (  select Count(*) Purgeable_Count       from  apps.WF_ITEMS WI       where WI.ITEM_TYPE = 'HXCEMP'       and   WI.END_DATE <= sysdate       and  exists           (select null            from apps.WF_ITEM_TYPES WIT            where WI.END_DATE+nvl(WIT.PERSISTENCE_DAYS,0)<=sysdate            and WI.ITEM_TYPE = WIT.NAME            )        and not exists           (select null            from apps.WF_ITEMS WI2            WHERE WI2.END_DATE IS NULL            START WITH WI2.ITEM_TYPE = WI.ITEM_TYPE            AND WI2.ITEM_KEY = WI.ITEM_KEY            CONNECT BY PRIOR WI2.ITEM_TYPE = WI2.PARENT_ITEM_TYPE            AND PRIOR WI2.ITEM_KEY = WI2.PARENT_ITEM_KEY            UNION ALL            select null            from apps.WF_ITEMS WI2            WHERE WI2.END_DATE IS NULL            START WITH WI2.ITEM_TYPE = WI.ITEM_TYPE            AND WI2.ITEM_KEY = WI.ITEM_KEY            CONNECT BY PRIOR WI2.PARENT_ITEM_TYPE = WI2.ITEM_TYPE            AND PRIOR WI2.PARENT_ITEM_KEY = WI2.ITEM_KEY)      )      where Purgeable_Count>1000) s]]>
+            <![CDATA[select 'ME$EBS_FIN_AP_INVALID_PMTS_CASCADE_EVENTS' sensor, to_timestamp(to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'), 'YYYY-MM-DD hh24:mi:ss') entrytime, 'check_id:' || s.check_id key_data FROM (SELECT      check_id check_id  FROM      (          WITH chks AS (              SELECT /*+ materialize */ DISTINCT                  ph.check_id              FROM                  APPS.ap_payment_history_all ph              WHERE                  ph.accounting_date BETWEEN ( trunc(sysdate) - 7 ) AND ( trunc(sysdate) + 3 )          )  SELECT aph.check_id,            aph.org_id,            aph.transaction_type,            aph.payment_history_id,            aph.related_event_id,            aph.accounting_event_id,            aph.invoice_adjustment_event_id,            aph.accounting_date     FROM APPS.ap_payment_history_all aph,          APPS.xla_events xe,          chks     WHERE aph.transaction_type LIKE '%ADJUSTED'     AND   nvl(aph.posted_flag,   'N') <> 'Y'     AND   aph.transaction_type <> 'MANUAL PAYMENT ADJUSTED'     AND   xe.event_id = aph.accounting_event_id     AND   xe.event_status_code <> 'P'     AND   xe.application_id = 200     AND   NOT EXISTS (             SELECT 1 FROM APPS.ap_invoice_distributions_all aid             WHERE aid.accounting_event_id = aph.invoice_adjustment_event_id             AND   aid.line_type_lookup_code != 'AWT')     AND   aph.check_id = chks.check_id        )  WHERE      ROWNUM < 11  ORDER BY      check_id) s]]>
         </SQLQuery>
         <IsInclude>1</IsInclude>
             <InUse>1</InUse>
@@ -67,7 +67,7 @@
                     <ConditionValue>%</ConditionValue>
                 </ConditionValues>
                 <ConditionTags tagField="mtag">
-                    <ConditionTag>#low_severity_sensor</ConditionTag>
+                    <ConditionTag>#medium_severity_sensor</ConditionTag>
                 </ConditionTags>
                 <IsSystem>0</IsSystem>
                 <IsEnabled>1</IsEnabled>

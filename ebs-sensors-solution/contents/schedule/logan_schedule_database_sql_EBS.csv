@@ -58,6 +58,7 @@ EBS Sensor: MFG OM Sales Order Lines with improperly set Cancelled and Open Flag
 EBS Sensor: MFG OM Closed Sales Orders with pending Workflow Activity Details - Weekly,WEEK,SAT,1
 EBS Sensor: FIN AP Invoices with duplicate AWT distributions created during payment - Weekly,WEEK,SAT,12
 EBS Sensor: FIN AP Upgraded payments with missing records in XLA DISTRIBUTION LINKS - Weekly,WEEK,SAT,1
+EBS Sensor: FIN AP Invalid Payment Cascade events without corresponding invoice distributions - Weekly,WEEK,SAT,12
 EBS Sensor: FIN AP Reissued Check Accounted Incorrectly - Weekly,WEEK,SAT,1
 EBS Sensor: MFG PO Ship to org id in shipments not equal to Destination org id in distributions - Daily,DAY,1,1
 EBS Sensor: MFG PO Purchase Order Ship To Organization Does Not Match Distribution - Daily,DAY,1,1
