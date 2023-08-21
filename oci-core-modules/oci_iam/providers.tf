@@ -4,5 +4,5 @@
 
 
 provider "oci" {
-  alias = "oci_home"
-}
+   alias = "oci_home"
+ }

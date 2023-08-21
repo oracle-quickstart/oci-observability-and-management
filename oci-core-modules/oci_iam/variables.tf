@@ -20,6 +20,11 @@ variable "iam_config" {
       freeform_tags  = map(string),
       description    = string
     })),
+    groups_with_domain = map(object({
+      compartment_id = string,
+      identity_domain_url = string,
+      description    = string
+    })),
     users = map(object({
       compartment_id = string,
       defined_tags   = map(string),
@@ -34,6 +39,12 @@ variable "iam_config" {
       matching_rules = list(string),
       defined_tags   = map(string),
       freeform_tags  = map(string)
+    })),
+    dynamic_groups_with_domain = map(object({
+      compartment_id = string,
+      identity_domain_url = string,
+      description    = string,
+      matching_rules = list(string),
     })),
     policies = map(object({
       compartment_id = string,

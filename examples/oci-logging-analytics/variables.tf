@@ -7,31 +7,60 @@ variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
 
-variable "onboard_logging_analytics" {}
-variable "logging_analytics_user_email" {
-    default = "Logging_Analytics_User_Email@oracle.com"
+variable "onboard_logging_analytics" {
+  default = false
 }
-variable "create_compartment" {}
-variable "logging_analytics_compartment_name" {
-  default = "Logging-Analytics-Compartment"
+
+variable "identity_domain_enabled"{
+  default = false
 }
+
+# variable "logging_analytics_user_email" {
+#     default = "Logging_Analytics_User_Email@oracle.com"
+# }
+# variable "create_compartment" {
+#   default = false
+# }
+# variable "logging_analytics_compartment_name" {
+#   default = "Logging-Analytics-Compartment"
+# }
+
+variable "create_logging_analytics_group" {
+  default = false
+}
+
+variable "existing_logging_analytics_group_name" {
+  default = null
+}
+
 variable "logging_analytics_group_name" {
-  default = "Logging-Analytics-SuperAdmins"
+  default = "logging-analytics-admins"
 }
-variable "create_user" {}
-variable "logging_analytics_user_name" {
-  default = "Logging-Analytics-User-01"
-}
-variable "loganalytics_dynamic_group_name" {
-  default = "ManagementAgentAdmins"
-}
+
+# variable "create_user" {
+#   default = false
+# }
+# variable "logging_analytics_user_name" {
+#   default = "Logging-Analytics-User-01"
+# }
+
+#variable "loganalytics_dynamic_group_name" {
+  #default = "management-agent-admins"
+#}
+
 variable "logging_analytics_policy_name" {
-  default = "Logging-Analytics-Policy"
+  default = "logging-analytics-policy"
 }
+
 variable "create_log_analytics_audit_log_group" {}
+
 variable "log_analytics_audit_log_group_name" {
-  default ="audit-loganalytics-group"
+  default ="audit-loggroup"
 }
 variable "audit_service_connector_name" {
-  default = "audit-logging-to-loganalytics"
+  default = "audit-logs-sch-connector"
+}
+
+variable identity_domain_url{
+    default = "https://idcs-xxxxx.identity.oraclecloud.com:443"
 }

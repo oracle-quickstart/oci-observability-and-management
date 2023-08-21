@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 locals{
     audit_auto_policy_name= format("%s%s","SchPolicy_audit_logAnalytics_",formatdate("DDMMMYYYYhhmmZZZ", timestamp()))
-    audit_loggroup_id = "${oci_log_analytics_log_analytics_log_group.audit-loganalytics-group.0.id}"
+    #audit_loggroup_id = "${oci_log_analytics_log_analytics_log_group.audit-loganalytics-group.0.id}"
 }
 
 provider "oci" {
@@ -20,17 +20,14 @@ resource "oci_log_analytics_namespace" "logging_analytics_namespace" {
   depends_on     = [module.logging_analytics_quickstart]
 }
 
-resource "null_resource" "wait_120_seconds" {
+resource "time_sleep" "wait_120_seconds" {
   depends_on = [oci_log_analytics_namespace.logging_analytics_namespace]
-  provisioner "local-exec" {
-    command = "sleep 120s"
-    interpreter = ["/bin/bash", "-c"]
-  }
+  create_duration = "120s"
 }
 
 resource "oci_log_analytics_log_analytics_log_group" "audit-loganalytics-group" {
     #Required
-    depends_on = [null_resource.wait_120_seconds]
+    depends_on = [time_sleep.wait_120_seconds]
     count = var.create_log_analytics_audit_log_group == "yes" ? 1 : 0
     compartment_id = var.compartment_ocid
     display_name = var.log_analytics_audit_log_group_name
@@ -74,6 +71,7 @@ resource "oci_sch_service_connector" "audit-to-logan" {
 
 resource "oci_identity_policy" "sch_auto_create_policy" {
     #Required
+    count = var.create_log_analytics_audit_log_group == "yes" ? 1 : 0
     provider = oci.oci_home_1
     compartment_id = var.compartment_ocid
     description = "Logging Analytics Audit Policy"

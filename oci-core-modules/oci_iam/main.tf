@@ -193,3 +193,29 @@ resource "oci_identity_policy" "policies" {
 
   depends_on = [oci_identity_dynamic_group.dynamic_groups, oci_identity_group.groups, oci_identity_user.users, oci_identity_compartment.compartments]
 }
+
+resource "oci_identity_domains_dynamic_resource_group" "dynamic_resource_group" {
+    provider = oci.oci_home
+    for_each = var.iam_config != null ? (var.iam_config.dynamic_groups_with_domain != null ? var.iam_config.dynamic_groups_with_domain : {}) : {}
+
+    #Required
+    display_name = each.key
+    idcs_endpoint = each.value.identity_domain_url
+    matching_rule = length(each.value.matching_rules) > 0 ? format("%s", join(",", each.value.matching_rules)) : ""
+    schemas = ["urn:ietf:params:scim:schemas:oracle:idcs:DynamicResourceGroup"]
+    description = each.value.description
+}
+
+resource "oci_identity_domains_group" "domains_group" {
+
+    provider = oci.oci_home
+    for_each = var.iam_config != null ? (var.iam_config.groups_with_domain != null ? var.iam_config.groups_with_domain : {}) : {}
+    #Required
+    display_name = each.key
+    urnietfparamsscimschemasoracleidcsextensiongroup_group {
+      description    = each.value.description != null ? each.value.description : local.default_group.description
+    }
+    idcs_endpoint = each.value.identity_domain_url
+    schemas = ["urn:ietf:params:scim:schemas:core:2.0:Group"]    
+}
+
