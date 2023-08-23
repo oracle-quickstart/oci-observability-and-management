@@ -29,7 +29,7 @@ variableGroups:
     variables:
       - identity_domain_enabled
       - compartment_ocid
-      - onboard_logging_analytics
+      #- onboard_logging_analytics
 
   - title: Required Identity & Management Configuration
     variables:
@@ -38,13 +38,13 @@ variableGroups:
       - logging_analytics_group_name
       - existing_logging_analytics_group_name
       #- loganalytics_dynamic_group_name
-      - logging_analytics_policy_name
+      #- logging_analytics_policy_name
 
   - title: Enabling Audit Logs
     variables:
       - create_log_analytics_audit_log_group
-      - log_analytics_audit_log_group_name
-      - audit_service_connector_name
+      #- log_analytics_audit_log_group_name
+      #- audit_service_connector_name
     
 variables:
   identity_domain_enabled:
@@ -63,14 +63,14 @@ variables:
     default: compartment_ocid
     required: true
    
-  onboard_logging_analytics:
-    type: enum
-    title: Onboard Logging Analytics Namespace ?
-    enum:
-      - "yes"
-      - "no"
-    default: "no"
-    required: true
+  # onboard_logging_analytics:
+  #   type: enum
+  #   title: Onboard Logging Analytics Namespace ?
+  #   enum:
+  #     - "yes"
+  #     - "no"
+  #   default: "no"
+  #   required: true
 
   identity_domain_url:
     title: OCI Identity Domain URL
@@ -83,7 +83,7 @@ variables:
   
   create_logging_analytics_group:
     type: enum
-    title: Create a New Logging analytics Log Group ?
+    title: Create a New Logging Analytics Admins IAM group ?
     enum:
       - "yes"
       - "no"
@@ -127,25 +127,25 @@ variables:
     default: "no"
     required: true
   
-  log_analytics_audit_log_group_name:
-    title: Logging Analytics Log Group Name
-    description: This will create a new OCI Logging Analytics Log Group Name.
-    required: true
-    default: "audit-loganalytics-group"
-    visible:
-      eq:
-        - create_log_analytics_audit_log_group
-        - "yes"
+  # log_analytics_audit_log_group_name:
+  #   title: Logging Analytics Log Group Name
+  #   description: This will create a new OCI Logging Analytics Log Group Name.
+  #   required: true
+  #   default: "audit-loganalytics-group"
+  #   visible:
+  #     eq:
+  #       - create_log_analytics_audit_log_group
+  #       - "yes"
       
-  audit_service_connector_name:
-    title: Audit Service Connector Hub from OCI Logging to logging analytics
-    description: This will create a Audit Service Connector Hub from OCI Logging to logging analytics.
-    required: true
-    default: "audit-logs-sch-connector"
-    visible:
-      eq:
-        - create_log_analytics_audit_log_group
-        - "yes"
+  # audit_service_connector_name:
+  #   title: Audit Service Connector Hub from OCI Logging to logging analytics
+  #   description: This will create a Audit Service Connector Hub from OCI Logging to logging analytics.
+  #   required: true
+  #   default: "audit-logs-sch-connector"
+  #   visible:
+  #     eq:
+  #       - create_log_analytics_audit_log_group
+  #       - "yes"
       
 outputGroups:
   - title: Logging Analytics Configuration

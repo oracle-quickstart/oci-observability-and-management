@@ -11,9 +11,13 @@ provider "oci" {
   region       = [for i in data.oci_identity_region_subscriptions.this.region_subscriptions : i.region_name if i.is_home_region == true][0]
 }
 
+data "oci_log_analytics_namespace" this {
+    namespace = data.oci_identity_tenancy.this.name
+}
+
 resource "oci_log_analytics_namespace" "logging_analytics_namespace" {
   #Required
-  count          = var.onboard_logging_analytics == "yes" ? 1 : 0
+  count          = data.oci_log_analytics_namespace.this.is_onboarded == "true" ? 0 : 1
   compartment_id = local.tenancy_id
   is_onboarded   = true
   namespace      = data.oci_identity_tenancy.this.name
@@ -45,7 +49,7 @@ resource "oci_sch_service_connector" "audit-to-logan" {
         log_sources {
             #Optional
             compartment_id = var.compartment_ocid
-            log_group_id = "_Audit"
+            log_group_id = "_Audit_Include_Subcompartment"
             log_id = ""
         }
     }

@@ -7,9 +7,9 @@ variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
 
-variable "onboard_logging_analytics" {
-  default = false
-}
+# variable "onboard_logging_analytics" {
+#   default = false
+# }
 
 variable "identity_domain_enabled"{
   default = false
@@ -49,16 +49,16 @@ variable "logging_analytics_group_name" {
 #}
 
 variable "logging_analytics_policy_name" {
-  default = "logging-analytics-policy"
+  default = "oci-logging-analytics-policy"
 }
 
 variable "create_log_analytics_audit_log_group" {}
 
 variable "log_analytics_audit_log_group_name" {
-  default ="audit-loggroup"
+  default ="oci-audit-logs"
 }
 variable "audit_service_connector_name" {
-  default = "audit-logs-sch-connector"
+  default = "oci-audit-logs-sch-connector"
 }
 
 variable identity_domain_url{
