@@ -48,18 +48,11 @@ variable "logging_analytics_group_name" {
   #default = "management-agent-admins"
 #}
 
-variable "logging_analytics_policy_name" {
-  default = "oci-logging-analytics-policy"
-}
+
 
 variable "create_log_analytics_audit_log_group" {}
 
-variable "log_analytics_audit_log_group_name" {
-  default ="oci-audit-logs"
-}
-variable "audit_service_connector_name" {
-  default = "oci-audit-logs-sch-connector"
-}
+
 
 variable identity_domain_url{
     default = "https://idcs-xxxxx.identity.oraclecloud.com:443"

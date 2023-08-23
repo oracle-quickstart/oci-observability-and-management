@@ -113,10 +113,10 @@ variables:
   #  default: "management-agent-admins"
   #  required: true
     
-  logging_analytics_policy_name:
-    title: Logging Analytics Policy name
-    default: "logging-analytics-policy"
-    required: true
+  # logging_analytics_policy_name:
+  #   title: Logging Analytics Policy name
+  #   default: "logging-analytics-policy"
+  #   required: true
   
   create_log_analytics_audit_log_group:
     type: enum

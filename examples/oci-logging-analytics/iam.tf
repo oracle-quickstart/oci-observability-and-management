@@ -4,6 +4,7 @@
 locals {
   tenancy_id = var.tenancy_ocid # Tenancy OCID 
   logging_analytics_group_name = var.existing_logging_analytics_group_name !=null ? var.existing_logging_analytics_group_name : var.logging_analytics_group_name
+  logging_analytics_policy_name = "oci-logging-analytics-policy"
 
   /* dynamic_group_without_domain = {
       "${var.loganalytics_dynamic_group_name}" = {
@@ -113,7 +114,7 @@ module "logging_analytics_quickstart" {
     #dynamic_groups_with_domain = var.identity_domain_enabled == "yes" ? local.dynamic_group_with_domain : null
    
     policies = {
-      "${var.logging_analytics_policy_name}" = {
+      "${local.logging_analytics_policy_name}" = {
         description = "Logging Analytics Policy"
         statements = ["allow service loganalytics to READ loganalytics-features-family in tenancy",
           "allow group ${local.logging_analytics_group_name} to READ compartments in tenancy",

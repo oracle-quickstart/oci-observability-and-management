@@ -3,6 +3,8 @@
 locals{
     audit_auto_policy_name= format("%s%s","SchPolicy_audit_logAnalytics_",formatdate("DDMMMYYYYhhmmZZZ", timestamp()))
     #audit_loggroup_id = "${oci_log_analytics_log_analytics_log_group.audit-loganalytics-group.0.id}"
+    log_analytics_audit_log_group_name = "oci-audit-logs"
+    audit_service_connector_name = "oci-audit-logs-sch-connector"
 }
 
 provider "oci" {
@@ -34,7 +36,7 @@ resource "oci_log_analytics_log_analytics_log_group" "audit-loganalytics-group" 
     depends_on = [time_sleep.wait_120_seconds]
     count = var.create_log_analytics_audit_log_group == "yes" ? 1 : 0
     compartment_id = var.compartment_ocid
-    display_name = var.log_analytics_audit_log_group_name
+    display_name = local.log_analytics_audit_log_group_name
     namespace = data.oci_identity_tenancy.this.name
 }
 
@@ -42,7 +44,7 @@ resource "oci_sch_service_connector" "audit-to-logan" {
     #Required
     count = var.create_log_analytics_audit_log_group == "yes" ? 1 : 0
     compartment_id = var.compartment_ocid
-    display_name = var.audit_service_connector_name
+    display_name = local.audit_service_connector_name
     source {
         #Required
         kind = "logging"
