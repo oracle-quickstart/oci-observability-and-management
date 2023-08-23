@@ -13,17 +13,17 @@ provider "oci" {
   region       = [for i in data.oci_identity_region_subscriptions.this.region_subscriptions : i.region_name if i.is_home_region == true][0]
 }
 
-data "oci_log_analytics_namespace" this {
+data "oci_log_analytics_namespace" "this" {
     namespace = data.oci_identity_tenancy.this.name
 }
 
 resource "oci_log_analytics_namespace" "logging_analytics_namespace" {
   #Required
-  count          = data.oci_log_analytics_namespace.this.is_onboarded == "true" ? 0 : 1
+  count          = data.oci_log_analytics_namespace.this.is_onboarded == true ? 0 : 1
   compartment_id = local.tenancy_id
   is_onboarded   = true
   namespace      = data.oci_identity_tenancy.this.name
-  depends_on     = [module.logging_analytics_quickstart]
+  depends_on     = [module.logging_analytics_quickstart, data.oci_log_analytics_namespace.this]
 }
 
 resource "time_sleep" "wait_120_seconds" {
