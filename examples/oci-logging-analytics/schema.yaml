@@ -124,7 +124,7 @@ variables:
     enum:
       - "yes"
       - "no"
-    default: "no"
+    default: "yes"
     required: true
   
   # log_analytics_audit_log_group_name:
