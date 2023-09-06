@@ -5,12 +5,8 @@ title: "Oracle Logging Analytics Quick Start"
 stackDescription: "This is a OCI (Oracle Cloud Infrastructure) Logging Analytics Quick Start automation. 
 It creates all the necessary OCI resources 
 * Create Logging Analytics User Group 
-* Create Logging Analytics Users 
-* Create Dynamic Groups
 * Create Logging Analytics Policies
-* Onboard Logging Analytics
-
-All this is done using terraform."
+* Onboard Logging Analytics"
 
 schemaVersion: 1.1.0
 version: "20190304"
@@ -29,110 +25,98 @@ variableGroups:
       - compartment_id
       - region
 
-  - title: Optional Configuration
+  - title: Oracle Logging Analytics Quick Start
     variables:
-      - create_compartment
+      - identity_domain_enabled
       - compartment_ocid
-      - logging_analytics_compartment_name
-      - create_user
-      - logging_analytics_user_email
-      - logging_analytics_user_name
-      - onboard_logging_analytics
-      
-  - title: Required Configuration
-    variables:
-      - logging_analytics_group_name
-      - loganalytics_dynamic_group_name
-      - logging_analytics_policy_name
+      #- onboard_logging_analytics
 
-  - title: Enable Audit Logs
+  - title: Required Identity & Management Configuration
+    variables:
+      - identity_domain_url
+      - create_logging_analytics_group
+      - logging_analytics_group_name
+      - existing_logging_analytics_group_name
+      #- loganalytics_dynamic_group_name
+      #- logging_analytics_policy_name
+
+  - title: Enabling Audit Logs
     variables:
       - create_log_analytics_audit_log_group
-      - log_analytics_audit_log_group_name
-      - audit_service_connector_name
+      #- log_analytics_audit_log_group_name
+      #- audit_service_connector_name
     
 variables:
-  create_compartment:
+  identity_domain_enabled:
     type: enum
-    title: Create New Logging Analytics Compartment ?
+    title: Does this tenancy have identity domains enabled ? 
     enum:
       - "yes"
       - "no"
     default: "no"
     required: true
-  
+
   compartment_ocid:
     type: oci:identity:compartment:id
     title: Select Existing Logging Analytics Compartment
     description: Select the existing compartment
     default: compartment_ocid
     required: true
-    visible:
-      eq:
-        - create_compartment
-        - "no"
-  
-  logging_analytics_compartment_name:
-    type: string
-    title: New Logging Analytics Compartment Name
-    default: "Logging-Analytics-Compartment"
+   
+  # onboard_logging_analytics:
+  #   type: enum
+  #   title: Onboard Logging Analytics Namespace ?
+  #   enum:
+  #     - "yes"
+  #     - "no"
+  #   default: "no"
+  #   required: true
+
+  identity_domain_url:
+    title: OCI Identity Domain URL
+    description: "OCI Identity Domain URL"
     required: true
     visible:
       eq:
-        - create_compartment
+        - identity_domain_enabled
         - "yes"
-
-  onboard_logging_analytics:
+  
+  create_logging_analytics_group:
     type: enum
-    title: Onboard Logging Analytics Namespace ?
+    title: Create a New Logging Analytics Admins IAM group ?
     enum:
       - "yes"
       - "no"
     default: "no"
     required: true
-  
+
   logging_analytics_group_name:
-    title: Logging Analytics Admin IAM group name
-    default: "Logging-Analytics-SuperAdmins"
-    required: true
-
-  create_user:
-    type: enum
-    title: Create New Logging Analytics User ?
-    enum:
-      - "yes"
-      - "no"
-    default: "no"
-    required: true
-  
-  logging_analytics_user_name:
-    title: Logging Analytics User name
-    default: "Logging-Analytics-User-01"
+    title: Logging Analytics Admins IAM group name
+    description: "This will create a new IAM Group to be used by Logging Analytics Admins"
     required: true
     visible:
       eq:
-        - create_user
+        - create_logging_analytics_group
         - "yes"
-  
-  logging_analytics_user_email:
-    title: logging analytics New User Email
-    description: This will create a new user and sends the activation email.
-    default: "Logging_Analytics_User_Email@oracle.com"
+
+  existing_logging_analytics_group_name:
+    title: Existing IAM Group Name
+    description: "Provide existing IAM Group to use"
     required: true
     visible:
       eq:
-        - create_user
-        - "yes"
+        - create_logging_analytics_group
+        - "no"
 
-  loganalytics_dynamic_group_name:
-    title: Logging Analytics dynamic group name
-    default: "ManagementAgentAdmins"
-    required: true
+  #loganalytics_dynamic_group_name:
+  #  title: Logging Analytics dynamic group name
+  #  default: "management-agent-admins"
+  #  required: true
     
-  logging_analytics_policy_name:
-    title: Logging Analytics Policy name
-    default: "Logging-Analytics-Policy"
-    required: true
+  # logging_analytics_policy_name:
+  #   title: Logging Analytics Policy name
+  #   default: "logging-analytics-policy"
+  #   required: true
   
   create_log_analytics_audit_log_group:
     type: enum
@@ -140,30 +124,29 @@ variables:
     enum:
       - "yes"
       - "no"
-    default: "no"
+    default: "yes"
     required: true
   
-  log_analytics_audit_log_group_name:
-    title: Logging Analytics Log Group Name
-    description: This will create a new Logging Analytics Log Group Name.
-    required: true
-    default: "audit-loganalytics-group"
-    visible:
-      eq:
-        - create_log_analytics_audit_log_group
-        - "yes"
+  # log_analytics_audit_log_group_name:
+  #   title: Logging Analytics Log Group Name
+  #   description: This will create a new OCI Logging Analytics Log Group Name.
+  #   required: true
+  #   default: "audit-loganalytics-group"
+  #   visible:
+  #     eq:
+  #       - create_log_analytics_audit_log_group
+  #       - "yes"
       
-  audit_service_connector_name:
-    title: Audit Service Connector Hub from Logging to loganalytics
-    description: This will create a Audit Service Connector Hub from Logging to loganalytics.
-    required: true
-    default: "audit-logging-to-loganalytics"
-    visible:
-      eq:
-        - create_log_analytics_audit_log_group
-        - "yes"
+  # audit_service_connector_name:
+  #   title: Audit Service Connector Hub from OCI Logging to logging analytics
+  #   description: This will create a Audit Service Connector Hub from OCI Logging to logging analytics.
+  #   required: true
+  #   default: "audit-logs-sch-connector"
+  #   visible:
+  #     eq:
+  #       - create_log_analytics_audit_log_group
+  #       - "yes"
       
-  
 outputGroups:
   - title: Logging Analytics Configuration
     outputs:
