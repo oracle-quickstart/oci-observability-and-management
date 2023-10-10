@@ -6,7 +6,9 @@ The included files will allow you to monitor your MERN application with:
  2. Custom metrics uploaded to OCI APM
  3. Application logs uploaded to OCI Logging Analytics
 
-    <img width="1017" alt="Screen Shot 2023-08-30 at 11 45 54 AM" src="https://github.com/zkhader/oci-observability-and-management/assets/14898804/d02e48a9-8c90-4c3c-bfeb-92819e41e6d3">
+    <img width="1134" alt="Screenshot 2023-10-10 at 3 27 28 PM" src="https://github.com/zkhader/oci-observability-and-management/assets/14898804/5393f06f-030b-4ed1-88bb-fab284a83937">
+
+
 
 
 
