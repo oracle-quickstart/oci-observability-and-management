@@ -1,4 +1,4 @@
-# MERN_PROD_INV
+# Sample MERN Application
 Product Inventory Application
 
 Steps to start the application:
