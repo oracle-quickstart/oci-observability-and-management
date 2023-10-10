@@ -34,6 +34,7 @@ Take note of the follwoing:
 
 
 
+
 # Step 2: Add the files from the repo to your project
 In you server's directory, add metrics.js, ./tracing.js, and ocilogginganalytics.js.
 
@@ -42,6 +43,7 @@ metrics.js file:
  - Provide your data upload endpoint and private key.
    
    <img width="519" alt="Screenshot 2023-10-10 at 2 50 28 PM" src="https://github.com/zkhader/oci-observability-and-management/assets/14898804/13a0aecd-f23a-4bf0-b947-2d1a05be2724">
+
 
 
 tracing.js file: 
@@ -69,6 +71,7 @@ apm-rum.js file:
  - Provide your data upload endpoint, public data key, along with the naming convention you would like to use
 
    <img width="480" alt="Screenshot 2023-10-10 at 3 18 08 PM" src="https://github.com/zkhader/oci-observability-and-management/assets/14898804/17df1a77-6522-41ac-b931-05253c7fd2f1">
+
 
 
 
