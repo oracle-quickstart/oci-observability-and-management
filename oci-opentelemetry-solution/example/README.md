@@ -11,10 +11,13 @@ Steps to start the application:
 
 
 Now lets enable APM and open telemetry  
-1. Goto server directory   
-'''npm install opentelemetry
+1. Goto server directory
+   <br>
+   npm install opentelemetry
+   <br>
    npm install @opentelemetry/sdk-node
-   npm install @opentelemetry/auto-instrumentations-node '''
+   <br>
+   npm install @opentelemetry/auto-instrumentations-node
    <br>
 3. Copy tracing.js to the server directory and add APM endpoint and data key 
 4. Modify package.json to change start to include tracing.js as well —> node -r ./tracing.js server.js
