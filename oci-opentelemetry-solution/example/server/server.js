@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection setup
-mongoose.connect('mongodb+srv://anandgravitate:admin@cluster0.k3x8ki2.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect('[MONGODB CONNECTION STRING]', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
