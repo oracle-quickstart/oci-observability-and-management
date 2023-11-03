@@ -39,8 +39,8 @@ Take note of the follwoing:
    * Select API Keys under Resources
    * Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
    * Copy the content from Configuration File Preview & Close
-       
-     <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
+   <br>
+   <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
 
 
 2. Create a Configuration File
@@ -66,7 +66,7 @@ Take note of the follwoing:
    {"name":"OCILogger","hostname":"emcc.marketplace.com","pid":12586,"level":50,"msg":"Inside delete method:Cannot Delete with id 649b4ac1883092297279051b. Maybe id 
    is wrong","time":"2023-07-10T07:02:13.678Z","src":{},"v":0,"trace_id":"5941ccd308fcb49e30b3ebfcffcff38f","span_id":"0bed4a8c3b33d48e","trace_flags":"01"}
    ```
-     
+   <br>
    <img width="1285" alt="2 Parser" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/ebaaa401-bc7e-4e6b-a220-7b9a441bddcc">
 
 4. Create a Log Source
@@ -76,24 +76,25 @@ Take note of the follwoing:
    * Select Specific Parser → Select the parser created
    * Click on Create Source
      
-     
-     <img width="1260" alt="3 LogSource" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f967a34d-3835-4126-a5c8-7ffe8f1b267b">
+   <br>  
+   <img width="1260" alt="3 LogSource" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f967a34d-3835-4126-a5c8-7ffe8f1b267b">
 
    
 5. Create a Log Group
    * Logging Analytics → Administration → Log Groups → Create Log Group
    * Provide Log Group Name and description → click create
-       
+  
+     <br>  
      <img width="789" alt="4 LogGroup" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/32cbdd5f-ce3b-4bb3-bce1-96e6e2a4973e">
 
    > Make a note of OCID of Log Group which will be used later
-     
+     <br>
      <img width="1099" alt="5 LogGroup-2" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/8fa7770e-a9a5-44a5-acd7-c6882085a46f">
 
 
 6. Get the Namespace Details
    * Goto Identity →  Compartments → Click on compartment where the log source is created → Copy OCID of the compartment
-       
+     <br>
      <img width="998" alt="6 Compartment-OCID-2" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/06b6761e-a0d1-4312-afcb-d514d2a2343c">
 
 
@@ -101,7 +102,7 @@ Take note of the follwoing:
    ```
    oci os ns get -c compartmentID 
    ```  
-
+     <br>
      <img width="1231" alt="7 Namespace" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/4c28b966-fe94-477a-97ba-5708a4ea5ecb">
 
 
@@ -135,12 +136,13 @@ ocilogginganalytics.js file:
    [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA  
    [LOGGERNAME] – user defined name to initialize the bunyan logger  
 
+   <br>
    <img width="1116" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/cca9667b-caa8-46fb-af68-09e9a5ecfd7e">
-
+   <br>
    <img width="1056" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/bbf57fd6-32d8-424b-85ca-eeab8f745d82">
-
+   <br>
    <img width="973" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f5355466-1864-46ac-a394-6f4d767f9b65">
-
+   <br>
    <img width="986" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/d1143df6-dc28-40cc-b067-3bab0ba7eafe">
 
 
@@ -155,10 +157,9 @@ ocilogginganalytics.js file:
    log.info("Informational message");
    log.error("Error message");
    ```
-
+   <br>
    <img width="993" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/7a8f59e3-27b2-48ba-814c-283db31ab2b0">
-
-
+   <br>
    <img width="986" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/0459d163-0e61-41a7-b710-a4467858b8f4">
 
 
