@@ -208,10 +208,14 @@ node -r ./metrics.js -r ./tracing.js server.js
   Once your tracing data and metrics are in OCI, you can use that data to visually represent it in any way you like. Creating a custom dashboard is easy, just add 
   the widgets you want to show and modify the source data (metric or trace data). Here are a few links to help you get started with that:
 
-  * Creating custom APM dashboards
-  * Creating custom Logging Analytics dashboards
-  * You can also follow the blog article on implementing Custom Trace Data Widgets to create custom widgets from APM's Trace Explorer queries.
+  * [Creating custom APM dashboards](https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/create-custom-dashboard.html).
+  * [Creating custom Logging Analytics dashboards](https://docs.oracle.com/en-us/iaas/logging-analytics/doc/create-dashboards.html). 
+  * You can also follow the [blog article on implementing Custom Trace Data Widgets](https://blogs.oracle.com/observability/post/apm-custom-dashboards) to create custom widgets from APM's Trace Explorer queries.
 
   There is an example dashboard which can be found in the /scripts/CustomDashboardExample.json and can be imported into your APM Dashboards. 
-    
+
+  * Goto APM --> Dashboards --> Import Dashboards --> Select the CustomDashboardExample.json file 
+
+   ![Dashboardimport](https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/061a590a-c63c-4bb8-aa9c-749bd3296c8e)
+
   
