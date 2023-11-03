@@ -47,87 +47,87 @@ Product Inventory Application
    ```
    <br>
 
-2. Copy the ocilogginganalytics.js file to the server directory and edit the file to update the parameters mentioned below. 
-> Note: Detailed Logging Analytics configuration can be found in oci-observability-and-management/oci-opentelemetry-solution/
+2. Copy the ocilogginganalytics.js file to the server directory and edit the file to update the parameters mentioned below.
+   > Note: Detailed Logging Analytics configuration can be found in oci-observability-and-management/oci-opentelemetry-solution/
 
-[PATH]/config - Path to config file
-[PROFILE] - Profile in config file to be used for OCI authentication
-[NAMESPACE] - Namespace
-[UPLOADNAME] - User defined name for uploads
-[LOGSOURCENAME] - Log Source Name created in OCI logging analytics
-[LOGGROUPID] - Log Group ID created in Logging analytics to group the log messages
-[BUFFERLENGTH] - Buffer size (number of log messages to store)
-[FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA
-[LOGGERNAME] – user defined name to initialize the bunyan logger
+   [PATH]/config - Path to config file  
+   [PROFILE] - Profile in config file to be used for OCI authentication  
+   [NAMESPACE] - Namespace  
+   [UPLOADNAME] - User defined name for uploads  
+   [LOGSOURCENAME] - Log Source Name created in OCI logging analytics  
+   [LOGGROUPID] - Log Group ID created in Logging analytics to group the log messages  
+   [BUFFERLENGTH] - Buffer size (number of log messages to store)  
+   [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA  
+   [LOGGERNAME] – user defined name to initialize the bunyan logger  
 
 3. Modify the application source files to include log messages as shown below 
 
-```
-const ocilog= require('../ocilogginganalytics');
-var log=ocilog.getlogger();
+   ```
+   const ocilog= require('../ocilogginganalytics');
+   var log=ocilog.getlogger();
 
-log.debug("Debug message");
-log.warn("Warning message");
-log.info("Informational message");
-log.error("Error message");
-```
+   log.debug("Debug message");
+   log.warn("Warning message");
+   log.info("Informational message");
+   log.error("Error message");
+   ```
 
-Lets modify the file server/routes/items.js to initialize the logger and include log messages as shown below. 
+   Lets modify the file server/routes/items.js to initialize the logger and include log messages as shown below. 
 
-```
-// Copyright (c) 2023 Oracle and/or its affiliates.
-// Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+   ```
+   // Copyright (c) 2023 Oracle and/or its affiliates.
+   // Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-const express = require('express');
-const router = express.Router();
-const Item = require('../models/Item');
-const ocilog= require('../ocilogginganalytics');
-var log=ocilog.getlogger();
+   const express = require('express');
+   const router = express.Router();
+   const Item = require('../models/Item');
+   const ocilog= require('../ocilogginganalytics');
+   var log=ocilog.getlogger();
 
-// Define CRUD routes here (GET, POST, PUT, DELETE)
-// Example routes:
+   // Define CRUD routes here (GET, POST, PUT, DELETE)
+   // Example routes:
 
-// Get all items
-router.get('/', (req, res) => {
-  log.debug("Inside get records method");
-  Item.find()
-    .then((items) => res.json(items))
-    .catch((err) => res.status(400).json('Error: ' + err));
-});
+   // Get all items
+   router.get('/', (req, res) => {
+   log.debug("Inside get records method");
+    Item.find()
+      .then((items) => res.json(items))
+      .catch((err) => res.status(400).json('Error: ' + err));
+   });
 
-// Add a new item
-router.post('/', (req, res) => {
-  log.debug("Inside add record method");
-  const newItem = new Item({
-    name: req.body.name,
-    description: req.body.description,
-  });
+   // Add a new item
+   router.post('/', (req, res) => {
+     log.debug("Inside add record method");
+     const newItem = new Item({
+     name: req.body.name,
+     description: req.body.description,
+    });
 
-  newItem
-    .save()
-    .then(() => res.json('Item added!'))
-    .catch((err) => res.status(400).json('Error: ' + err));
-});
+    newItem
+       .save()
+       .then(() => res.json('Item added!'))
+       .catch((err) => res.status(400).json('Error: ' + err));
+   });
 
-// Update an item
-router.put('/:id', (req, res) => {
-  log.debug("Inside update record method");
-  Item.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then(() => res.json('Item updated!'))
-    .catch((err) => res.status(400).json('Error: ' + err));
-});
+   // Update an item
+   router.put('/:id', (req, res) => {
+     log.debug("Inside update record method");
+     Item.findByIdAndUpdate(req.params.id, req.body, { new: true })
+       .then(() => res.json('Item updated!'))
+       .catch((err) => res.status(400).json('Error: ' + err));
+   });
 
-// Delete an item
-router.delete('/:id', (req, res) => {
-  log.debug("Inside delete record method");
-  Item.findByIdAndDelete(req.params.id)
-    .then(() => res.json('Item deleted.'))
-    .catch((err) => res.status(400).json('Error: ' + err));
-});
+   // Delete an item
+   router.delete('/:id', (req, res) => {
+     log.debug("Inside delete record method");
+     Item.findByIdAndDelete(req.params.id)
+       .then(() => res.json('Item deleted.'))
+       .catch((err) => res.status(400).json('Error: ' + err));
+   });
 
-module.exports = router;
+   module.exports = router;
 
-```
+   ```
 
 Now lets start the application:
 
@@ -149,5 +149,8 @@ Application traces and metrics will now be sent to OCI APM and application logs 
 
 ![Image-APM](https://github.com/zkhader/oci-observability-and-management/assets/14898804/7ff956f9-d668-4dd2-8cac-79e29562f96f)
 
+### OCI Logging Analytics - Logs 
+
+![image](https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/79043ecf-4103-48d6-b138-3508b00c9491)
 
 
