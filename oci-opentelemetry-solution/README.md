@@ -203,3 +203,15 @@ node -r ./metrics.js -r ./tracing.js server.js
   ![CorrelateTraces Logs](https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f05384ac-d4a6-40f7-90ea-e52ff5d5cdbb)
 
   
+# Creating Custom Dashboards
+
+  Once your tracing data and metrics are in OCI, you can use that data to visually represent it in any way you like. Creating a custom dashboard is easy, just add 
+  the widgets you want to show and modify the source data (metric or trace data). Here are a few links to help you get started with that:
+
+  * Creating custom APM dashboards
+  * Creating custom Logging Analytics dashboards
+  * You can also follow the blog article on implementing Custom Trace Data Widgets to create custom widgets from APM's Trace Explorer queries.
+
+  There is an example dashboard which can be found in the /scripts/CustomDashboardExample.json and can be imported into your APM Dashboards. 
+    
+  
