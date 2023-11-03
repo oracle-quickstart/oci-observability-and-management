@@ -40,7 +40,8 @@ Take note of the follwoing:
    * Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
    * Copy the content from Configuration File Preview & Close  
 
-   <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
+     
+    <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
 
 
 2. Create a Configuration File
@@ -74,7 +75,7 @@ Take note of the follwoing:
    * Entity Types → Host (Linux)
    * Select Specific Parser → Select the parser created
    * Click on Create Source  
-
+     
    <img width="1260" alt="3 LogSource" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f967a34d-3835-4126-a5c8-7ffe8f1b267b">
 
    
