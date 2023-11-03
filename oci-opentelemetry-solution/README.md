@@ -134,6 +134,15 @@ ocilogginganalytics.js file:
    [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA  
    [LOGGERNAME] – user defined name to initialize the bunyan logger  
 
+   <img width="1116" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/cca9667b-caa8-46fb-af68-09e9a5ecfd7e">
+
+   <img width="1056" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/bbf57fd6-32d8-424b-85ca-eeab8f745d82">
+
+   <img width="973" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f5355466-1864-46ac-a394-6f4d767f9b65">
+
+   <img width="449" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/c2366f51-03c3-471b-be5c-3cecafc23868">
+
+
  - Modify the application source files to initialize the logger and add log messages as shown below 
 
    ```
@@ -145,6 +154,10 @@ ocilogginganalytics.js file:
    log.info("Informational message");
    log.error("Error message");
    ```
+
+   <img width="457" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/bd9482d5-7b02-403d-9340-0555b98b6c63">
+
+   <img width="576" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/2ecca2b2-d7ab-4fcd-afef-ed51ad86f6d4">
 
 
 Next, install the required dependencies
