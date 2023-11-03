@@ -39,9 +39,8 @@ Take note of the follwoing:
    * Select API Keys under Resources
    * Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
    * Copy the content from Configuration File Preview & Close
-   <br>
-   <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
-
+     <br>
+     <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
 
 2. Create a Configuration File
    * Create a directory .oci and a config file with content from configuration file preview and path to private key file
@@ -76,8 +75,8 @@ Take note of the follwoing:
    * Select Specific Parser → Select the parser created
    * Click on Create Source
      
-   <br>  
-   <img width="1260" alt="3 LogSource" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f967a34d-3835-4126-a5c8-7ffe8f1b267b">
+     <br>  
+     <img width="1260" alt="3 LogSource" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f967a34d-3835-4126-a5c8-7ffe8f1b267b">
 
    
 5. Create a Log Group
@@ -86,7 +85,7 @@ Take note of the follwoing:
   
      <br>  
      <img width="789" alt="4 LogGroup" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/32cbdd5f-ce3b-4bb3-bce1-96e6e2a4973e">
-
+     <br>
    > Make a note of OCID of Log Group which will be used later
      <br>
      <img width="1099" alt="5 LogGroup-2" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/8fa7770e-a9a5-44a5-acd7-c6882085a46f">
