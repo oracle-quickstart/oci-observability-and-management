@@ -103,16 +103,16 @@ tracing.js file:
    <img width="592" alt="Screenshot 2023-10-10 at 3 17 26 PM" src="https://github.com/zkhader/oci-observability-and-management/assets/14898804/08116128-2cd1-490f-a8f6-8439e0e8875f">
 
 ocilogginganalytics.js file: 
- - Edit the file to update the parameters mentioned below to complete the  
-a. [PATH]/config - Path to config file
-b. [PROFILE] - Profile in config file to be used for OCI authentication
-c. [NAMESPACE] - Namespace
-d. [UPLOADNAME] - User defined name for uploads
-e. [LOGSOURCENAME] - Log Source Name created in OCI logging analytics
-f. [LOGGROUPID] - Log Group ID created in Logging analytics to group the log messages
-g. [BUFFERLENGTH] - Buffer size (number of log messages to store)
-h. [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA
-i. [LOGGERNAME] – user defined name to initialize the bunyan logger
+ - Edit the file to update the parameters mentioned below   
+   [PATH]/config - Path to config file  
+   [PROFILE] - Profile in config file to be used for OCI authentication  
+   [NAMESPACE] - Namespace  
+   [UPLOADNAME] - User defined name for uploads  
+   [LOGSOURCENAME] - Log Source Name created in OCI logging analytics  
+   [LOGGROUPID] - Log Group ID created in Logging analytics to group the log messages  
+   [BUFFERLENGTH] - Buffer size (number of log messages to store)  
+   [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA  
+   [LOGGERNAME] – user defined name to initialize the bunyan logger  
 
  - Modify the application source files to include log messages as shown below 
 
