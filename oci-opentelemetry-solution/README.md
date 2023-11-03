@@ -189,3 +189,17 @@ Make sure to run the metric and tracing files alog with your server
 node -r ./metrics.js -r ./tracing.js server.js
 ```
 
+
+# Correlating Traces & Logs
+  OpenTelemetry includes TraceId and SpanId in the LogRecords and this allows to directly correlate logs and traces that correspond to the same execution context. 
+  Application traces and spans flows into OCI Application Performance Monitoring and logs into OCI Logging Analytics service, So OCI APM provides easy way to 
+  navigate from traces and spans to logs in logging analytics in one click using drilldown configuration. 
+
+  Drilldowns are links to other services in OCI or other custom services using customizable URLs including attributes from spans 
+  (e.g. loganalytics/explorer?search=<OciInstanceId> where OciInstanceId is a span attribute).
+
+
+  Steps to create drilldown to link traces and logs
+  ![CorrelateTraces Logs](https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f05384ac-d4a6-40f7-90ea-e52ff5d5cdbb)
+
+  
