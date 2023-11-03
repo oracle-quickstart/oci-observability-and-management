@@ -114,7 +114,7 @@ ocilogginganalytics.js file:
    [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA  
    [LOGGERNAME] – user defined name to initialize the bunyan logger  
 
- - Modify the application source files to include log messages as shown below 
+ - Modify the application source files to initialize the logger and to include log messages as shown below 
 
 ```
 const ocilog= require('../ocilogginganalytics');
