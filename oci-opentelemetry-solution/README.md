@@ -39,6 +39,7 @@ Take note of the follwoing:
    * Select API Keys under Resources
    * Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
    * Copy the content from Configuration File Preview & Close
+
      <br>
      <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
 
