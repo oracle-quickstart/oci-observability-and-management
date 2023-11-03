@@ -140,7 +140,7 @@ ocilogginganalytics.js file:
 
    <img width="973" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f5355466-1864-46ac-a394-6f4d767f9b65">
 
-   <img width="449" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/c2366f51-03c3-471b-be5c-3cecafc23868">
+   <img width="986" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/d1143df6-dc28-40cc-b067-3bab0ba7eafe">
 
 
  - Modify the application source files to initialize the logger and add log messages as shown below 
@@ -155,7 +155,8 @@ ocilogginganalytics.js file:
    log.error("Error message");
    ```
 
-   <img width="457" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/bd9482d5-7b02-403d-9340-0555b98b6c63">
+   <img width="993" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/7a8f59e3-27b2-48ba-814c-283db31ab2b0">
+
 
    <img width="576" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/2ecca2b2-d7ab-4fcd-afef-ed51ad86f6d4">
 
