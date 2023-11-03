@@ -38,7 +38,7 @@ Take note of the follwoing:
    * Login to OCI console → User → User settings
    * Select API Keys under Resources
    * Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
-   * Copy the content from Configuration File Preview & Close
+   * Copy the content from Configuration File Preview & Close  
 
    <img width="720" alt="1 UserProfile" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/160bb472-c96a-4727-970f-8826f19a7827">
 
@@ -65,7 +65,7 @@ Take note of the follwoing:
    ```
    {"name":"OCILogger","hostname":"emcc.marketplace.com","pid":12586,"level":50,"msg":"Inside delete method:Cannot Delete with id 649b4ac1883092297279051b. Maybe id 
    is wrong","time":"2023-07-10T07:02:13.678Z","src":{},"v":0,"trace_id":"5941ccd308fcb49e30b3ebfcffcff38f","span_id":"0bed4a8c3b33d48e","trace_flags":"01"}
-   ```
+   ```  
    <img width="1285" alt="2 Parser" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/ebaaa401-bc7e-4e6b-a220-7b9a441bddcc">
 
 4. Create a Log Source
@@ -73,24 +73,24 @@ Take note of the follwoing:
    * Source Type → File
    * Entity Types → Host (Linux)
    * Select Specific Parser → Select the parser created
-   * Click on Create Source
+   * Click on Create Source  
 
    <img width="1260" alt="3 LogSource" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/f967a34d-3835-4126-a5c8-7ffe8f1b267b">
 
    
 5. Create a Log Group
    * Logging Analytics → Administration → Log Groups → Create Log Group
-   * Provide Log Group Name and description → click create
+   * Provide Log Group Name and description → click create  
    
    <img width="789" alt="4 LogGroup" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/32cbdd5f-ce3b-4bb3-bce1-96e6e2a4973e">
 
-   > Make a note of OCID of Log Group which will be used later
+   > Make a note of OCID of Log Group which will be used later  
 
    <img width="1099" alt="5 LogGroup-2" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/8fa7770e-a9a5-44a5-acd7-c6882085a46f">
 
 
 6. Get the Namespace Details
-   * Goto Identity →  Compartments → Click on compartment where the log source is created → Copy OCID of the compartment
+   * Goto Identity →  Compartments → Click on compartment where the log source is created → Copy OCID of the compartment  
 
    <img width="998" alt="6 Compartment-OCID-2" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/06b6761e-a0d1-4312-afcb-d514d2a2343c">
 
@@ -98,7 +98,7 @@ Take note of the follwoing:
    * Now launch cloud shell and execute below command to get the namespace  
    ```
    oci os ns get -c compartmentID 
-   ```
+   ```  
 
    <img width="1231" alt="7 Namespace" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/4c28b966-fe94-477a-97ba-5708a4ea5ecb">
 
