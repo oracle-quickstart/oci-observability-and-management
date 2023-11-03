@@ -35,10 +35,10 @@ Take note of the follwoing:
 # Step 2: Create Logging Anaytics configuration 
 
 1. Create API signing key
-*Login to OCI console → User → User settings
-*Select API Keys under Resources
-*Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
-*Copy the content from Configuration File Preview & Close
+* Login to OCI console → User → User settings
+* Select API Keys under Resources
+* Click on Add API Key → Generate API Key Pair → Click on Download Private Key & then Add
+* Copy the content from Configuration File Preview & Close
 
 2. Create a Configuration File
 *Create a directory .oci and a config file with content from configuration file preview and path to private key file
