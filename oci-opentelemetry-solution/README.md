@@ -41,7 +41,7 @@ Take note of the follwoing:
 * Copy the content from Configuration File Preview & Close
 
 2. Create a Configuration File
-*Create a directory .oci and a config file with content from configuration file preview and path to private key file
+* Create a directory .oci and a config file with content from configuration file preview and path to private key file
 
 ```
 config
@@ -54,9 +54,9 @@ key_file=~/.oci/oci-priv-key.pem
 ```
 
 3. Create a Log Parser
-*Observability & Management → Logging Analytics → Administration
-*Click on Parsers → Create Parser → Choose JSON type
-*Enter example JSON log content it will parse and extract fields and map it to specific field names as needed and click save changes.
+* Observability & Management → Logging Analytics → Administration
+* Click on Parsers → Create Parser → Choose JSON type
+* Enter example JSON log content it will parse and extract fields and map it to specific field names as needed and click save changes.
 
 LogRecord
 ```
@@ -64,21 +64,21 @@ LogRecord
 ```
 
 4. Create a Log Source
-*Logging Analytics → Administration → Sources → Create Source
-*Source Type → File
-*Entity Types → Host (Linux)
-*Select Specific Parser → Select the parser created
-*Click on Create Source
+* Logging Analytics → Administration → Sources → Create Source
+* Source Type → File
+* Entity Types → Host (Linux)
+* Select Specific Parser → Select the parser created
+* Click on Create Source
 
 5. Create a Log Group
-*Logging Analytics → Administration → Log Groups → Create Log Group
-*Provide Log Group Name and description → click create
+* Logging Analytics → Administration → Log Groups → Create Log Group
+* Provide Log Group Name and description → click create
 > Make a note of OCID of Log Group which will be used later
 
 6. Get the Namespace Details
-*→ Goto Identity →  Compartments → Click on compartment where the log source is created → Copy OCID of the compartment
+* Goto Identity →  Compartments → Click on compartment where the log source is created → Copy OCID of the compartment
 
-*Now launch cloud shell and execute below command to get the namespace  
+* Now launch cloud shell and execute below command to get the namespace  
 ```
 oci os ns get -c compartmentID 
 ```
@@ -104,15 +104,15 @@ tracing.js file:
 
 ocilogginganalytics.js file: 
  - Edit the file to update the parameters mentioned below to complete the  
-[PATH]/config - Path to config file
-[PROFILE] - Profile in config file to be used for OCI authentication
-[NAMESPACE] - Namespace
-[UPLOADNAME] - User defined name for uploads
-[LOGSOURCENAME] - Log Source Name created in OCI logging analytics
-[LOGGROUPID] - Log Group ID created in Logging analytics to group the log messages
-[BUFFERLENGTH] - Buffer size (number of log messages to store)
-[FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA
-[LOGGERNAME] – user defined name to initialize the bunyan logger
+* [PATH]/config - Path to config file
+* [PROFILE] - Profile in config file to be used for OCI authentication
+* [NAMESPACE] - Namespace
+* [UPLOADNAME] - User defined name for uploads
+* [LOGSOURCENAME] - Log Source Name created in OCI logging analytics
+* [LOGGROUPID] - Log Group ID created in Logging analytics to group the log messages
+* [BUFFERLENGTH] - Buffer size (number of log messages to store)
+* [FLUSHINTERVAL] – Flush internal in milliseconds to flush messages from buffer and send it to OCI LA
+* [LOGGERNAME] – user defined name to initialize the bunyan logger
 
  - Modify the application source files to include log messages as shown below 
 
