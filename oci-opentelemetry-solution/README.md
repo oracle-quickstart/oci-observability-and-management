@@ -158,7 +158,8 @@ ocilogginganalytics.js file:
    <img width="993" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/7a8f59e3-27b2-48ba-814c-283db31ab2b0">
 
 
-   <img width="576" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/2ecca2b2-d7ab-4fcd-afef-ed51ad86f6d4">
+   <img width="986" alt="image" src="https://github.com/Anand-GitH/oci-observability-and-management/assets/60418080/0459d163-0e61-41a7-b710-a4467858b8f4">
+
 
 
 Next, install the required dependencies
