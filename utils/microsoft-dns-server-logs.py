@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+import os
 import random
+from datetime import datetime, timedelta
 
 current_time = datetime.utcnow() - timedelta(minutes=10)
 formatted_time = current_time.strftime("%m/%d/%Y %I:%M:%S %p")
@@ -64,6 +65,11 @@ for i in range(4):
         empty'''
 
 logs = f'{event_str}{packet_str}'
-with open('microsoft-dns-server-logs.log', 'a') as f:
+file_name = 'microsoft-dns-server-logs.log'
+
+if os.path.exists(file_name):
+    os.remove(file_name)
+
+with open(file_name, 'a') as f:
   f.write(logs)
 f.close()
