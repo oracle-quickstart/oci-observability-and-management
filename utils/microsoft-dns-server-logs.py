@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 current_time = datetime.utcnow() - timedelta(minutes=10)
 formatted_time = current_time.strftime("%m/%d/%Y %I:%M:%S %p")
 event_str = f"{formatted_time} 03B4 EVENT 192.168.1.10 The DNS server has started."
-ips = ['10.0.0.5', '192.168.2.20', '192.168.2.20', '10.1.1.1']
+ips = ['10.0.0.5', '192.168.2.20', '192.168.2.2', '10.1.1.1']
 sockets = [336, 336, 328, 2688]
 remote_addrs = ['::1', '::1', '192.168.1.2', '192.168.1.2']
 ports = [64329, 64329, 37325, 53]
