@@ -17,13 +17,18 @@ data "oci_log_analytics_namespace" "this" {
     namespace = data.oci_identity_tenancy.this.name
 }
 
+data "oci_objectstorage_namespace" "this" {
+    #Optional
+    compartment_id = var.tenancy_ocid
+}
+
 resource "oci_log_analytics_namespace" "logging_analytics_namespace" {
   #Required
   count          = data.oci_log_analytics_namespace.this.is_onboarded == true ? 0 : 1
-  compartment_id = local.tenancy_id
+  compartment_id = var.tenancy_ocid
   is_onboarded   = true
-  namespace      = data.oci_identity_tenancy.this.name
-  depends_on     = [module.logging_analytics_quickstart, data.oci_log_analytics_namespace.this]
+  namespace      = data.oci_objectstorage_namespace.this.namespace
+  depends_on     = [module.logging_analytics_quickstart, data.oci_objectstorage_namespace.this]
 }
 
 resource "time_sleep" "wait_120_seconds" {
@@ -50,7 +55,7 @@ resource "oci_sch_service_connector" "audit-to-logan" {
         kind = "logging"
         log_sources {
             #Optional
-            compartment_id = var.compartment_ocid
+            compartment_id = var.tenancy_ocid
             log_group_id = "_Audit_Include_Subcompartment"
             log_id = ""
         }
