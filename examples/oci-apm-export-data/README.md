@@ -75,14 +75,31 @@ You can use any of the following parameters to get the desired result:
 - **`query_result_name`**:  
   The name of the background query result to use.
 
+  *Example:*  
+  ```plaintext
+  https://url/v1/query?query_result_name=<background-query-to-run>
+  ```
+
 - **`query_tql`**:  
-  A URL-encoded string that, when decoded, should contain the TQL query to be used.  
-  **Note:** When using this parameter, you must also provide the following timestamps in epoch milliseconds: (If not specified, the default value is 0) 
+  A URL-encoded string that, when decoded, contains the TQL query to be used.  
+  **Note:** When using this parameter, you must also provide the following timestamps in epoch milliseconds (if not specified, the default value is `0`):  
   - `time_span_started_less_than`  
   - `time_span_started_greater_than_or_equal_to`  
+  
+  *Example:*  
+  ```plaintext
+  https://url/v1/query?query_tql=<query-to-run>&time_span_started_greater_than_or_equal_to=<start-timestamp>&time_span_started_less_than=<end-timestamp>
+  ```
 
 - **`configuration_name`**:  
   The name of the function configuration that holds the TQL query to be used.  
   **Note:** When using this parameter, you must also provide the following timestamps in epoch milliseconds as function configurations: (If not specified, the default value is 0) 
   - `time_span_started_less_than`  
   - `time_span_started_greater_than_or_equal_to`  
+
+  *Example:*  
+  ```plaintext
+  https://url/v1/query?configuration_name=random-query-name
+  ```
+  On the OCI console:
+  ![Function configuration example](images/function_configuration_example.png)
