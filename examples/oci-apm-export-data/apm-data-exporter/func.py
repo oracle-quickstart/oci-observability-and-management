@@ -68,10 +68,10 @@ def parseTimestampParam(param_name: str, params: dict):
     param_result = 0
 
     if param_name in params:
-        if params[param_name].isdigit():
-            param_result = int(params[param_name]) / 1000.0
-        elif params[param_name][0].isdigit():
+        if hasattr(params[param_name], "__len__") and (not isinstance(params[param_name], str)) and params[param_name][0].isdigit():
             param_result = int(params[param_name][0]) / 1000.0
+        elif params[param_name].isdigit():
+            param_result = int(params[param_name]) / 1000.0
         else:
             raise TypeError("Error parsing param '" + param_name + "', please provide a valid timestamp")
     else:
@@ -105,7 +105,7 @@ def is_timeseries_data(data):
     return False
 
 ### Transforms normal non-Timeseries data
-# The basic output would be a key value representation of each trace, array columns will be simplified as well for ease of use (for the first dimension)
+# The basic output would be a key value representation of each trace
 def transform_data(data):
     date_columns = []
     for column in data.query_result_metadata_summary.query_result_row_type_summaries:
@@ -117,10 +117,10 @@ def transform_data(data):
     for row in data.query_result_rows:
         new_row = row.query_result_row_data
 
+        # Remove array rows
         for key in list(new_row.keys()):
             if hasattr(new_row[key], "__len__") and (not isinstance(new_row[key], str)):
-                for i in range(len(new_row[key])):
-                    new_row[key][i] = new_row[key][i]["queryResultRowData"]
+                del new_row[key]
 
         for column in date_columns:
             new_row[column] = datetime.datetime.fromtimestamp(new_row[column] / 1000.0, tz=datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
