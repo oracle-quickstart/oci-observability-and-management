@@ -9,6 +9,8 @@ Monitoring an inferencing application is crucial for ensuring its performance, r
 This repository contains files and information enabling such monitoring with the 
 [OCI APM Service](https://www.oracle.com/manageability/)
 
+![Dashboard overview page](inferoverview.png)
+
 ## Table of Contents
 1. Getting started
 2. Dashboard to be imported as APM custom dashbord   
