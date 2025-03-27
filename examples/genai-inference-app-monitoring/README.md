@@ -24,13 +24,12 @@ This repository contains files and information enabling such monitoring with the
     - If the backend is a java app, use the [APM Java agent](https://cloud.oracle.com/apm/apm-admin/admin/downloadAgents) to instrument it
     - For python apps use [OTEL agent](https://opentelemetry.io/docs/languages/python/).
     - Other languages - use relavnt OTEL compliant agent/tracer (APM support the native OTEL protocol)
-3. See custom instrumentation descussion below: [Instrumentation for Inferencing apps](TBD).
 
 ## Import the dashbaord
-- downlaod [Inferencing apps](TBD) and import it to the [Dashboard service](https://cloud.oracle.com/management-dashboard/dashboards). The json file includes several widgets used in this dashboard, all will be imported with the same one operation. 
+- downlaod [Inferencing apps](inferencing-apps.json) and import it to the [Dashboard service](https://cloud.oracle.com/management-dashboard/dashboards). The json file includes several widgets used in this dashboard, all will be imported with the same one operation. 
 
 ## Instrumentation helper class for LangChain (python) based apps
-The file [apm_otel_langchain_oci.py](TBD) enable simple instrumentation helper method that can be used to instrument the LangChain calls to genAIi services. The file include instrumentation of the invoke, embed_documents, and similarity_search methods, when used with the OCI langcahin community extension. Add to these any other langChain calls made by your application.
+The file [apm_otel_langchain_oci.py](apm_otel_langchain_oci.py) comntains a simple instrumentation helper method that can be used to instrument the LangChain calls to genAIi services. The file include instrumentation of the invoke, embed_documents, and similarity_search methods, when used with the OCI langcahin community extension. Add to these any other langChain calls made by your application.
 Instrument the application with OTEL (e.g. use opentelemetry-instrument) and then add this code (before any calls to the instrumented classes) to enable the instrumentation:
 
     from opentelemetry import trace
@@ -66,7 +65,7 @@ The dashboard uses the attribute as described below. Some may not be relevant in
 - genAiQuery
 - genAiResponse
 
-### 3. Attributes captured from call to the GenAi services (see [apm_otel_langchain_oci.py](TBD))
+### 3. Attributes captured from call to the GenAi services (see [apm_otel_langchain_oci.py](apm_otel_langchain_oci.py))
 - genAiSerivce (e.g. ChatGenAI, GenAIEmbeding, etc.)
 - genAiQuery
 - genAiResponse
