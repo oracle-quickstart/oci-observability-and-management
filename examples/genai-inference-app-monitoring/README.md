@@ -82,7 +82,7 @@ These can be captured from the service APIs (token count) or can be calculated u
 - genAiTokens
 
 Example of span enrichment rule that calculates cost of an LLM invocations and store it as a span metric:
-![Enrichment rule](enrichmentrule.png)
+![Enrichment rule](enrichmentrule.jpg)
 
 
 ### 5. TQL exmaples
