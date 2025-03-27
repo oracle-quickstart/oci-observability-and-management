@@ -1,0 +1,113 @@
+"""
+Author: Avi Huber
+Date: Sep 2024
+
+OTEL instrumentation for the langchain oci classes
+
+This file can be used as an example/base for instrument of langchain packages and other GenAI framworks. 
+
+This instrumentation (otel_langchain_oci.init(tracer)) needs to be called before any calls or initilizations 
+of the instrumented classes elsewhere in the app!
+
+Instrumenting these methods (Add other used methods at the main functoin below):
+- ChatOCIGenAI.invoke
+- OCIGenAIEmbeddings.embed_documents
+- OracleVS.similarity_search
+
+spans will include these attributes;
+- genAiService: the  OCI genAi service used (ChatOCIGenAI, OCIGenAIEmbeddings, OracleVS)
+- genAiPromptLength: the entire promopt length (in chars) used in the ChatOCIGenAI call (include all messages)  
+- genAiResponseLenght: chars count 
+- genAiModel: model_id
+
+"""
+
+
+from langchain_community.chat_models import ChatOCIGenAI
+from langchain_community.embeddings import OCIGenAIEmbeddings
+from langchain_community.vectorstores.oraclevs import OracleVS
+from langchain_core.prompt_values import ChatPromptValue
+
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.trace import SpanKind, Tracer
+
+
+def lanchain_otel_instrumenter(tracer, func, name=None):
+    
+    def wrapper(*args, **kwargs):
+        
+        class_obj = args[0]
+        
+        if name:
+            genAiService = name
+        else:
+            genAiService = func.__qualname__.split('.')[0]
+        
+        genAiPromptLength = None
+
+        if(func.__name__ == "embed_documents"):
+            genAiPromptLength = sum(len(s) for s in args[1])
+        elif (func.__name__ == "embed_query"):
+            genAiPromptLength = len(args[1])
+        elif genAiService ==  "ChatOCIGenAI":
+            for arg in args:
+                if isinstance(arg,ChatPromptValue): 
+                    genAiPromptLength = len(arg.to_string())                   
+                    break    
+        #print(f"Prompt length: {genAiPromptLength}")    
+
+        with tracer.start_as_current_span(func.__name__, kind=SpanKind.CLIENT) as fspan:
+            fspan.set_attribute("genAiService", genAiService)
+            fspan.set_attribute("Component","apm-otel-langchain")
+            if genAiPromptLength:
+                fspan.set_attribute("genAiPromptLength", genAiPromptLength)
+            if hasattr(class_obj, 'model_id'): # for LLM invocation
+                fspan.set_attribute("genAiModel",class_obj.model_id)
+            #print(*args)
+            result = func(*args, **kwargs) 
+            
+            if not isinstance(result,list) and isinstance(result.content,str):
+                fspan.set_attribute("genAiResponseLength", len(result.content))
+            return result
+    return wrapper
+
+"""
+Instrument the application with OTEL (e.g. use opentelemetry-instrument) and then:
+    from opentelemetry import trace
+    import otel_langchain_oci
+    tracer = trace.get_tracer(__name__)
+    otel_langchain_oci.init(tracer)
+
+Alternatively (manual OTEL instrumentation):
+    import otel_langchain_oci
+    tracer = otel_langchain_oci.init()
+the init() function returns a the OTEL tracer instance, it should be used to instrument the service call. 
+Otherwise calls to LLM, etc., will be reported as individual traces
+
+"""
+def init(tracer=None) -> Tracer:
+    if tracer == None: 
+        otlp_exporter = OTLPSpanExporter()
+        # Set up the tracer provider
+        trace.set_tracer_provider(TracerProvider())
+
+        # Set up a batch span processor to handle span export
+        span_processor = BatchSpanProcessor(otlp_exporter)
+        #span_processor = BatchSpanProcessor(ConsoleSpanExporter())
+        trace.get_tracer_provider().add_span_processor(span_processor)
+        tracer = trace.get_tracer(__name__)
+
+    """
+    Methods to instrument. 
+    This list works for the OCIGenAI community extension, reaplce it with the relevant classes/methods used in your code 
+    """
+    
+    #ChatOCIGenAI.invoke = lanchain_otel_instrumenter(tracer, ChatOCIGenAI.invoke)
+    ChatOCIGenAI.invoke = lanchain_otel_instrumenter(tracer, ChatOCIGenAI.invoke, "ChatOCIGenAI")
+    OCIGenAIEmbeddings.embed_documents = lanchain_otel_instrumenter(tracer, OCIGenAIEmbeddings.embed_documents)
+    OracleVS.similarity_search = lanchain_otel_instrumenter(tracer, OracleVS.similarity_search)
+    
+    return tracer
