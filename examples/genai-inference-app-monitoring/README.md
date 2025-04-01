@@ -81,7 +81,9 @@ These can be captured from the service APIs (token count) or can be calculated u
 - genAiCost
 - genAiTokens
 
-(todo: add screenshot, example of span enrichment rule that help calculate cost of LLM invocations)
+Example of span enrichment rule that calculates cost of an LLM invocations and store it as a span metric:
+![Enrichment rule](enrichmentrule.jpg)
+
 
 ### 5. TQL exmaples
 (you can save these and others into a query bar in Trace Explorer)
@@ -100,4 +102,8 @@ These can be captured from the service APIs (token count) or can be calculated u
 4. Cost of thumbed down responses:
 
     `show spans count(*), sum(genAiCost) as "Cost of thumb-down answers" where traceid in (show spans max(case when genAiFeedback is omitted then traceid end) as traceid   where sessionid is not omitted and (genAiFeedback = 'thumb-down' or genAiFeedback is omitted) group by sessionId, genAiQuery having count(*) = 2 first 10000 rows)`
+
+5. Aborted queries (user refreshed the page, closed the browser, etc. before the response was available):
+   
+   `show spans count(*) as "Aborted queries", avg(spanDuration) as "Avg duration", max(spanDuration) as "Max duration", percentile(SpanDuration, 90) as P90 where kind='SERVER' and genAiQuery is not omitted and traceid in (show traces traceid where TraceStatus ='Incomplete' first 10000 rows) timeseries for count(*), max(spanDuration)`
 

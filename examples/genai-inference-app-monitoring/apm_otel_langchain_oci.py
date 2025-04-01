@@ -13,6 +13,7 @@ Instrumenting these methods (Add other used methods at the main functoin below):
 - ChatOCIGenAI.invoke
 - OCIGenAIEmbeddings.embed_documents
 - OracleVS.similarity_search
+- ConversationChain.invoke
 
 spans will include these attributes;
 - genAiService: the  OCI genAi service used (ChatOCIGenAI, OCIGenAIEmbeddings, OracleVS)
@@ -22,6 +23,7 @@ spans will include these attributes;
 
 """
 
+from langchain.chains import ConversationChain
 
 from langchain_community.chat_models import ChatOCIGenAI
 from langchain_community.embeddings import OCIGenAIEmbeddings
@@ -38,7 +40,6 @@ from opentelemetry.trace import SpanKind, Tracer
 def lanchain_otel_instrumenter(tracer, func, name=None):
     
     def wrapper(*args, **kwargs):
-        
         class_obj = args[0]
         
         if name:
@@ -62,30 +63,42 @@ def lanchain_otel_instrumenter(tracer, func, name=None):
         with tracer.start_as_current_span(func.__name__, kind=SpanKind.CLIENT) as fspan:
             fspan.set_attribute("genAiService", genAiService)
             fspan.set_attribute("Component","apm-otel-langchain")
-            if genAiPromptLength:
-                fspan.set_attribute("genAiPromptLength", genAiPromptLength)
             if hasattr(class_obj, 'model_id'): # for LLM invocation
                 fspan.set_attribute("genAiModel",class_obj.model_id)
+            if hasattr(class_obj, "llm") and  hasattr(class_obj.llm, 'model_id'):
+                fspan.set_attribute("genAiModel",class_obj.llm.model_id)
             #print(*args)
             result = func(*args, **kwargs) 
             
-            if not isinstance(result,list) and isinstance(result.content,str):
-                fspan.set_attribute("genAiResponseLength", len(result.content))
+            if(genAiPromptLength == None and hasattr(result, 'get') ):
+                 genAiPromptLength = len(result.get('input','')) + len(result.get('history',''))
+            
+            if genAiPromptLength:
+                fspan.set_attribute("genAiPromptLength", genAiPromptLength)
+            
+            if not isinstance(result, list):
+                if hasattr(result, 'get') and len(result.get('response','')) > 0:
+                    fspan.set_attribute("genAiResponseLength", len(result.get('response')))
+                elif hasattr(result, 'content'):
+                    if isinstance(result.content,str):
+                        fspan.set_attribute("genAiResponseLength", len(result.content))
+            
             return result
     return wrapper
 
 """
 Instrument the application with OTEL (e.g. use opentelemetry-instrument) and then:
     from opentelemetry import trace
-    import otel_langchain_oci
+    import apm_otel_langchain_oci
     tracer = trace.get_tracer(__name__)
     otel_langchain_oci.init(tracer)
 
 Alternatively (manual OTEL instrumentation):
-    import otel_langchain_oci
+    import apm_otel_langchain_oci
     tracer = otel_langchain_oci.init()
-the init() function returns a the OTEL tracer instance, it should be used to instrument the service call. 
-Otherwise calls to LLM, etc., will be reported as individual traces
+    
+    The init() function returns the global tracer instance, it should be used to instrument the service call.
+    Otherwise calls to LLM, etc., will be reported as individual traces
 
 """
 def init(tracer=None) -> Tracer:
@@ -102,12 +115,15 @@ def init(tracer=None) -> Tracer:
 
     """
     Methods to instrument. 
-    This list works for the OCIGenAI community extension, reaplce it with the relevant classes/methods used in your code 
+    Add/replace with the object.method used in your code 
+    Optionally, add a friendlier GenAiService name as the third parameter
     """
     
-    #ChatOCIGenAI.invoke = lanchain_otel_instrumenter(tracer, ChatOCIGenAI.invoke)
-    ChatOCIGenAI.invoke = lanchain_otel_instrumenter(tracer, ChatOCIGenAI.invoke, "ChatOCIGenAI")
+    ChatOCIGenAI.invoke = lanchain_otel_instrumenter(tracer, ChatOCIGenAI.invoke)
+    #ChatOCIGenAI.invoke = lanchain_otel_instrumenter(tracer, ChatOCIGenAI.invoke, "ChatOCIGenAI")
     OCIGenAIEmbeddings.embed_documents = lanchain_otel_instrumenter(tracer, OCIGenAIEmbeddings.embed_documents)
     OracleVS.similarity_search = lanchain_otel_instrumenter(tracer, OracleVS.similarity_search)
+    
+    ConversationChain.invoke = lanchain_otel_instrumenter(tracer, ConversationChain.invoke, "ChatOCIGenAI")
     
     return tracer
