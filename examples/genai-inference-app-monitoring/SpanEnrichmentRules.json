@@ -1,0 +1,263 @@
+{
+    "configurationItems": [
+        {
+            "configType": "OPTIONS",
+            "id": "ocid1.apmconfig.oc1.iad.aaaaaaaa2qhvw7w2vnr6csypuspwja2t4lacov6cxh3o5gtvjwxdi3wmlhra",
+            "freeformTags": {},
+            "definedTags": {},
+            "displayName": "Set tokens and cost",
+            "options": {
+                "type": "data-manipulation.group",
+                "filterText": "genAiPromptLength IS NOT OMITTED",
+                "disabled": false,
+                "rules": [
+                    {
+                        "displayName": "Set data per model",
+                        "disabled": false,
+                        "actions": [
+                            {
+                                "name": "basic.Map",
+                                "config": {
+                                    "input": "genAiModel",
+                                    "output": [
+                                        "_unit",
+                                        "_inputCost",
+                                        "_outputCost",
+                                        "_tokenRatio"
+                                    ],
+                                    "valueMap": {
+                                        "cohere.command-r-08-2024": [
+                                            "10000",
+                                            "0.0009",
+                                            "0.0009",
+                                            "1"
+                                        ],
+                                        "cohere.command-r-plus-08-2024": [
+                                            "10000",
+                                            "0.0156",
+                                            "0.0156",
+                                            "1"
+                                        ],
+                                        "cohere.embed-multilingual-v3.0": [
+                                            "10000",
+                                            "0.001",
+                                            "0",
+                                            "1"
+                                        ],
+                                        "gpt-4o": [
+                                            "1000000",
+                                            "2.5",
+                                            "10",
+                                            "4"
+                                        ],
+                                        "gpt-4o-mini": [
+                                            "1000000",
+                                            "0.15",
+                                            "0.6",
+                                            "4"
+                                        ],
+                                        "meta.llama-3.1-405b-instruct": [
+                                            "10000",
+                                            "0.0267",
+                                            "0.0267",
+                                            "1"
+                                        ],
+                                        "meta.llama-3.3-70b-instruct": [
+                                            "10000",
+                                            "0.0018",
+                                            "0.0018",
+                                            "1"
+                                        ]
+                                    }
+                                },
+                                "disabled": false
+                            }
+                        ]
+                    },
+                    {
+                        "displayName": "Set input token count and cost",
+                        "disabled": false,
+                        "actions": [
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Divide",
+                                    "leftInput": "genAiPromptLength",
+                                    "rightInput": "_tokenRatio",
+                                    "output": "genAiTokens",
+                                    "rounding": "Ceil"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Divide",
+                                    "leftInput": "genAiPromptLength",
+                                    "rightInput": "_unit",
+                                    "output": "_temp",
+                                    "rounding": "NoOp"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Multiply",
+                                    "leftInput": "_temp",
+                                    "rightInput": "_inputCost",
+                                    "output": "genAiCost",
+                                    "rounding": "NoOp"
+                                },
+                                "disabled": false
+                            }
+                        ]
+                    },
+                    {
+                        "displayName": "Add output tokens and cost",
+                        "description": "only if output cost is relevant",
+                        "filterText": "\"_outputCost\" > 0",
+                        "disabled": false,
+                        "actions": [
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Divide",
+                                    "leftInput": "genAiResponseLength",
+                                    "rightInput": "_tokenRatio",
+                                    "output": "_temp",
+                                    "rounding": "Ceil"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Add",
+                                    "leftInput": "genAiTokens",
+                                    "rightInput": "_temp",
+                                    "output": "genAiTokens",
+                                    "rounding": "Ceil"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Multiply",
+                                    "leftInput": "_temp",
+                                    "rightInput": "_outputCost",
+                                    "output": "_temp",
+                                    "rounding": "NoOp"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Divide",
+                                    "leftInput": "_temp",
+                                    "rightInput": "_unit",
+                                    "output": "_temp",
+                                    "rounding": "NoOp"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "math.BinaryMath",
+                                "config": {
+                                    "operator": "Add",
+                                    "leftInput": "genAiCost",
+                                    "rightInput": "_temp",
+                                    "output": "genAiCost",
+                                    "rounding": "NoOp"
+                                },
+                                "disabled": false
+                            }
+                        ]
+                    },
+                    {
+                        "displayName": "remove temp metrics",
+                        "disabled": false,
+                        "actions": [
+                            {
+                                "name": "basic.Remove",
+                                "config": {
+                                    "input": "_unit"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "basic.Remove",
+                                "config": {
+                                    "input": "_inputCost"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "basic.Remove",
+                                "config": {
+                                    "input": "_outputCost"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "basic.Remove",
+                                "config": {
+                                    "input": "_tokenRatio"
+                                },
+                                "disabled": false
+                            },
+                            {
+                                "name": "basic.Remove",
+                                "config": {
+                                    "input": "_temp"
+                                },
+                                "disabled": false
+                            }
+                        ]
+                    }
+                ]
+            },
+            "group": "data-manipulation.spans",
+            "description": "Use the Map Attribute to set tokenRatio (string lenght to token), inputCost, outputCost, and unit(how mant tokens count as 1 unit cost. The rule group uses these values and the genAiPromptLeng and genAiResponseLength to calculate genAiTokens and genAiCost"
+        },
+        {
+            "configType": "OPTIONS",
+            "id": "ocid1.apmconfig.oc1.iad.aaaaaaaaiy4tdtmvowuhzbuluxfrrfl5wcpjm5zhilltglpcynv5yvrulnla",
+            "freeformTags": {},
+            "definedTags": {},
+            "displayName": "OTEL",
+            "options": {
+                "type": "data-manipulation.group",
+                "filterText": "telemetry.sdk.name = 'opentelemetry'",
+                "disabled": false,
+                "rules": [
+                    {
+                        "displayName": "otel attr name conversion",
+                        "disabled": false,
+                        "systemRuleId": 500
+                    },
+                    {
+                        "displayName": "set component",
+                        "filterText": "component is omitted and ScopeName is not omitted",
+                        "disabled": false,
+                        "actions": [
+                            {
+                                "name": "string.Extract",
+                                "config": {
+                                    "input": "ScopeName",
+                                    "pattern": "(.*)",
+                                    "output": "Component"
+                                },
+                                "disabled": false
+                            }
+                        ]
+                    }
+                ]
+            },
+            "group": "data-manipulation.spans",
+            "description": "Automatic OTEL->APM attribute name conversion and set scopeName as component (to be shown in the trace details view)"
+        }
+    ]
+}

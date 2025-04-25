@@ -6,7 +6,7 @@ OTEL instrumentation for the langchain oci classes
 
 This file can be used as an example/base for instrument of langchain packages and other GenAI framworks. 
 
-This instrumentation (otel_langchain_oci.init(tracer)) needs to be called before any calls or initilizations 
+This instrumentation (apm_otel_langchain_oci.init(tracer)) needs to be called before any calls or initilizations 
 of the instrumented classes elsewhere in the app!
 
 Instrumenting these methods (Add other used methods at the main functoin below):
@@ -91,11 +91,11 @@ Instrument the application with OTEL (e.g. use opentelemetry-instrument) and the
     from opentelemetry import trace
     import apm_otel_langchain_oci
     tracer = trace.get_tracer(__name__)
-    otel_langchain_oci.init(tracer)
+    apm_otel_langchain_oci.init(tracer)
 
 Alternatively (manual OTEL instrumentation):
     import apm_otel_langchain_oci
-    tracer = otel_langchain_oci.init()
+    tracer = apm_otel_langchain_oci.init()
     
     The init() function returns the global tracer instance, it should be used to instrument the service call.
     Otherwise calls to LLM, etc., will be reported as individual traces

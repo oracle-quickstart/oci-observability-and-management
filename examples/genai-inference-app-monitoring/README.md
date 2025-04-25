@@ -81,7 +81,10 @@ These can be captured from the service APIs (token count) or can be calculated u
 - genAiCost
 - genAiTokens
 
-Example of span enrichment rule that calculates cost of an LLM invocations and store it as a span metric:
+Example of span enrichment rule that calculates cost of an LLM invocations and adds it as a span metric:
+
+(import [SpanEnrichmentRules.json](SpanEnrichmentRules.json) to your APM domain configuration. You can then edit the cost and other parameterS to match your specific LLM usage.)
+
 ![Enrichment rule](enrichmentrule.jpg)
 
 
