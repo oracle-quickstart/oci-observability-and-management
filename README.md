@@ -21,11 +21,15 @@ Using this button, you can also deploy a function which allows you to query APM 
 This project welcomes contributions from the community. Before submitting a pull
 request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+
 ## License
 
 Copyright (c) 2021, 2022 Oracle and/or its affiliates.
 Released under the Universal Permissive License (UPL), Version 1.0.
-See [LICENSE](./LICENSE) for more details.
+See [LICENSE](./LICENSE.txt) for more details.
 
 [oci]: https://cloud.oracle.com/en_US/cloud-infrastructure
 [oci terraform]: https://registry.terraform.io/providers/oracle/oci/latest/docs
