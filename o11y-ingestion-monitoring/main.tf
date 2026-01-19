@@ -1,10 +1,6 @@
 # Copyright (c) 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-terraform {
-  required_version = ">= 0.12.0"
-}
-
 locals{
     notification_topic_name = format("%s%s","AgentAlarmTopic_", var.stackId)
 
@@ -118,7 +114,7 @@ resource "oci_monitoring_alarm" "this_loganUploadDataSizeAlarm" {
   severity = var.loganDataSizeAlarmSeverity
 
   #Optional
-  body = "Logging Analyics - Log Collection Upload Data Size has exceeded the limit"
+  body = "Log Analyics - Log Collection Upload Data Size has exceeded the limit"
   metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }
 
@@ -136,6 +132,6 @@ resource "oci_monitoring_alarm" "this_loganUploadFailureAlarm" {
   severity = var.loganUploadFailureAlarmSeverity
 
   #Optional
-  body = "Logging Analytics - Log Collection Upload Failures seen"
+  body = "Log Analytics - Log Collection Upload Failures seen"
   metric_compartment_id_in_subtree = var.metric_compartment_id == var.tenancy_ocid ? var.metric_compartment_id_in_subtree : false
 }

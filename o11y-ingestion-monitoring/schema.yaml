@@ -3,7 +3,7 @@
 
   title: "Management Agent Alarms in Oracle Cloud Infrastructure"
   schemaVersion: 1.1.0
-  description: "Create alarms specific to Management Agent and Logging Analytics metrics.\nPrerequisite: Ensure users have the required IAM policies and permissions to create alarms."
+  description: "Create alarms specific to Management Agent and Log Analytics metrics.\nPrerequisite: Ensure users have the required IAM policies and permissions to create alarms."
   version: "20200301"
   locale: "en"
 
@@ -46,7 +46,7 @@
       - memoryAlarmThreshold
       - memoryAlarmSeverity
 
-  - title: Logging Analytics Alarms Configuration
+  - title: Log Analytics Alarms Configuration
     visible: true  
     variables:
       - needLoggingAnalyticsMetrics
@@ -320,15 +320,15 @@
       type: boolean
       required: true
       default: true
-      title: Add logging analytics metrics
-      description: Set up alarms for metrics from Logging Analytics service.
+      title: Add log analytics metrics
+      description: Set up alarms for metrics from Log Analytics service.
 
     loganAlarmsInfo:
       type: text
       required: true
       dependsOn: needLoggingAnalyticsMetrics
       visible: needLoggingAnalyticsMetrics
-      title: "The following logging analytics alarms will be created:"
+      title: "The following log analytics alarms will be created:"
       default: "1. Critical alarm when there is no log collection upload within 15 minutes interval.\n2. Critical alarm when log Collection upload failure occurs within 5 minutes interval."
 
     customizeLoganAlarms:
@@ -337,7 +337,7 @@
       default: false
       dependsOn: needLoggingAnalyticsMetrics
       visible: needLoggingAnalyticsMetrics
-      title: Customize logging analytics alarms
+      title: Customize log analytics alarms
       description: Modify alarm settings (interval, threshold or severity) of any of the above alarms.
 
     loganDataSizeAlarm:
@@ -349,7 +349,7 @@
           - customizeLoganAlarms
       required: false
       default: true
-      title: Logging analytics upload data size alarm
+      title: Log analytics upload data size alarm
       description: Set up an alarm when the log collection upload data size is greater than the threshold.
 
     loganDataSizeAlarmInterval:
@@ -402,7 +402,7 @@
         and: 
           - needLoggingAnalyticsMetrics
           - customizeLoganAlarms
-      title: Logging analytics upload failure alarm
+      title: Log analytics upload failure alarm
       description: Set up an alarm when there are log collection upload failures greater than the threshold.
 
     loganUploadFailureAlarmInterval:

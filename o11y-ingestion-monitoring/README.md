@@ -9,7 +9,7 @@
 
 ## Introduction
 
-This stack creates alarms specific to Management Agent and Logging Analytics metrics.
+This stack creates alarms specific to Management Agent and Log Analytics metrics.
 
 ## Prerequisite
 
@@ -17,7 +17,7 @@ This stack expects the users to have the required IAM policies and permissions t
 
 ## Stack Details
 
-* This stack creates alarms for Management Agent and Logging Analytics metrics in the selected compartment.
+* This stack creates alarms for Management Agent and Log Analytics metrics in the selected compartment.
 * This stack creates a new notification topic by default without any subscription.
 * Users can instead use existing notification topic OCID.
 * Under Management Agent Alarms section, this stack creates four critical alarms by default :
@@ -25,10 +25,10 @@ This stack expects the users to have the required IAM policies and permissions t
     * CPU Usage Alarm
     * Disk Space Alarm
     * JVM Memory Usage Alarm
-* Logging analytics alarms are enabled by default which can be disabled.
-* Under Logging Analytics Alarms section, this stack creates two critical alarms by default :
-    * Logging analytics upload data size alarm
-    * Logging analytics upload failure Alarm
+* Log analytics alarms are enabled by default which can be disabled.
+* Under Log Analytics Alarms section, this stack creates two critical alarms by default :
+    * Log analytics upload data size alarm
+    * Log analytics upload failure Alarm
 * Users have the option to disable or modify the alarm settings (interval, threshold or severity) for any of the above alarms.
 
 ## Using this stack
