@@ -1,0 +1,19 @@
+oci:
+  log_analytics_namespace: <tenancy-namespace>
+  region: <region>
+  compartment_id: <compartment-ocid>
+  log_group_id: <log_group_ocid>
+  config_file: /home/opc/.oci/config
+  profile: DEFAULT
+  metrics_source: VMWare vSphere Metrics
+  alarms_source: VMWare vSphere Alarms
+  events_source: VMWare vSphere Events
+
+vcenter:
+  host: <vcenter-host>
+  user_secret_ocid: <user-secret-ocid>
+  password_secret_ocid: <password-secret-ocid>
+  port: 443
+  batch_size: 1000   # 👈 new (default will be 1000 if omitted)
+
+dry_run: false
