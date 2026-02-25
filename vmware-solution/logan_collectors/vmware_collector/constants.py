@@ -2,9 +2,14 @@
 ALARMS_CHECKPOINT_FILE = "alarms_checkpoint.json"
 ALARMS_FILE = "collected_alarms.json"
 ALARMS_PAYLOAD_FILE = "alarms_payload.json"
+
+# OCI API Call Limits
 OCI_RATE_LIMIT_CALLS = 100
 OCI_RATE_LIMIT_PERIOD = 60
+
+# Entity Cache TTL
 CACHE_TTL_SECONDS = 300
+
 # Checkpoint file to track last processed event
 EVENTS_CHECKPOINT_FILE = "events_checkpoint.json"
 
@@ -29,7 +34,6 @@ VC_TO_OCI_ENTITY_TYPE = {
     "Vmware_CLUSTER": "VMware vSphere Cluster",
     "Vmware_VM_INSTANCE": "VMware vSphere VM",
     "Vmware_ESXI_HOST": "VMware vSphere ESXi Host",
-#    "Vmware_NETWORK": "VMware vSphere Network",
     "VMware_DATA_CENTER": "VMware vSphere Data Center",
     "Vmware_DATASTORE": "VMware vSphere Data Store",
     "Vmware_RESOURCE_POOL": "VMware vSphere Resource Pool",
@@ -72,6 +76,7 @@ MONITORED_EVENTS = {
     "vim.event.DatastoreFileDeletedEvent",
     "vim.event.StorageDrsRecommendationEvent",
 }
+
 # Event → Entity mapping (sample, expand as needed)
 EVENT_ENTITY_MAP = {
     "vim.event.VmCreatedEvent": "Vmware_VM_INSTANCE",
