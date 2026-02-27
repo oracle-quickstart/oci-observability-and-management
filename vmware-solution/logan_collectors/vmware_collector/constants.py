@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2026 Oracle, Inc.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+#
 # constatnts.py
 ALARMS_CHECKPOINT_FILE = "alarms_checkpoint.json"
 ALARMS_FILE = "collected_alarms.json"

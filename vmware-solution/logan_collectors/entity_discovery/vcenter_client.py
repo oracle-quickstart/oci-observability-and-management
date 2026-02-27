@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2026 Oracle, Inc.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+#
 import ssl
 import logging
 
@@ -117,14 +121,6 @@ class VCenterClient:
                                 "type": "VMware vSphere vApp",
                                 "parent": {"type": "VMware vSphere Data Center", "name": dc.name}
                             })
-#                    for net in getattr(dc, "network", []):
-#                        results.append({
-#                            "type": "VMware vSphere Network",
-#                            "name": net.name,
-#                            "parent": {
-#                                "type": "VMware vSphere Data Center", "name": dc.name
-#                            }
-#                        })
 
             logging.info("Fetched %d entities from vCenter", len(results))
             return results

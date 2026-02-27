@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2026 Oracle, Inc.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+#
 import oci
 import os
 import io
@@ -45,12 +49,6 @@ def find_matching_ocid(entity_map: dict, vcenter_type: str, entity_name: str) ->
     key = make_entity_key(oci_type, entity_name)
     if key in entity_map:
         return entity_map[key]
-    
-    #    # Try partial match
-    #    for map_key, ocid in entity_map.items():
-    #        map_type, map_name = map_key.split("::", 1)
-    #        if map_type == oci_type.strip().lower() and (entity_name.lower() in map_name or map_name in entity_name.lower()):
-    #            return ocid
     
     logger.info(f"No OCID mapping found for key=%s", key)
     return None

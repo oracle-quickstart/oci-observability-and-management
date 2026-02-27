@@ -77,14 +77,14 @@ Verify that  VMWare vCenter, Data Center, Cluster, Host, VM etc. entities have b
 Run `bin/run.sh  metrics` to send metrics to Log Analytics. Check if the metric data can be searched in OCI Log Explorer.
 
 ### Create Crontab Entries
-Run `crontab -e`  and add the following content:
+Run `crontab -e`  and add the following content (replace <BASE-DIR> with install path):
 
 
 ```
-*/5 * * * * /home/opc/logan_collectors/bin/run.sh metrics
-*/5 * * * * /home/opc/logan_collectors/bin/run.sh alarms
-*/5 * * * * /home/opc/logan_collectors/bin/run.sh events
-0 * * * * /home/opc/logan_collectors/bin/run.sh sync_entities
+*/5 * * * * <BASE-DIR>/logan_collectors/bin/run.sh metrics
+*/5 * * * * <BASE-DIR>/logan_collectors/bin/run.sh alarms
+*/5 * * * * <BASE-DIR>/logan_collectors/bin/run.sh events
+0 * * * * <BASE-DIR>/logan_collectors/bin/run.sh sync_entities
 ```
 
 ## Appendix A: Setting up OCI User with Permissions

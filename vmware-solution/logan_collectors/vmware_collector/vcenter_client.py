@@ -1,6 +1,10 @@
+#
+# Copyright (c) 2026 Oracle, Inc.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+#
 # vcenter_client.py
 """
-Robust vCenter metrics collector.
+vCenter metrics collector.
 
 Returns a dict keyed by internal entity type names expected by main.py:
   - "Vmware_CLUSTER"
@@ -249,14 +253,6 @@ class VCenterClient:
                                 "type": "VMware vSphere vApp",
                                 "parent": {"type": "VMware vSphere Data Center", "name": dc.name}
                             })
-#                    for net in getattr(dc, "network", []):
-#                        results.append({
-#                            "type": "VMware vSphere Network",
-#                            "name": net.name,
-#                            "parent": {
-#                                "type": "VMware vSphere Data Center", "name": dc.name
-#                            }
-#                        })
 
             logger.info("Fetched %d entities from vCenter", len(results))
             return results
@@ -269,7 +265,6 @@ class VCenterClient:
     # 
     # Collect Metrics
     #
-    #def collect_metrics(self) -> Dict[str, List[Dict[str, Any]]]:
     def collect_metrics(self):
         """
         Collect metrics from a real vCenter instance.
@@ -287,7 +282,6 @@ class VCenterClient:
             "Vmware_DATASTORE": [],
             "Vmware_VM_INSTANCE": [],
             "Vmware_ESXI_HOST": [],
-    #        "Vmware_NETWORK": [],
             "VMware_DATA_CENTER": []
         }
     
@@ -295,7 +289,6 @@ class VCenterClient:
         vm_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
         host_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
         ds_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datastore], True)
-    #    net_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Network], True)
         cluster_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.ClusterComputeResource], True)
         dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
     
@@ -421,45 +414,6 @@ class VCenterClient:
                 log.exception(f"Error collecting datastore metrics: {e}")
     
         # -------------------------
-        # Networks
-        # -------------------------
-        # For networks, not all types expose .vm; count connected powered-on VMs by checking vm.network membership
-        # Build VM -> network membership map to avoid repeated scans
-    #    try:
-    #        vm_networks_map = {}
-    #        for vm in vm_view.view:
-    #            vm_name = normalize_name(getattr(vm, "name", ""))
-    #            vm_networks = getattr(vm, "network", []) or []
-    #            # convert to names or object references — use object identity for matching below
-    #            vm_networks_map[vm] = set(vm_networks)
-    #    except Exception:
-    #        vm_networks_map = {}
-    #
-    #    for net in net_view.view:
-    #        try:
-    #            net_name = normalize_name(getattr(net, "name", ""))
-    #            # count VMs that reference this network object in their network list and are poweredOn
-    #            num_connected = 0
-    #            for vm in vm_view.view:
-    #                try:
-    #                    if vm.runtime and vm.runtime.powerState != "poweredOn":
-    #                        continue
-    #                    vm_networks = getattr(vm, "network", []) or []
-    #                    # vm_networks may be list of network objects; compare objects
-    #                    if net in vm_networks:
-    #                        num_connected += 1
-    #                except Exception:
-    #                    continue
-    #            net_metrics = {
-    #                "name": net_name,
-    #                "timestamp": now,
-    #                "num_connected_vms": num_connected
-    #            }
-    #            collected["Vmware_NETWORK"].append(net_metrics)
-    #        except Exception as e:
-    #            log.exception(f"Error collecting network metrics for {getattr(net, 'name', None)}: {e}")
-    
-        # -------------------------
         # Clusters (aggregate fallback)
         # -------------------------
         for cluster in cluster_view.view:
@@ -571,10 +525,6 @@ class VCenterClient:
             ds_view.Destroy()
         except Exception:
             pass
-    #    try:
-    #        net_view.Destroy()
-    #    except Exception:
-    #        pass
         try:
             cluster_view.Destroy()
         except Exception:
@@ -658,50 +608,6 @@ class VCenterClient:
                             if start_time and event.createdTime == start_dt:
                                 if checkpoint_event_key is not None and getattr(event, "key", 0) <= checkpoint_event_key:
                                     continue
-                            #logger.info(f"Raw entity object: {event.entity}")
-                            #logger.info(f"Entity dir: {dir(event.entity)}")
-                            #if hasattr(event.entity, "entity"):
-                            #    logger.info(f"event.entity.entity: {event.entity.entity}, type: {type(event.entity.entity)}")
-                            #if hasattr(event.entity.entity, "_type"):
-                            #    logger.info(f"event.entity.entity._type = {event.entity.entity._type}")
-                            #if hasattr(event.entity, "entityType"):
-                            #    logger.info(f"event.entity.entityType = {event.entity.entityType}")
-                            #if hasattr(event.entity, "name"):
-                            #    logger.info(f"event.entity.name = {event.entity.name}")
-    
-                            #entity_ref = str(event.entity.entity)  # e.g. "'vim.VirtualMachine:vm-23'"
-                            #if ":" in entity_ref:
-                            #    entity_type_raw, entity_id = entity_ref.split(":", 1)
-                            #    entity_type = normalize_entity_type(entity_type_raw.replace("vim.", ""))
-                            #else:
-                            #    entity_type = "unknown"
-    #
-    #                        entity_name = getattr(entity, "name", "unknown")
-    #                        # Try extracting real type from ManagedObjectReference
-    #                        if hasattr(entity, "entity") and hasattr(entity.entity, "_type"):
-    #                            entity_type = entity.entity._type
-    #
-    #                        if entity_type not in interested_types:
-    #                            continue
-    #
-    #                        alarm_name = getattr(event, "alarm", None)
-    #                        if hasattr(alarm_name, "info"):
-    #                            alarm_name = alarm_name.info.name
-    #                        elif hasattr(alarm_name, "name"):
-    #                            alarm_name = alarm_name.name
-    #                        else:
-    #                            alarm_name = "UnknownAlarm"
-    #
-    #                        status = getattr(event, "to", None) or "active"
-    #                        event_time = getattr(event, "createdTime", datetime.utcnow())
-    #
-    #                        alarms_data.append({
-    #                            "time": event_time.isoformat(),
-    #                            "entity_type": entity_type,
-    #                            "entity_name": entity_name,
-    #                            "alarm_name": alarm_name,
-    #                            "status": str(status)
-    #                        })
                             alarms_data.append(event)
     
                             fetched += 1
