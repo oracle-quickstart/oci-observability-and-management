@@ -1,23 +1,23 @@
-# VMWare Solution Installation
-## Compute Instance
-For OCI SDDC, create a new compute instance (or use an existing one) in the same VCN where SDDC exists.  For On-Prem VMWare, use any linux VM that can access vCenter, OCI Services, and Internet (to install python modules).
+# VMWare Solution Installation Instructions
 
-## Syslog Collection Setup 
-Management Agent is used to forward vCenter Syslog to Log analytics. It is not used in collecting/uploading metrics/events/alarms.
+## Prerequisites
+* Identify a compartment where Log Analytics resources can be located. [See Identify OCI Compartments to Place the Log Analytics Resources](https://docs.oracle.com/iaas/log-analytics/doc/enable-access-logging-analytics-its-resources.html#LOGAN-GUID-48E4BACA-99BE-4955-9C5D-D52DE739C102).
 
-### Enable OCA Management agent
-Deploy Log Analytics Plugin
-Associate "VMWare vSphere Syslog  Logs" to host entity  
-In the vCenter, configure Syslog to be sent to the host at port 8519.  If this port can not be used then user will have to edit the Source in LA and specify the port there. 
+* Create an IAM policy with all the necessary permissions. Create a user in Oracle Cloud Infrastructure who can be granted access to services and OCI resources. Add the user to a user group. Provide permissions to that user group to be able to perform all the tasks related to this solution.
+* Add policy statements to enable access to Oracle Log Analytics and its resources, and to grant access to user groups. See Prerequisite IAM Policies.
+* Add policy statements for permissions to deploy Management Agents and use the agent related resources. See Allow Continuous Log Collection Using Management Agents.
+* Additionally, add the following policy statements for permission to use VCN and secret resources:
+```
+Allow group <user_group_name> to use virtual-network-family in compartment id <compartment_ocid>
+Allow group <user_group_name> to read secret-family in compartment id <compartment-ocid>
+```
+In the above statements, <compartment_ocid> is the OCID of the compartment where log group and other resources of Log Analytics are located.
 
-## VMWare Collector Setup
-### Prerequisites
-* The customer tenancy should be onboarded to Log Analytics in the region
-* There should be a user who has the permission to create entities & log groups in Log Analytics and to upload logs
+* Access Oracle Log analytics and enable it for use. See [Enable Log Analytics](https://docs.oracle.com/iaas/log-analytics/doc/enable-access-logging-analytics-its-resources.html#LOGAN-GUID-EA2F6910-878F-483E-A36D-E880D7C2D5E3).
+* Create a log group in Log Analytics to store logs. See [Create Log Groups to Store Your Logs](https://docs.oracle.com/iaas/log-analytics/doc/create-logging-analytics-resources.html#LOGAN-GUID-D1758CFB-861F-420D-B12F-34D1CC5E3E0E).
+* Compute Instance: For Oracle Cloud Infrastructure based Software-Defined Data Center (SDDC), create or use an existing compute instance in the same VCN as the SDDC. In case of VMWare on-premises, use a Linux VM that can access vCenter, OCI Services, and Internet (to install python modules).
 * Store vCenter user name and password in OCI Vault (base64 format)
-* Create a Log Group  in Log analytics to store Logs
-* Download solution zip file from github to the compute host created earlier
-* The following information is needed:
+* Note the following information: 
     * User API Key 
     * API Key Fingerprint 
     * User OCID 
@@ -29,79 +29,82 @@ In the vCenter, configure Syslog to be sent to the host at port 8519.  If this p
     * Namespace 
     * Log Group OCID
     * Compartment OCID
-* OCI Config File
-    * Copy OCI private key and save in a file in ~/.oci directory of the user
-    * Create config file with the following entries:
+
+## Create OCI Configuration File
+Copy the OCI private key and save in the oci_api_key.pem file in ~/.oci directory of the user. Create the configuration file with the following entries:
 ```
 [DEFAULT]
-fingerprint = <key fingerprint>
+fingerprint = <key_fingerprint>
 key_file =/home/opc/.oci/oci_api_key.pem
-tenancy = <tenancy-id>
+tenancy = <tenancy_id>
 region = <region>
-user = <user-ocid>
+user = <user_ocid>
 ```
-### Download and Configure Solution Zip File
-* Download Solution Zip file from github
-* Unzip it in the installation directory
-* Copy config.yaml.sample to config.yaml and update it:
+## Download Solution Zip and Update Solution Configuration File
+Download solution zip file logan_collectors.zip from github to the compute host created earlier. Unzip in a directory where you want to install. 
+
+Copy config.yaml.sample to config.yaml file and update it:
 ```
 oci:
   log_analytics_namespace: <namespace>
   region: <region>  # e.g. us-phoenix-1
   compartment_id: <compartment_ocid>
-  log_group_id: <log group ocid>
-  config_file: <config file path>
+  log_group_id: <loggroup_ocid>
+  config_file: <config_file_path>
   profile: DEFAULT
   metrics_source: VMWare vSphere Metrics 
   alarms_source: VMWare vSphere Alarms
   events_source: VMWare vSphere Events
 
 vcenter:
-  host: <vcenter host>
-  user_secret_ocid: <user-secret-ocid>
-  password_secret_ocid: <password-secret-ocid>
+  host: <vcenter_host>
+  user_secret_ocid: <user_secret_ocid>
+  password_secret_ocid: <password_secret_ocid>
   port: 443
   batch_size: 1000   # 👈 new (default will be 1000 if omitted)
-
-dry_run: false
 ```
-### Install Python Modules 
-Run `setup_python.sh` script to make sure correct version of python and required modules are installed.
+In the above file:
+* config_file_path: Full path of the OCI configuration file you created earlier.
+* vcenter_host: The host name of the vcenter host
 
-### Discover and Initialize Entities
-Edit bin/run.sh to update BASE_DIR value. Run "bin/run.sh init_entities" to discover entities in VMWare and create in Log Analytics. 
+## Install Plugins on Compute Instance for Log Collection
+* Enable Management Agent plug-in on Oracle Cloud Agent in your compute instance. See [Deploy Management Agents on Compute Instances](https://docs.oracle.com/iaas/management-agents/doc/management-agents-oracle-cloud-agent.html).
+* Deploy Log Analytics Plug-in on Management Agent. See [Deploy Service Plug-ins](https://docs.oracle.com/iaas/management-agents/doc/management-agents-administration-tasks.html#OCIAG-GUID-4D3F3DC5-4ACF-48C6-B624-F74700D0C73F). 
 
-Verify that  VMWare vCenter, Data Center, Cluster, Host, VM etc. entities have been created in Log Analytics. 
+## Install Python Modules
+Run "setup_python.sh" script to ensure that the right version of python and required modules are installed.
 
-### Test Data Collection
-Run `bin/run.sh  metrics` to send metrics to Log Analytics. Check if the metric data can be searched in OCI Log Explorer.
+## Discover and Initialize Entities
+* Edit bin/run.sh script to update the value of BASE_DIR parameter.
+Run the following command on your compute instance to discover log-emitting hosts in VMWare and automatically create corresponding entities in Log Analytics: 
+`bin/run.sh init_entities`
+* Verify that  VMWare vCenter, Data Center, Cluster, Host, VM etc. entities are created in Log Analytics. 
 
-### Create Crontab Entries
-Run `crontab -e`  and add the following content (replace <BASE-DIR> with install path):
+## Test Data Collection
+Run the following command on your compute instance to send metrics to Log Analytics:
+`bin/run.sh  metrics`
+Check if the metric data can be searched in the Log Explorer in Log Analytics.
 
+## Syslog Collection Setup
+Management Agent is used for forwarding vCenter Syslog to Log analytics. It is not used for collecting/uploading metrics/events/alarms. Associate Oracle-defined log source **VMWare vSphere Syslog Logs** to vCenter host entity. 
 
+In the vCenter, configure Syslog to be sent to the host at port 8519.  If this port can not be used, then edit the source in Log Analytics and specify the port there.
+
+## Create Crontab Entries to Emit Data Continuously
+Run "crontab -e" on your compute instance and add the following content:
 ```
-*/5 * * * * <BASE-DIR>/logan_collectors/bin/run.sh metrics
-*/5 * * * * <BASE-DIR>/logan_collectors/bin/run.sh alarms
-*/5 * * * * <BASE-DIR>/logan_collectors/bin/run.sh events
-0 * * * * <BASE-DIR>/logan_collectors/bin/run.sh sync_entities
-```
+*/5 * * * * <BASE_DIR>/logan_collectors/bin/run.sh metrics
 
-## Appendix A: Setting up OCI User with Permissions
-Create a user that will be used to access OCI services. Put the users in a group "Logan Uploader".  With the group following permissions:
-```
-"Allow group LoaganUploader to use virtual-network-family in compartment id <compartment_ocid>",
-"Allow service loganalytics to inspect compartments in tenancy",
-"Allow service loganalytics to read loganalytics-feature-family in tenancy",
-"Allow group LoaganUploader to manage all-resources in compartment id <compartment_ocid>,
-"Allow group LoaganUploader to use loganalytics-ondemand-upload in tenancy", 
-"Allow group LoaganUploader to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS, LOG_ANALYTICS_ENTITY_UPLOAD_LOGS, LOG_ANALYTICS_SOURCE_READ} in tenancy
-"Allow group LoaganUploader to read secret-family in compartment id <compartment-ocid>"
-```
+*/5 * * * * <BASE_DIR>/logan_collectors/bin/run.sh alarms
 
-## Appendix B: Setting up log rotation
-Create a new file /etc/logrotate.d/vmwarelogan with the following content
+*/5 * * * * <BASE_DIR>/logan_collectors/bin/run.sh events
 
+0 * * * * <BASE_DIR>/logan_collectors/bin/run.sh sync_entities
+```
+Replace BASE_DIR with installation directory path in above example.
+
+## Optional: Set Up Log Rotation
+You may want to set up log rotation for managing the storage size and log compression in your compute instance. Create a new file /etc/logrotate.d/vmwarelogan with the following content: 
 ```
 <base-dir>/logs/*.log
 <base-dir>/logs/*.out {
@@ -113,4 +116,4 @@ Create a new file /etc/logrotate.d/vmwarelogan with the following content
     copytruncate
 }
 ```
-
+Replace base_dir with installation directory path in above example.
