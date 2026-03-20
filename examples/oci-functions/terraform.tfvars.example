@@ -1,0 +1,8 @@
+tenancy_ocid     = "ocid1.tenancy.oc1..replace-me"
+compartment_ocid = "ocid1.compartment.oc1..replace-me"
+region           = "us-chicago-1"
+
+function_image = "iad.ocir.io/<namespace>/hello-world:1.0.0"
+
+application_name = "functions-app"
+function_name    = "hello-world"

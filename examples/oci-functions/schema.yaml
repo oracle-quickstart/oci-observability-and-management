@@ -1,29 +1,11 @@
 # Copyright (c) 2021 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-title: "Oracle Functions Quick Start"
-stackDescription: "This is a OCI (Oracle Cloud Infrastructure) Functions quickstart automation. 
-
-It creates all the necessary OCI resources 
-
-- Create Functions User Group
-- Create Functions Users 
-- Create Functions Policies.
-- 1 x Virtual Cloud Network
-- 1 x Subnet (Public)
-- 1 x Internet Gateway for Public Subnet
-- 1 x OCI function and invokes it. 
-
-All this is done using terraform."
+title: "OCI Functions Modern Example"
+stackDescription: "Deploys a modern OCI Functions sample with a public subnet, internet gateway routing, and a prebuilt OCIR image input."
 
 schemaVersion: 1.1.0
 version: "20190304"
-
-logoUrl: "https://cloudmarketplace.oracle.com/marketplace/content?contentId=58352039"
-
-source:
-  type: marketplace
-  reference: 47726045
 
 locale: "en"
 
@@ -36,27 +18,79 @@ variableGroups:
       - region
     
   - title: Required Configuration
-    visible: true  
+    visible: true
     variables:
       - function_image
-  
-  - title: Optional Configuration
-    visible: true  
+      - function_name
+
+  - title: Optional Naming
+    visible: true
     variables:
-      - functions_user_email
+      - application_name
+      - resource_name_prefix
+
+  - title: Optional Capacity
+    visible: true
+    variables:
+      - function_memory_in_mbs
+      - function_timeout_in_seconds
+
+  - title: Optional Network
+    visible: true
+    variables:
+      - vcn_cidr
+      - public_subnet_cidr
 
 variables:
   function_image:
-    title: Function Image
-    description: Refer the README for this example on how to create this helloworld image.
+    title: "Function Image"
+    description: "Full OCIR image URI used by oci_functions_function.image"
     required: true
-  functions_user_email:
-      title: Functions New User Email
-      description: This will create a new user and sends the activation email. If not provided, it creates a user with dummy email.
-      required: false
-      default: ""
+
+  application_name:
+    title: "Functions Application Name"
+    description: "Display name for oci_functions_application"
+    required: false
+    default: "functions-app"
+
+  function_name:
+    title: "Function Name"
+    description: "Display name for oci_functions_function"
+    required: true
+
+  resource_name_prefix:
+    title: "Resource Name Prefix"
+    description: "Prefix for network resource display names"
+    required: false
+    default: "tf-fn"
+
+  function_memory_in_mbs:
+    title: "Function Memory (MB)"
+    description: "Memory allocation for the function"
+    required: false
+    default: 256
+
+  function_timeout_in_seconds:
+    title: "Function Timeout (Seconds)"
+    description: "Execution timeout for the function"
+    required: false
+    default: 30
+
+  vcn_cidr:
+    title: "VCN CIDR"
+    description: "CIDR block for the VCN"
+    required: false
+    default: "10.20.0.0/16"
+
+  public_subnet_cidr:
+    title: "Public Subnet CIDR"
+    description: "CIDR block for the public subnet"
+    required: false
+    default: "10.20.1.0/24"
 
 outputGroups:
-  - title: Function Result
+  - title: Created Functions Resources
     outputs:
-      - ${function_invoke_result}
+      - ${functions_application_id}
+      - ${function_id}
+      - ${function_invoke_endpoint}
