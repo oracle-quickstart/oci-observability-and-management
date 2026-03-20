@@ -1,4 +1,4 @@
-# OCI Functions Terraform Modern Example
+# OCI Functions Terraform QuickStart Example
 
 This is a OCI (Oracle Cloud Infrastructure) Functions Hello World terraform automation. It creates all the necessary OCI resources (Compartment, User Groups, Users, VCN, Subnets etc..) required including OCI functions application and function and finally invokes it. All this is done using terraform.
 
