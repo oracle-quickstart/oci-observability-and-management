@@ -99,7 +99,7 @@ Run "crontab -e" on your compute instance and add the following content:
 
 */5 * * * * <BASE_DIR>/logan_collectors/bin/run.sh events
 
-0 * * * * <BASE_DIR>/logan_collectors/bin/run.sh sync_entities
+0 * * * * <BASE_DIR>/logan_collectors/bin/run.sh entity_sync
 ```
 Replace BASE_DIR with installation directory path in above example.
 
