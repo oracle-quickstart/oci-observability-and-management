@@ -19,7 +19,7 @@ from oci_client import (
 
 from constants import INTERESTED_ENTITY_TYPES, ALARMS_FILE, ALARMS_PAYLOAD_FILE
 from synthetic_alarms import generate_synthetic_alarms_for_cache
-from utils import validate_basedir, get_checkpoint_file, setup_logging, load_config
+from utils import validate_basedir, get_checkpoint_file, get_config_file, get_logs_dir, setup_logging, load_config
 
 def utc_now_iso() -> str:
     return datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
@@ -180,7 +180,7 @@ def main():
     setup_logging(basedir, "vmware-alarms")
 
 
-    config_file = os.path.join(basedir, "config.yaml")
+    config_file = get_config_file(basedir)
     # Load config
     config = load_config(config_file)
 
@@ -245,7 +245,7 @@ def main():
 
     # Save alarms
 
-    logs_dir = os.path.join(basedir, "logs")
+    logs_dir = get_logs_dir(basedir)
     alarms_file = os.path.join(logs_dir, ALARMS_FILE)
     with open(alarms_file, "w") as f:
         json.dump(collected_alarms, f, indent=2)
@@ -270,4 +270,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

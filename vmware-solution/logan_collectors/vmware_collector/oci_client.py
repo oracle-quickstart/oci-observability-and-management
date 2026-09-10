@@ -13,6 +13,7 @@ import gzip
 import base64
 from typing import List, Dict
 from constants import SUPPORTED_ENTITY_TYPES, VC_TO_OCI_ENTITY_TYPE
+from utils import get_solution_user_agent
 from oci.log_analytics import LogAnalyticsClient
 from oci.exceptions import ServiceError, RequestException
     
@@ -66,6 +67,9 @@ class OCIClient:
 
         cfg_path = params.get("config_file", "~/.oci/config")
         config = oci.config.from_file(file_location=os.path.expanduser(cfg_path))
+        config["additional_user_agent"] = " ".join(
+            filter(None, (config.get("additional_user_agent"), get_solution_user_agent()))
+        )
         self.la_client = None
         la_endpoint = params.get("logan_endpoint")
         if la_endpoint:
@@ -109,6 +113,12 @@ class OCIClient:
 
                 vcenter_entity = None
                 for entity in getattr(resp.data, "items", []):
+                    if getattr(entity, "lifecycle_state", None) != "ACTIVE":
+                        logger.info(
+                            "Ignoring non-ACTIVE vCenter entity state=%s ocid=%s",
+                            getattr(entity, "lifecycle_state", None), getattr(entity, "id", None),
+                        )
+                        continue
                     vcenter_entity = entity
 
                 if vcenter_entity:
@@ -159,10 +169,17 @@ class OCIClient:
                     break
     
                 for entity in getattr(resp.data, "items", []):
+                    if getattr(entity, "lifecycle_state", None) != "ACTIVE":
+                        logger.info(
+                            "Ignoring non-ACTIVE entity state=%s name=%s ocid=%s",
+                            getattr(entity, "lifecycle_state", None), getattr(entity, "name", None),
+                            getattr(entity, "id", None),
+                        )
+                        continue
                     if entity.entity_type_name in SUPPORTED_ENTITY_TYPES:
                         key = make_entity_key(entity.entity_type_name, entity.name)
                         mapping[key] = entity.id
-                        logger.info("Caching entity state=%s key:%s: ocid=%s",entity.lifecycle_state, key, entity.id)
+                        logger.info("Caching ACTIVE entity key:%s: ocid=%s", key, entity.id)
     
                 # Handle pagination
                 page = resp.headers.get("opc-next-page") if resp.headers else None

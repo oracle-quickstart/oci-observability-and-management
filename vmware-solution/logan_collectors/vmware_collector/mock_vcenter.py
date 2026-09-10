@@ -9,6 +9,9 @@ from typing import Dict, Any, List
 
 logger = logging.getLogger("mock_vcenter")
 
+def utc_now_iso() -> str:
+    return datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+
 # Mock collector that matches same shape as real collector
 def collect_all_metrics_mock() -> Dict[str, List[Dict[str, Any]]]:
     now = utc_now_iso()
@@ -167,5 +170,4 @@ class MockVCenterClient:
 
         logger.debug(f"Generated {len(events)} mock events")
         return events
-
 

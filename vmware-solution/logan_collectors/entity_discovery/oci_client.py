@@ -24,6 +24,7 @@ except ImportError:
     AddEntityAssociationDetails = None
 
 from constants import VMWARE_ENTITY_TYPES, CACHE_TTL_SECONDS
+from utils import get_solution_user_agent
 
 
 def _make_key(entity_type: str, entity_name: str) -> str:
@@ -46,6 +47,9 @@ class OCIClientWrapper:
         #if not self.dry_run:
         cfg_path = params.get("config_file", "~/.oci/config")
         config = oci.config.from_file(file_location=os.path.expanduser(cfg_path))
+        config["additional_user_agent"] = " ".join(
+            filter(None, (config.get("additional_user_agent"), get_solution_user_agent()))
+        )
         self.la_client = None
         la_endpoint = params.get("logan_endpoint")
         if la_endpoint:
@@ -60,6 +64,16 @@ class OCIClientWrapper:
         self.entity_cache: Dict[str, str] = {}  # VMware entity cache
         self.cache_timestamp: float = 0.0
         self.cache_ttl: int = 300  # 5 minutes TTL
+        self.sync_summary = {
+            "entities_created": 0,
+            "entities_existing": 0,
+            "entities_skipped": 0,
+            "entities_failed": 0,
+            "associations_created": 0,
+            "associations_existing": 0,
+            "associations_skipped": 0,
+            "associations_failed": 0,
+        }
 
     # ---------------- Cache ----------------
     def get_vcenter_entity_id(self):
@@ -93,9 +107,9 @@ class OCIClientWrapper:
         return self.vcenter_entity_id
 
 
-    def refresh_entity_cache(self):
+    def refresh_entity_cache(self, force: bool = False):
         now = time.time()
-        if now - self.cache_timestamp < CACHE_TTL_SECONDS:
+        if not force and now - self.cache_timestamp < CACHE_TTL_SECONDS:
             return
 
         logging.info("Refreshing caches from OCI")
@@ -114,6 +128,13 @@ class OCIClientWrapper:
             for item in getattr(resp.data, "items", []):
                 entities = getattr(item.nodes, "items", [])
                 for entity in entities:
+                    if getattr(entity, "lifecycle_state", None) != "ACTIVE":
+                        logging.debug(
+                            "Ignoring non-ACTIVE entity state=%s name=%s ocid=%s",
+                            getattr(entity, "lifecycle_state", None), getattr(entity, "name", None),
+                            getattr(entity, "id", None),
+                        )
+                        continue
                     etype = getattr(entity, "entity_type_name", None)
                     if etype in VMWARE_ENTITY_TYPES:
                         key = _make_key(etype, entity.name)
@@ -140,17 +161,20 @@ class OCIClientWrapper:
 
         if etype not in VMWARE_ENTITY_TYPES:
             self.logger.info("Skipping non-VMware entity type: %s (%s)", etype, ename)
+            self.sync_summary["entities_skipped"] += 1
             return None
 
         self.refresh_entity_cache()
         key = _make_key(etype, ename)
         if key in self.entity_cache:
-            self.logger.debug("Found entity in cache: %s -> %s", key, self.entity_cache[key])
+            self.sync_summary["entities_existing"] += 1
+            self.logger.info("Entity already exists in OCI LA; no update required: %s", key)
             return self.entity_cache[key]
 
         if self.dry_run:
             fake_ocid = f"ocid1.mockentity.oc1..{abs(hash(key)) & 0xFFFFFFFF:X}"
             self.entity_cache[key] = fake_ocid
+            self.sync_summary["entities_created"] += 1
             self.logger.info("[DRY-RUN] Would create entity: %s -> %s", key, fake_ocid)
             return fake_ocid
 
@@ -179,6 +203,7 @@ class OCIClientWrapper:
             ocid = resp.data.id
             self.entity_cache[key] = ocid
             self.cache_timestamp = time.time()  # update cache timestamp immediately
+            self.sync_summary["entities_created"] += 1
             self.logger.info("Created entity: %s -> %s", key, ocid)
             return ocid
 
@@ -186,11 +211,20 @@ class OCIClientWrapper:
             if getattr(se, "status", None) == 409:
                 self.logger.warning("Entity already exists (409): %s; refreshing cache", key)
                 self.refresh_entity_cache(force=True)
-                return self.entity_cache.get(key)
+                ocid = self.entity_cache.get(key)
+                if ocid:
+                    self.sync_summary["entities_existing"] += 1
+                    self.logger.info("Entity already exists in OCI LA; no update required: %s", key)
+                else:
+                    self.sync_summary["entities_failed"] += 1
+                    self.logger.error("Entity exists but could not be found after cache refresh: %s", key)
+                return ocid
             self.logger.error("ServiceError creating entity %s: %s", key, se, exc_info=True)
+            self.sync_summary["entities_failed"] += 1
             return None
         except Exception as e:
             self.logger.error("Unexpected error creating entity %s: %s", key, e, exc_info=True)
+            self.sync_summary["entities_failed"] += 1
             return None
 
     # ---------------- Associations ----------------
@@ -198,6 +232,7 @@ class OCIClientWrapper:
         if "parent" not in entity or not entity["parent"]:
             self.logger.debug("Entity has no parent, skipping association: %s::%s",
                               entity.get("type"), entity.get("name"))
+            self.sync_summary["associations_skipped"] += 1
             return
 
         parent_info = entity["parent"]
@@ -214,15 +249,18 @@ class OCIClientWrapper:
                 "Cannot create association: missing OCIDs (parent=%s, child=%s). "
                 "Ensure both entities were created/cached.", parent_key, child_key
             )
+            self.sync_summary["associations_failed"] += 1
             return
 
         if self.dry_run:
             self.logger.info("[DRY-RUN] Would associate %s -> %s (%s -> %s)",
                              parent_key, child_key, parent_id, child_id)
+            self.sync_summary["associations_created"] += 1
             return
 
         if AddEntityAssociationDetails is None:
             self.logger.warning("Entity associations not supported by this OCI SDK version; skipping.")
+            self.sync_summary["associations_skipped"] += 1
             return
 
         try:
@@ -233,17 +271,22 @@ class OCIClientWrapper:
                 add_entity_association_details=details,
                 retry_strategy=oci.retry.DEFAULT_RETRY_STRATEGY,
             )
+            self.sync_summary["associations_created"] += 1
             self.logger.info("Created association: %s -> %s", parent_key, child_key)
 
         except oci.exceptions.ServiceError as se:
             if getattr(se, "status", None) == 409:
-                self.logger.info("Association already exists (409): %s -> %s", parent_key, child_key)
+                self.sync_summary["associations_existing"] += 1
+                self.logger.info("Association already exists in OCI LA; no update required: %s -> %s",
+                                 parent_key, child_key)
                 return
             self.logger.error("ServiceError creating association %s -> %s: %s",
                               parent_key, child_key, se, exc_info=True)
+            self.sync_summary["associations_failed"] += 1
         except Exception as e:
             self.logger.error("Unexpected error creating association %s -> %s: %s",
                               parent_key, child_key, e, exc_info=True)
+            self.sync_summary["associations_failed"] += 1
 
     # -------------------------------------------------------------
     # Fetch secret from OCI Vault

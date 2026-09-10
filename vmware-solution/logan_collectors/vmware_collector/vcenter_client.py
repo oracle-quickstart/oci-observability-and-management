@@ -24,6 +24,7 @@ to avoid null/perfmanager issues. It logs missing attributes and exceptions.
 import ssl
 import atexit
 import logging
+import re
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 
@@ -340,7 +341,7 @@ class VCenterClient:
                 collected["Vmware_ESXI_HOST"].append(host_metrics)
                 host_stats_cache[name] = host_metrics
             except Exception as e:
-                log.exception(f"Error collecting host metrics for host object: {e}")
+                logger.exception(f"Error collecting host metrics for host object: {e}")
     
         # -------------------------
         # VMs
@@ -380,7 +381,7 @@ class VCenterClient:
                 collected["Vmware_VM_INSTANCE"].append(vm_metrics)
                 vm_stats_cache[name] = vm_metrics
             except Exception as e:
-                log.exception(f"Error collecting VM metrics for VM: {e}")
+                logger.exception(f"Error collecting VM metrics for VM: {e}")
     
         # -------------------------
         # Datastores
@@ -411,7 +412,7 @@ class VCenterClient:
                 }
                 collected["Vmware_DATASTORE"].append(ds_metrics)
             except Exception as e:
-                log.exception(f"Error collecting datastore metrics: {e}")
+                logger.exception(f"Error collecting datastore metrics: {e}")
     
         # -------------------------
         # Clusters (aggregate fallback)
@@ -485,7 +486,7 @@ class VCenterClient:
                 }
                 collected["Vmware_CLUSTER"].append(cluster_metrics)
             except Exception as e:
-                log.exception(f"Error collecting cluster metrics for {getattr(cluster, 'name', None)}: {e}")
+                logger.exception(f"Error collecting cluster metrics for {getattr(cluster, 'name', None)}: {e}")
     
         # -------------------------
         # Data centers (counts)
@@ -510,7 +511,7 @@ class VCenterClient:
                 }
                 collected["VMware_DATA_CENTER"].append(dc_metrics)
             except Exception as e:
-                log.exception(f"Error collecting datacenter metrics for {getattr(dc, 'name', None)}: {e}")
+                logger.exception(f"Error collecting datacenter metrics for {getattr(dc, 'name', None)}: {e}")
     
         # cleanup views
         try:

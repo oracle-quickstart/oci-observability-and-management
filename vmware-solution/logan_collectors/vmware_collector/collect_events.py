@@ -9,12 +9,13 @@ import logging.handlers
 import os
 import sys
 import json
+import tempfile
 from datetime import datetime, timezone
 from dateutil import parser as date_parser  # requires python-dateutil
 from vcenter_client import VCenterClient
 from oci_client import OCIClient
 from constants import VC_TO_OCI_ENTITY_TYPE, EVENT_ENTITY_TYPE_MAP, MONITORED_EVENTS
-from utils import validate_basedir, get_checkpoint_file, setup_logging, load_config
+from utils import validate_basedir, get_checkpoint_file, get_config_file, get_logs_dir, setup_logging, load_config
 
 # Cross-version datetime ISO parser
 try:
@@ -43,29 +44,73 @@ def get_event_time(event):
 def get_event_type(event):
     return getattr(event, "type", None) or event.__class__.__name__
 
+def get_event_key(event):
+    """Return the stable vCenter event key, or None when it is unavailable."""
+    try:
+        return int(getattr(event, "key", None))
+    except (TypeError, ValueError):
+        return None
+
 def load_checkpoint(checkpoint_file):
-    """Load last processed event time from checkpoint."""
+    """Load the last successfully uploaded ``(createdTime, key)`` cursor."""
     try:
         with open(checkpoint_file, "r") as f:
             data = json.load(f)
             last_time = date_parser.parse(data["last_event_time"])
             if last_time.tzinfo is None:
                 last_time = last_time.replace(tzinfo=timezone.utc)
-            return last_time
+            else:
+                last_time = last_time.astimezone(timezone.utc)
+            last_event_key = data.get("last_event_key")
+            if last_event_key is None:
+                logging.warning(
+                    "Legacy event checkpoint has no last_event_key; events at its timestamp "
+                    "will be replayed once to avoid dropping them."
+                )
+                return last_time, None
+            return last_time, int(last_event_key)
     except FileNotFoundError:
-        return None
+        return None, None
     except Exception as e:
         logging.warning(f"Failed to load checkpoint: {e}")
-        return None
+        return None, None
 
-def save_checkpoint(checkpoint_file:str, dt: datetime):
+def save_checkpoint(checkpoint_file: str, dt: datetime, event_key: int) -> bool:
+    """Atomically persist a cursor only after its events have been uploaded."""
+    tmp_path = None
     try:
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-        with open(checkpoint_file, "w") as f:
-            json.dump({"last_event_time": dt.isoformat()}, f)
+        else:
+            dt = dt.astimezone(timezone.utc)
+
+        checkpoint_dir = os.path.dirname(checkpoint_file)
+        fd, tmp_path = tempfile.mkstemp(prefix=".vmware-events-checkpoint-", dir=checkpoint_dir)
+        with os.fdopen(fd, "w") as f:
+            json.dump({"last_event_time": dt.isoformat(), "last_event_key": event_key}, f)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, checkpoint_file)
+        tmp_path = None
+        return True
     except Exception as e:
         logging.error(f"Failed to save checkpoint: {e}")
+        return False
+    finally:
+        if tmp_path:
+            try:
+                os.unlink(tmp_path)
+            except FileNotFoundError:
+                pass
+
+def is_after_checkpoint(event_time, event_key, last_time, last_event_key):
+    """Return whether an event is strictly after the saved compound cursor."""
+    if last_time is None:
+        return True
+    if event_time != last_time:
+        return event_time > last_time
+    # A legacy timestamp-only checkpoint replays its boundary timestamp once.
+    return last_event_key is None or event_key > last_event_key
 
 def mor_to_dict(mor):
     # convert ManagedObjectReference to safe dict
@@ -83,7 +128,7 @@ def datetime_to_str(dt):
         return None
     return dt.isoformat()
 
-def parse_event(event):
+def parse_event(event, vcenter_id, event_key):
     # convert vim.event.Event -> JSON-safe dict
 
     event_type = get_event_type(event)
@@ -106,6 +151,8 @@ def parse_event(event):
     entity_type = EVENT_ENTITY_TYPE_MAP.get(event_type, "VMware vSphere vCenter")
 
     data = {
+        "eventId": f"{vcenter_id}:{event_key}",
+        "eventKey": event_key,
         "eventType": event_type,
         "entityName": entity_name,
         "entityType": entity_type,
@@ -119,7 +166,7 @@ def parse_event(event):
         "vm",
         "host",
         "datastore",
-        "computeresource",
+        "computeResource",
         "dc",
         "resourcePool",
         "network",
@@ -190,7 +237,7 @@ def main():
 
     logging.info("Starting VMware alarms collector...")
 
-    config_file = os.path.join(basedir, "config.yaml")
+    config_file = get_config_file(basedir)
     # Load config
     config = load_config(config_file)
 
@@ -215,7 +262,7 @@ def main():
 
     checkpoint_file = get_checkpoint_file(basedir, EVENTS_CHECKPOINT_FILE)
     vcenterClient = VCenterClient(host, port, user, password)
-    last_time = load_checkpoint(checkpoint_file)
+    last_time, last_event_key = load_checkpoint(checkpoint_file)
 
     logging.info("Fetching entity OCID map from OCI Log Analytics API")
     try:
@@ -223,60 +270,81 @@ def main():
         logging.info(f"Fetched {len(entity_map)} entities from OCI LA")
     except Exception as e:
         logging.error(f"Failed to fetch entity mapping: {e}")
-        return
+        return 1
 
     # Fetch events
     events = vcenterClient.fetch_events(since_time=last_time)
     logging.info(f"Fetched {len(events)} events")
     
-    latest_event_time = None
-    parsed_events = []
+    events_to_upload = []
+    skipped_uploaded_events = 0
 
     for event in events:
-        event_type = get_event_type(event)
-#        if event_type not in MONITORED_EVENTS:
-#            logging.debug(f"Skipping unmonitored event type: {event_type}")
-#            continue
-        parsed = parse_event(event)
+        event_time = get_event_time(event)
+        event_key = get_event_key(event)
+        if event_time is None or event_key is None:
+            logging.warning(
+                "Skipping event without a stable timestamp and key: type=%s", get_event_type(event)
+            )
+            continue
+        if not is_after_checkpoint(event_time, event_key, last_time, last_event_key):
+            skipped_uploaded_events += 1
+            logging.info(
+                "Skipping already-uploaded event: time=%s key=%s type=%s entity=%s message=%s",
+                event_time,
+                event_key,
+                get_event_type(event),
+                (
+                    getattr(getattr(event, "vm", None), "name", None)
+                    or getattr(getattr(event, "host", None), "name", None)
+                    or getattr(getattr(event, "computeResource", None), "name", None)
+                    or getattr(getattr(event, "datastore", None), "name", None)
+                    or "Unknown"
+                ),
+                getattr(event, "fullFormattedMessage", ""),
+            )
+            continue
+
+        parsed = parse_event(event, host, event_key)
         logging.info(
             f"{parsed['eventType']} | {parsed['entityName']} | {parsed['message']}"
         )
 
-        parsed_events.append(parsed)
+        events_to_upload.append((event_time, event_key, parsed))
 
-        # Track latest timestamp
-        ts = get_event_time(event)
-        if not ts:
-            logging.warning(f"Event {parsed.get('eventType')} has no timestamp, skipping")
-            continue
+    events_to_upload.sort(key=lambda item: (item[0], item[1]))
+    parsed_events = [item[2] for item in events_to_upload]
 
-        if not latest_event_time or ts > latest_event_time:
-            latest_event_time = ts
+    if skipped_uploaded_events:
+        logging.info("Skipped %d already-uploaded event(s)", skipped_uploaded_events)
 
     logging.info("Generating upload payload...")
     payload = prepare_log_events(ociClient, parsed_events, vcenter_ocid, source)
 
     # Upload batched events
     if parsed_events:
-        if is_dry_run:
+        if is_dry_run or args.collect_only:
             # Save locally
-            logs_dir = os.path.join(basedir, "logs")
+            logs_dir = get_logs_dir(basedir)
             payload_file = os.path.join(logs_dir, "events_payload.json")
             with open(payload_file, "w") as f:
                 json.dump(payload, f, indent=2)
             logging.info(f"Payload written to {payload_file}")
             print(f"Payload written to {payload_file}")
-            if collect_only:
-                logging.info("DRY run mode: exiting without uploading to LA")
-                print("DRY run mode: exiting without uploading to LA")
-                return
+            logging.info("Dry-run or collect-only mode: skipping upload and checkpoint update")
+            return 0
         else:
-            ociClient.upload_log_events_file(payload)
+            response = ociClient.upload_log_events_file(payload)
+            if response is None:
+                logging.error("OCI Log Analytics did not accept the events payload; checkpoint was not advanced")
+                return 1
             logging.info(f"Uploaded Events to OCI LA.")
-            # Save checkpoint 
-            if latest_event_time:
-                save_checkpoint(checkpoint_file, latest_event_time)
+            latest_event_time, latest_event_key, _ = events_to_upload[-1]
+            if not save_checkpoint(checkpoint_file, latest_event_time, latest_event_key):
+                logging.error("Upload succeeded but checkpoint persistence failed; events may be replayed")
+                return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -15,7 +15,7 @@ from typing import Dict, Any, List
 from vcenter_client import VCenterClient
 from oci_client import OCIClient, make_entity_key, find_matching_ocid
 from constants import SUPPORTED_ENTITY_TYPES, VC_TO_OCI_ENTITY_TYPE
-from utils import validate_basedir, setup_logging, load_config
+from utils import validate_basedir, get_config_file, get_logs_dir, setup_logging, load_config
 
 # Normalize LA entity type for matching
 entity_type_map = {
@@ -205,7 +205,7 @@ def main():
     basedir = validate_basedir(args.base_dir)
     setup_logging(basedir, "vmware-metrics")
 
-    config_file = os.path.join(basedir, "config.yaml")
+    config_file = get_config_file(basedir)
     # Load config
     config = load_config(config_file)
 
@@ -249,7 +249,7 @@ def main():
 
     if is_dry_run:
         # Save locally
-        logs_dir = os.path.join(basedir, "logs")
+        logs_dir = get_logs_dir(basedir)
         payload_file = os.path.join(logs_dir, "metrics_payload.json")
         with open(payload_file, "w") as f:
             json.dump(payload, f, indent=2)
@@ -267,4 +267,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
