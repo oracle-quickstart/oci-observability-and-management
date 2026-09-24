@@ -50,7 +50,7 @@ resource "oci_identity_policy" "gtw_policy" {
   name           = "apm-data-exporter-gtway-policy"
   description    = "Policy needed to allow ApiGateway to call the function."
   statements = [
-    "ALLOW any-user to use functions-family in compartment ApmTestbed where ALL {request.principal.type= 'ApiGateway'}	",
+    "ALLOW any-user to use functions-family in compartment ${local.compartment_name} where ALL {request.principal.type= 'ApiGateway'}	",
   ]
 }
 
